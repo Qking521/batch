@@ -1,0 +1,49 @@
+#!/bin/bash
+
+PACKAGE_NAME="your.package.name"
+THROTTLE_MS=300
+SEED=54321
+LOG_FILE="continuous_monkey_log.txt"
+
+echo "Starting continuous Monkey test for $PACKAGE_NAME..."
+echo "Log will be written to $LOG_FILE"
+
+while true; do
+  echo "--- Starting new Monkey run at $(date) ---" | tee -a $LOG_FILE
+  
+  # 运行 Monkey，这里可以设置一个较小的事件数，或者一个小时的运行时间
+  # 如果想让单次 Monkey 运行尽可能长，可以设置一个大数
+  adb shell monkey \
+    -p $PACKAGE_NAME \
+    --ignore-crashes \
+    --ignore-timeouts \
+    --ignore-security-exceptions \
+    --ignore-native-crashes \
+    --throttle $THROTTLE_MS \
+    -s $SEED \
+    -v -v \
+    10000000 >> $LOG_FILE 2>&1 # 重定向输出到文件，包括标准输出和错误输出
+
+  # 检查 Monkey 是否因为某个错误而退出（例如，系统崩溃或adb连接断开）
+  # 如果Monkey正常完成1000万个事件，它也会退出，然后脚本会再次启动
+  if [ $? -ne 0 ]; then
+    echo "--- Monkey command exited with an error. Retrying in 10 seconds... ---" | tee -a $LOG_FILE
+    sleep 10
+  else
+    echo "--- Monkey command completed its event count. Restarting in 5 seconds... ---" | tee -a $LOG_FILE
+    sleep 5
+  fi
+
+  # 可以添加自定义停止条件，例如检查电池电量
+  # BATTERY_LEVEL=$(adb shell dumpsys battery | grep level | cut -d ' ' -f 13)
+  # if [ "$BATTERY_LEVEL" -lt 10 ]; then
+  #   echo "Battery low ($BATTERY_LEVEL%), stopping Monkey." | tee -a $LOG_FILE
+  #   break
+  # fi
+
+  # 每次循环可以更新种子，以获得新的随机序列
+  SEED=$((SEED + 1)) 
+
+done
+
+echo "Monkey test stopped."

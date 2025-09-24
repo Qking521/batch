@@ -1,0 +1,1 @@
+adb shell am stopservice -n com.example.mtk10263.whatsTemp/.GetInfo_Service
