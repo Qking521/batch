@@ -7,7 +7,6 @@ if %1=="" (
 	exit /b
 )
 
-echo param %1
 ::获取屏幕分辨率
 for /f "tokens=3" %%i in ('adb shell wm size 2^>nul ^| findstr "Physical size"') do set SCREEN_SIZE=%%i
 if "%SCREEN_SIZE%"=="" (
@@ -21,33 +20,24 @@ if "%SCREEN_SIZE%"=="" (
 for /f "tokens=1 delims=x" %%w in ("%SCREEN_SIZE%") do set WIDTH=%%w
 for /f "tokens=2 delims=x" %%h in ("%SCREEN_SIZE%") do set HEIGHT=%%h
 
-if "%1"=="white" goto white_wallpaper
-if "%1"=="black" goto black_wallpaper
+set "color=%1"
+set wallpaper=%color%_wallpaper.png
 
-:: 使用PowerShell创建白色图片
-:white_wallpaper
-set wallpaper=white_wallpaper.png
+:: 调用 PowerShell 处理首字母大写
+for /f "delims=" %%A in ('powershell -nologo -command "$str='%color%'; $str.Substring(0,1).ToUpper() + $str.Substring(1)"') do (
+    set "color=%%A"
+)
+
+:: 使用PowerShell创建指定颜色图片
 if exist %wallpaper% del %wallpaper%
-powershell -Command "Add-Type -AssemblyName System.Drawing; $bmp = New-Object System.Drawing.Bitmap(%WIDTH%, %HEIGHT%); $g = [System.Drawing.Graphics]::FromImage($bmp); $g.Clear([System.Drawing.Color]::White); $bmp.Save('%wallpaper%', [System.Drawing.Imaging.ImageFormat]::Png); $g.Dispose(); $bmp.Dispose()" >nul 2>&1
+powershell -Command "Add-Type -AssemblyName System.Drawing; $bmp = New-Object System.Drawing.Bitmap(%WIDTH%, %HEIGHT%); $g = [System.Drawing.Graphics]::FromImage($bmp); $g.Clear([System.Drawing.Color]::%color%); $bmp.Save('%wallpaper%', [System.Drawing.Imaging.ImageFormat]::Png); $g.Dispose(); $bmp.Dispose()" >nul 2>&1
 if exist %wallpaper% (
-    echo 已创建白色壁纸文件
     goto :push_and_set
 )
-echo 错误: 无法创建白色壁纸文件
+echo 错误: 无法创建指定颜色壁纸文件
 pause
 exit /b 1
 
-:black_wallpaper
-set wallpaper=black_wallpaper.png
-if exist %wallpaper% del %wallpaper%
-powershell -Command "Add-Type -AssemblyName System.Drawing; $bmp = New-Object System.Drawing.Bitmap(%WIDTH%, %HEIGHT%); $g = [System.Drawing.Graphics]::FromImage($bmp); $g.Clear([System.Drawing.Color]::Black); $bmp.Save('%wallpaper%', [System.Drawing.Imaging.ImageFormat]::Png); $g.Dispose(); $bmp.Dispose()" >nul 2>&1
-if exist black_wallpaper.png (
-    echo 已创建黑色壁纸文件
-    goto :push_and_set
-)
-echo 错误: 无法创建黑色壁纸文件
-pause
-exit /b 1
 
 :push_and_set
 :: 推送壁纸到设备
@@ -61,6 +51,7 @@ if %errorlevel% neq 0 (
 
 echo 壁纸已生成,路径：/sdcard/%wallpaper%
 echo 请在设备上手动设置壁纸
+::adb shell am start -a android.intent.action.VIEW -d file:///sdcard/%wallpaper% -t image/*
 adb shell am start -a android.intent.action.ATTACH_DATA -d file:///sdcard/%wallpaper% -t image/* --ez set-wallpaper true
 pause
 endlocal
