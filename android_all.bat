@@ -19,26 +19,31 @@ if /i "%1"=="dev" goto developer
 if /i "%1"=="ss" goto setting_search
 if /i "%1"=="hwinfo" goto hardware_info
 if /i "%1"=="asp" goto all_settings_and_properities
+if /i "%1"=="monkey" goto monkey
 
 echo Unknown command: %1
-echo Use "power -h" for help
-exit /b
+goto show_help
+
 
 :show_help
 echo.
-echo Android Power Commands
+echo Android Commands
 echo =======================
 echo.
-echo Usage: power [command]
+echo Usage: android [command]
 echo.
 echo Available commands:
 echo   top 	   		- show current activity
 echo   bugreport 	- pull bugreport
 echo   clear 	   	- clear all android log
+echo   ss 	   		- search settings
+echo   dev 	   		- developer
+echo   asp 	   		- all_settings_and_properities
+echo   monkey 	   	- run monkey
 echo   -h      		- Show help (alias: help^)
 echo.
 echo Examples:
-echo   power top
+echo   android top
 echo.
 exit /b
 
@@ -67,16 +72,18 @@ if not "%~2"=="" (
 )
 
 :: === 2. 创建 bugreport 文件夹 ===
-set OUTDIR=%cd%\bugreport
-if not exist "%OUTDIR%" mkdir "%OUTDIR%"
+::获取脚本所在目录，自带反斜杠
+set "scriptDir=%~dp0"
+set OUT_DIR=%scriptDir%OUT\bugreport
+if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
 
 :: === 3. 生成 bugreport zip 文件 ===
-set ZIPFILE=%OUTDIR%\bugreport%EXT%_%TS%.zip
+set ZIPFILE=%OUT_DIR%\bugreport%EXT%_%TS%.zip
 echo Generating bugreport: %ZIPFILE%
 adb bugreport "%ZIPFILE%" > nul
 
 :: === 4. 解压 zip 文件（使用 PowerShell） ===
-set UNZIPDIR=%OUTDIR%\bugreport%EXT%_%TS%
+set UNZIPDIR=%OUT_DIR%\bugreport%EXT%_%TS%
 echo Extracting bugreport...
 :: 优先用 7z 解压
 where 7z >nul 2>&1
@@ -145,6 +152,14 @@ exit /b
 
 :all_settings_and_properities
 call "%SCRIPT_DIR%android_all_settings_and_properities.bat"
+exit /b
+
+:monkey
+if not %1=="" (
+	adb shell monkey -p %1 --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
+) else (
+	adb shell monkey --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
+)
 exit /b
 
 endlocal
