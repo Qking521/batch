@@ -1,2 +1,0 @@
-trace_processor_shell --query-string   "SELECT * FROM raw ORDER BY ts;"  20250110_173229.perfetto > ftrace
-trace_processor_shell --query-string   "SELECT ts / 1000000 AS time_ms, name, cpu, utid, args FROM raw WHERE name = 'f2fs_write_begin' ORDER BY ts;"  20250110_173229.perfetto > ftrace

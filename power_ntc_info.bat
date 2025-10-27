@@ -6,13 +6,6 @@ echo "adb shell ls /sys/class/thermal/"
 :: 获取当前脚本所在目录
 set "SCRIPT_DIR=%~dp0"
 
-:: 先调用基础脚本检查ADB和设备（使用完整路径）
-call "%SCRIPT_DIR%adb_check.bat"
-if %ERRORLEVEL% neq 0 (
-    echo [错误]: 基础检测失败，退出操作。
-    exit /b %ERRORLEVEL%
-)
-adb root > nul
 set "thermal_files_output="
 for /f "delims=" %%i in ('adb shell ls /sys/class/thermal/') do (
     set "thermal_files_output=!thermal_files_output! %%i"

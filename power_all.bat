@@ -4,6 +4,13 @@ setlocal enabledelayedexpansion
 :: 获取当前脚本所在目录
 set "SCRIPT_DIR=%~dp0"
 
+:: 先调用基础脚本检查ADB和设备（使用完整路径）
+call "%SCRIPT_DIR%adb_check.bat"
+if %ERRORLEVEL% neq 0 (
+    echo [错误]: 基础检测失败，退出操作。
+    exit /b %ERRORLEVEL%
+)
+
 if "%1"=="" goto show_help
 if /i "%1"=="-h" goto show_help
 if /i "%1"=="help" goto show_help
@@ -16,6 +23,8 @@ if /i "%1"=="decrypt" goto decrypt
 if /i "%1"=="wt" goto whatstempeture
 if /i "%1"=="key" goto keyword
 if /i "%1"=="wakelock" goto wakelock
+if /i "%1"=="default" goto defalut_value
+if /i "%1"=="hw" goto hardware_info
 
 echo Unknown command: %1
 echo Use "power -h" for help
@@ -29,15 +38,15 @@ echo.
 echo Usage: power [command]
 echo.
 echo Available commands:
-echo   standby - power base current settings
-echo   ntc     - show ntc infomation
-echo   ww      - create white wallpaper
-echo   wt	   - install whatstempeture apk
-echo   profile - display power profile data on terminal
-echo   reset   - reset batterystats
-echo   decrypt - decrypt thermal config file
-echo   key     -- list log keyword
-echo   -h      - Show help (alias: help^)
+echo   standby		- power base current settings
+echo   ntc			- show ntc infomation
+echo   wallpaper	- create wallpaper for any color
+echo   wt			- install whatstempeture apk
+echo   profile		- display power profile data on terminal
+echo   reset		- reset batterystats
+echo   decrypt		- decrypt thermal config file
+echo   key			- list log keyword
+echo   -h			- Show help (alias: help^)
 echo.
 echo Examples:
 echo   power standby
@@ -57,7 +66,7 @@ call "%SCRIPT_DIR%power_ntc_info.bat"
 exit /b
 
 :wallpaper
-call "%SCRIPT_DIR%power_white_wallpaper.bat" %~2
+call "%SCRIPT_DIR%power_wallpaper.bat" %~2
 if %ERRORLEVEL% neq 0 (
     echo [错误]: 基础检测失败，退出操作。
     exit /b %ERRORLEVEL%
@@ -103,6 +112,42 @@ adb shell dumpsys power | grep -A 20 "Wake Locks"
 adb shell dumpsys batterystats | grep -A 10 "Wake lock"
 exit /b
 
+:defalut_value
+adb shell settings get system screen_brightness
+exit /b
+
+:hardware_info
+for /f "tokens=2 delims=:" %%a in ('adb shell cat /proc/meminfo ^| find "MemTotal"') do set meminfo=%%a
+for /f "tokens=1" %%b in ('echo %meminfo%') do set mem_kb=%%b
+set /a mem_gb=(%mem_kb% + 1048576 - 1) / 1048576 
+echo RAM大小: %mem_gb%G
+
+for /f "tokens=2 delims=/ " %%a in ('adb shell dumpsys diskstats ^| findstr /C:"Data-Free"') do (
+    set total_kb=%%a
+)
+:: 去掉末尾的 K（如果存在）
+set "total_kb=!total_kb:K=!"
+:: 转为 GB（十进制）
+set /a rom_gb=!total_kb! / 1000000
+:: 向上匹配到厂商常见档位
+set "sizes=16 32 64 128 256 512 1024 2048"
+for %%s in (!sizes!) do (
+    if !rom_gb! LEQ %%s (
+        set rom_std=%%s
+        goto show
+    )
+)
+:show
+echo ROM大小: !rom_std!G
+for /f "delims=" %%A in ('adb shell getprop ro.serialno') do echo SN号: %%A
+for /f "delims=" %%A in ('adb shell getprop ro.boot.hardware.sku') do if not %%A=="" ( echo SKU: %%A )
+for /f "tokens=2 delims=:" %%A in ('adb shell dumpsys SurfaceFlinger ^| grep refresh-rate') do echo 刷新率: %%A
+for /f "tokens=3 delims=: " %%A in ('adb shell wm size') do echo 分辨率：%%A
+for /f "delims=" %%A in ('adb shell settings get system screen_brightness') do echo 亮度: %%A
+for /f "delims=" %%A in ('adb shell getprop ro.build.id') do echo 版本号: %%A
+
+exit /b
+
 :keyword
 echo "查看温升相关信息"
 echo "thermal_core|thermal IRQ|powerhal"
@@ -115,7 +160,7 @@ echo "wakeup_reason|wakeup alarm|Resume caused by|suspend wake up by|Pending Wak
 echo "查看NTC温度"
 echo adb shell "i=0 ; while [[ $i -lt 50 ]] ; do (type=`cat /sys/class/thermal/thermal_zone$i/type` ; temp=`cat /sys/class/thermal/thermal_zone$i/temp` ; echo "$i $type : $temp"); i=$((i+1));done"
 echo "温升分析"
-echo "DexOptimizer|ThermalInfo:|thermal_core|throttling"
+echo "DexOptimizer|ThermalInfo:|thermal_core|throttling|mmi_thermal_ratio"
 echo "others"
 echo "screen_toggled"
 exit /b

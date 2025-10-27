@@ -7,13 +7,6 @@ chcp 65001  >nul
 :: 获取当前脚本所在目录
 set "SCRIPT_DIR=%~dp0"
 
-:: 先调用基础脚本检查ADB和设备（使用完整路径）
-call "%SCRIPT_DIR%adb_check.bat"
-if %ERRORLEVEL% neq 0 (
-    echo [错误]: 基础检测失败，退出操作。
-    exit /b %ERRORLEVEL%
-)
-
 :: Enable Airplane Mode
 call :execute_adb "adb shell settings put global airplane_mode_on 1"
 call :execute_adb "adb shell am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true"
@@ -38,6 +31,12 @@ call :execute_adb "adb shell settings put system screen_brightness_mode 0"
 
 :: screen time to 30 minutes
 call :execute_adb "adb shell settings put system screen_off_timeout 1800000"
+
+for /f "delims=" %%a in ('adb shell getprop ro.product.brand') do set brand=%%a
+if %brand%==motorola (
+	echo extra operate for %brand%
+	adb shell pm disable-user com.motorola.bug2go
+)
 
 echo All commands executed.
 echo 请确认modem log关闭
