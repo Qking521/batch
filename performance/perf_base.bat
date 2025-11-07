@@ -3,7 +3,7 @@
 call %SCRIPT_DIR%base_time.bat
 setlocal enabledelayedexpansion
 @REM **************************set record time*********************************
-set record_time=%1
+set record_time=%2
 :: 标志变量，初始为未找到
 set "found=0"
 set "timelist=5 10 30"
@@ -46,7 +46,7 @@ set "scriptDir=%~dp0"
 set "currentDir=%scriptDir:~0,-1%"
 :: 获取上一级目录路径
 for %%i in ("%currentDir%") do set "parentDir=%%~dpi"
-set OUT_DIR=%parentDir%OUT\performance\
+set OUT_DIR=%parentDir%OUT\performance\%~1
 set trace_file=%model%_%ftime%.perfetto
 set configPath=/data/misc/perfetto-configs
 
@@ -61,19 +61,19 @@ adb shell "rm -rf /data/misc/perfetto-traces/*"
 REM 本地生成的config文件push手机中供生成trace文件
 adb push %cd%\%config_name% %configPath%/config.pbtxt > nul 2>&1
 REM 本地生成的config文件push out目录中供验证
-move %cd%\%config_name% %OUT_DIR%%~n0_%record_time%_config.pbtxt > nul
+move %cd%\%config_name% %OUT_DIR%\%~n0_%record_time%_config.pbtxt > nul
 
-echo Capturing perfetto...please reproduce the issue
+echo **********************start capturing perfetto****************************
 REM 第一个echo 0 是为了保证正常抓取
 adb shell "echo 0 > /sys/kernel/tracing/tracing_on"
 adb shell perfetto --txt -c %configPath%/config.pbtxt -o /data/misc/perfetto-traces/%trace_file% > nul 2>&1
 REM 第二个echo 0是为了保证正常结束
 adb shell "echo 0 > /sys/kernel/tracing/tracing_on"
 adb pull /data/misc/perfetto-traces/%trace_file%   %OUT_DIR%\%trace_file% > nul 2>&1
-echo perfetto file path: %OUT_DIR%%trace_file%
+echo trace_file: %OUT_DIR%\%trace_file%
 
 REM 调用浏览器自动加载trace文件
-rem start startperfetto.bat" %OUT_DIR%\%trace_file%
+call perf_open.bat %OUT_DIR%\%trace_file%
 endlocal
 goto :END
 
@@ -112,6 +112,7 @@ goto :END
   echo          target_buffer: 1
   echo      }
   echo  }
+  echo.
   echo  data_sources: {
   echo      config {
   echo          name: "linux.process_stats"
@@ -122,6 +123,7 @@ goto :END
   echo          }
   echo      }
   echo  }
+  echo.
   echo  data_sources: {
   echo      config {
   echo          name: "linux.sys_stats"
@@ -191,7 +193,7 @@ goto :END
   echo         }
   echo     }
   echo }
-
+  echo.
 
   exit /b
 ) > %config_name%

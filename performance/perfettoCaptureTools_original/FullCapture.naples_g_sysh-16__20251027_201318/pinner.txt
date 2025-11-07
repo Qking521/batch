@@ -1,0 +1,24 @@
+Pinner Configs:
+   Total Pinner quota: 10% of total device memory
+   Maximum Pinner quota: 795581235 bytes (758.73 MB)
+   Max Home App Pin Bytes (without deps): 0 (0.00 MB)
+   Max Assistant App Pin Bytes (without deps): 62914560 (60.00 MB)
+   Max Camera App Pin Bytes (without deps): 83886080 (80.00 MB)
+
+Pinned Files:
+
+
+Group:system
+  /system/framework/arm64/boot-framework.vdex pinned: 712704 bytes (0.68 MB) pinlist:false
+  /system/framework/arm64/boot-framework.oat pinned: 10055680 bytes (9.59 MB) pinlist:false
+  /system/framework/services.jar pinned: 26005504 bytes (24.80 MB) pinlist:false
+  /system/framework/oat/arm64/services.odex pinned:6033408 bytes (5.75 MB) pinlist:false (Dependency)
+  /system/framework/oat/arm64/services.vdex pinned:380928 bytes (0.36 MB) pinlist:false (Dependency)
+  /vendor/lib64/egl/mt6835/libGLES_mali.so pinned: 42401792 bytes (40.44 MB) pinlist:false
+  /system/framework/framework.jar pinned: 48140288 bytes (45.91 MB) pinlist:false
+Total Pinned = 133730304 (127.54 MB) [Main=127315968 (121.42 MB), Dependencies=6414336 (6.12 MB)]
+
+
+Total pinned: 133730304 bytes (127.54 MB)
+Available Pinner quota: 661850931 bytes (631.19 MB)
+

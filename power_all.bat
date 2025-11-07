@@ -7,8 +7,7 @@ set "SCRIPT_DIR=%~dp0"
 :: 先调用基础脚本检查ADB和设备（使用完整路径）
 call "%SCRIPT_DIR%adb_check.bat"
 if %ERRORLEVEL% neq 0 (
-    echo [错误]: 基础检测失败，退出操作。
-    exit /b %ERRORLEVEL%
+    exit /b
 )
 
 if "%1"=="" goto show_help
@@ -27,7 +26,7 @@ if /i "%1"=="default" goto defalut_value
 if /i "%1"=="hw" goto hardware_info
 
 echo Unknown command: %1
-echo Use "power -h" for help
+goto show_help
 exit /b
 
 :show_help
@@ -55,10 +54,6 @@ exit /b
 
 :standby
 call "%SCRIPT_DIR%power_standby.bat"
-if %ERRORLEVEL% neq 0 (
-    echo [错误]: 基础检测失败，退出操作。
-    exit /b %ERRORLEVEL%
-)
 exit /b
 
 :ntc
@@ -67,10 +62,6 @@ exit /b
 
 :wallpaper
 call "%SCRIPT_DIR%power_wallpaper.bat" %~2
-if %ERRORLEVEL% neq 0 (
-    echo [错误]: 基础检测失败，退出操作。
-    exit /b %ERRORLEVEL%
-)
 exit /b
 
 :power_profile
@@ -122,35 +113,47 @@ for /f "tokens=1" %%b in ('echo %meminfo%') do set mem_kb=%%b
 set /a mem_gb=(%mem_kb% + 1048576 - 1) / 1048576 
 echo RAM大小: %mem_gb%G
 
-for /f "tokens=2 delims=/ " %%a in ('adb shell dumpsys diskstats ^| findstr /C:"Data-Free"') do (
+set "line="
+for /f "delims=" %%L in ('adb shell dumpsys diskstats') do (
+    echo %%L | findstr /C:"Data-Free" >nul
+    if !errorlevel! EQU 0 (
+        set "line=%%L"
+        goto found
+    )
+)
+:found
+for /f "tokens=2 delims=/ " %%a in ("!line!") do (
     set total_kb=%%a
 )
 :: 去掉末尾的 K（如果存在）
 set "total_kb=!total_kb:K=!"
 :: 转为 GB（十进制）
-set /a rom_gb=!total_kb! / 1000000
+set /a total_gb=!total_kb! / 1000000
 :: 向上匹配到厂商常见档位
 set "sizes=16 32 64 128 256 512 1024 2048"
 for %%s in (!sizes!) do (
-    if !rom_gb! LEQ %%s (
-        set rom_std=%%s
+    if !total_gb! LEQ %%s (
+        set rom_size=%%s
         goto show
     )
 )
 :show
-echo ROM大小: !rom_std!G
+echo ROM大小: !rom_size!G
 for /f "delims=" %%A in ('adb shell getprop ro.serialno') do echo SN号: %%A
-for /f "delims=" %%A in ('adb shell getprop ro.boot.hardware.sku') do if not %%A=="" ( echo SKU: %%A )
+for /f "delims=" %%A in ('adb shell getprop ro.boot.hardware.sku') do (
+	if not %%A=="" ( echo SKU: %%A ) else ( echo SKU: Unknow )
+)
 for /f "tokens=2 delims=:" %%A in ('adb shell dumpsys SurfaceFlinger ^| grep refresh-rate') do echo 刷新率: %%A
 for /f "tokens=3 delims=: " %%A in ('adb shell wm size') do echo 分辨率：%%A
 for /f "delims=" %%A in ('adb shell settings get system screen_brightness') do echo 亮度: %%A
 for /f "delims=" %%A in ('adb shell getprop ro.build.id') do echo 版本号: %%A
+for /f "delims=" %%A in ('ro.vendor.soc.model.external_name') do (
+	if not %%A=="" ( echo 平台扩展名: %%A )
+)
 
 exit /b
 
 :keyword
-echo "查看温升相关信息"
-echo "thermal_core|thermal IRQ|powerhal"
 echo "查看唤醒锁和唤醒原因"
 echo "All kernel wake locks|All partial wake locks|All wakeup reasons|All screen wake reasons"
 echo "查看系统是否待机"
@@ -160,7 +163,7 @@ echo "wakeup_reason|wakeup alarm|Resume caused by|suspend wake up by|Pending Wak
 echo "查看NTC温度"
 echo adb shell "i=0 ; while [[ $i -lt 50 ]] ; do (type=`cat /sys/class/thermal/thermal_zone$i/type` ; temp=`cat /sys/class/thermal/thermal_zone$i/temp` ; echo "$i $type : $temp"); i=$((i+1));done"
 echo "温升分析"
-echo "DexOptimizer|ThermalInfo:|thermal_core|throttling|mmi_thermal_ratio"
+echo "DexOptimizer|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:"
 echo "others"
 echo "screen_toggled"
 exit /b

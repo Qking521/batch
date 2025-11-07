@@ -1,0 +1,325 @@
+[11388.406219] [ccci1/cif]total cnt=3823;rxq0 isr_cnt=758;rxq1 isr_cnt=95;rxq2 isr_cnt=0;rxq3 isr_cnt=18;rxq4 isr_cnt=2009;rxq5 isr_cnt=944;rxq6 isr_cnt=1;rxq7 isr_cnt=3;rxq8 isr_cnt=0;rxq9 isr_cnt=0;rxq10 isr_cnt=0;rxq11 isr_cnt=0;rxq12 isr_cnt=0;rxq13 isr_cnt=0;rxq14 isr_cnt=0;rxq15 isr_cnt=1;rxq16 isr_cnt=0;rxq17 isr_cnt=0;rxq18 isr_cnt=0;rxq19 isr_cnt=0;rxq20 isr_cnt=0;rxq21 isr_cnt=0;rxq22 isr_cnt=0;rxq23 isr_cnt=0;
+[11388.408126] ufshcd_get_crypto_para with cfg=0x204000
+[11388.408182] Trustonic HWKM: Start programming slot: 0
+[11388.408562] [ccci1/dpmf]dpmaif-txq: 0-3(status=0xf)[2048]: 2048-0-0, 2048-0-0, 2048-0-0, 2048-0-0
+[11388.408585] [ccci1/dpmf]dpmaif-txq pos: w/r/rel=(0,0,0)(0,0,0)(0,0,0)(0,0,0), tx_busy=0,0,0,0, last_isr=0,0,0,0
+[11388.408601] [ccci1/dpmf]dpmaif-rxq0: received:0; q_state=1; budget:16383; w/r=(0,0)
+[11388.411836] Trustonic HWKM: End programing slot: 0
+[11388.411889] ufshcd_get_crypto_para with cfg=0x1204000
+[11388.411904] Trustonic HWKM: Start programming slot: 1
+[11388.413877] Trustonic HWKM: End programing slot: 1
+[11388.413917] ufshcd_get_crypto_para with cfg=0x2204000
+[11388.413930] Trustonic HWKM: Start programming slot: 2
+[11388.415460] Trustonic HWKM: End programing slot: 2
+[11388.415495] ufshcd_get_crypto_para with cfg=0x3204000
+[11388.415506] Trustonic HWKM: Start programming slot: 3
+[11388.417231] Trustonic HWKM: End programing slot: 3
+[11388.428967] healthd: battery l=55 v=4185 t=26.0 h=2 st=2 c=-28900 fc=5310100 cc=0 chg=a
+[11389.940570] [name:spm&][SPM] system_bus wake up by  R12_SYSTIMER, timer_out = 3100, r13 = 0x81041ac0, debug_flag = 0x10000000 0x3, r12 = 0x40000, r12_ext = 0x208a55, raw_sta = 0x0 0x0, req_sta =  0x1f 0x1f000000 0x30 0x3e3e0000 0x0 0x1d0e8 0x0, req = 0x6360200, pcm_flag = 0x190047 0x2400000 0xfc110047 0x2400000, rsv = 0x0 0x0 0x0 0x0 0xffffffff 0xffffffff 0x0 0x0 0x0, debug = 0x0 0xfc110047 0x10001 0x2400000 0x0, wake_misc = 0x180030, isr = 0x0, clk_settle = 0x60fe, 
+[11389.940659] [name:spm&] Pending Wakeup Sources: temporary 11201000.usb0 
+[11390.478541] primary_chg 5-006b: vbus voltage: 4475000
+[11390.478585] get_ibus: get ibus failed: -95
+[11390.478641] get_ibat: get ibat failed: -95
+[11390.478657] Vbat=4196 vbats=0 vbus:4475 ibus:0 I=-13 T=25 uisoc:55 type:usb-h>usb-h pd:5 swchg_ibat:0 cv:4320000
+[11390.478684] mmi_check_typec_conn_temp Error: typec-otp not support
+[11390.478707] mtk_charger_start_timer: alarm timer start:0, 19433 487232216
+[11390.478751] [PEHV]pehv_get_ita_lmt ita(org,throt)=3000(3000,-1)
+[11390.478767] pehv_hal_is_hv_adapter_ready type:0
+[11390.478799] pd_authentication pd type is not snk apdo
+[11390.478811] pe50_hal_is_pd_adapter_ready type:5
+[11390.480934] primary_chg 5-006b: vbus voltage: 4475000
+[11390.480960] [mmi_charger_check_status]batt=4196 mV, -13 mA, 25 C, USB= 4475 mV
+[11390.480979] NORMAL temp zone 3, fv 4530 mV, chg iterm 255 mA
+[11390.480992] [mmi_charger_check_status]FV 4320 mV, FCC 5800 mA
+[11390.481002] [mmi_charger_check_status]Step State = MAX
+[11390.481010] [mmi_charger_check_status]EFFECTIVE: FV = 4320000, CDIS = 0, FCC = 5800000, USBICL = 1500000, DEMO_DISCHARG = 0
+[11390.481023] [mmi_charger_check_status]adaptive charging:disable_ibat = 0, disable_ichg = 0, enable HZ = 0, charging disable = 0
+[11390.481710] bq25980-charger 0-0065: bq25980_is_chg_enabled 0
+[11390.482827] primary_chg 5-006b: vbus voltage: 4475000
+[11390.483443] primary_chg 5-006b: vbus voltage: 4475000
+[11390.483469] tmp:25 (jeita:0 sm:0 cv:0 en:0) (sm:1) en:1 c:0 s:0 ov:0 sc:0 1 1 saf_cmd:-1 bat_mon:0 0
+[11390.483813] [charger_check_status] force disable power path false
+[11390.483832] chg_alg_set_current_limit
+[11390.483876] [PEHV]pehv_get_ita_lmt ita(org,throt)=3000(3000,-1)
+[11390.483890] pehv_hal_is_hv_adapter_ready type:0
+[11390.483907] chg_alg_set_current_limit
+[11390.483937] pd_authentication pd type is not snk apdo
+[11390.483947] pe50_hal_is_pd_adapter_ready type:5
+[11390.483963] chg_alg_set_current_limit
+[11390.483994] m:3 chg1:-1,-1,1500,5800 chg2:-1,-1,0,0 dvchg1:-1 sc:5800000 -1 0 type:6:5 usb_unlimited:0 usbif:0 usbsm:0 aicl:-1 atm:0 bm:0 b:1 fac_c:0
+[11390.484034] do_algorithm is_basic:1, active fast:0
+[11390.486151] pd_authentication pd type is not snk apdo
+[11390.486170] pe50_hal_is_pd_adapter_ready type:5
+[11390.486210] [PEHV]pehv_get_ita_lmt ita(org,throt)=3000(3000,-1)
+[11390.486223] pehv_hal_is_hv_adapter_ready type:0
+[11390.499099] sgm4154x_dump_register: reg[0x00] = 0x0e, reg[0x01] = 0x9a, reg[0x02] = 0x55, reg[0x03] = 0x22, reg[0x04] = 0xa4, reg[0x05] = 0x8f, reg[0x06] = 0xa6, reg[0x07] = 0x0e, reg[0x08] = 0x54, reg[0x09] = 0x00, reg[0x0a] = 0xc3, reg[0x0b] = 0x54, reg[0x0c] = 0x75, reg[0x0d] = 0x01, reg[0x0e] = 0x00, reg[0x0f] = 0x20, reg[0x10] = 0xda, reg[0x11] = 0xb1, reg[0x12] = 0x04, reg[0x13] = 0xad, reg[0x14] = 0xae, reg[0x15] = 0x36, reg[0x16] = 0x26, reg[0x17] = 0x12, reg[0x18] = 0x18, reg[0x19] = 0x00, reg[0x1a] = 0x00, reg[0x1b] = 0x00, reg[0x1c] = 0x00, reg[0x1d] = 0xff, 
+[11390.499465] primary_chg 5-006b: sgm4154x_get_charge_stat: chrg_type:0x40, chrg_stat:0x10
+[11390.499495] [sc]disable_charger: 0
+[11390.499520] get_ibus: get ibus failed: -95
+[11390.499527] [sc1]en:0 t:0,80000,66419,13581 t:3600,9981,-1,-1 c:-13,2000 ibus:0 uisoc: 55,80 s:3000 ans:ignore
+[11390.499893] mmi_charge_rate_check ICL:1500, Rp:500, PD:5, chg_type: 0, Charger Detected: Normal
+[11390.499909] [mmi_get_battery_age]battery age is 10000
+[11390.500485] primary_chg 5-006b: vbus voltage: 4475000
+[11390.500974] [mmi_check_power_info] power_watt = 7W, real_charger_type = 3
+[11390.501871] [mmi_get_battery_age]battery age is 10000
+[11390.503765] [mmi_get_battery_age]battery age is 10000
+[11390.503825] [mmi_get_battery_age]battery age is 10000
+[11390.508865] healthd: battery l=55 v=4196 t=25.0 h=2 st=2 c=-13600 fc=5310100 cc=0 chg=a
+[11390.510497] mmi_charge_rate_check ICL:1500, Rp:500, PD:5, chg_type: 0, Charger Detected: Normal
+[11390.511063] mmi_charge_rate_check ICL:1500, Rp:500, PD:5, chg_type: 0, Charger Detected: Normal
+[11391.694014] mtk-board-ntc 1c023528.thermal-ntc1: board_ntc_get_temp, get default pullupv :184000
+[11391.694093] mtk-board-ntc 1c023528.thermal-ntc1: val=0xbd02, v_in/r_type/r_ntc/t=87698/0/91065/26990
+[11391.694123] mtk-board-ntc 1c023520.thermal-ntc2: board_ntc_get_temp, get default pullupv :184000
+[11391.694145] mtk-board-ntc 1c023520.thermal-ntc2: val=0xbd24, v_in/r_type/r_ntc/t=87889/0/91445/26903
+[11391.694172] mtk-board-ntc 1c02351c.thermal-ntc3: board_ntc_get_temp, get default pullupv :184000
+[11391.694194] mtk-board-ntc 1c02351c.thermal-ntc3: val=0xbcff, v_in/r_type/r_ntc/t=87681/0/91031/26998
+[11391.694258] mtk-board-ntc thermal-ntc9: board_ntc_get_temp, get pullupv :180000
+[11391.694280] mtk-board-ntc thermal-ntc9: val=0x952, v_in/r_type/r_ntc/t=87377/0/94336/26241
+[11391.694335] mtk-board-ntc thermal-ntc8: board_ntc_get_temp, get pullupv :180000
+[11391.694357] mtk-board-ntc thermal-ntc8: val=0x917, v_in/r_type/r_ntc/t=85217/0/89907/27269
+[11392.565514] init 23: ReapLogT PropSet [init.svc.apexd]=[running]19373000 [init.svc_debug_pid.apexd]=[11916]19373002 [debug.traceur.weaken]=[false]19425572 Done
+[11392.728983] perfetto: disabled ftrace
+[11392.756847] timesync boot 19425765367293 sched 11392756841529 android 10-22 18:27:01.379749
+[11392.838566] logd: logdr: UID=9999 GID=9999 PID=1315 b tail=1 logMask=bd pid=0 start=0ns deadline=0ns
+[11392.901639] perfetto: enabled ftrace
+[11393.013457] [ccci1/fsm]poll MD status send msg 0
+[11393.019872] [ccci1/fsm]received MD status response 82f10043
+[11393.020233] [ccci1/fsm]poll MD status wait done 3749
+[11393.084745] BACK_TEMP=26473
+[11393.527638] ufshcd_get_crypto_para with cfg=0x204000
+[11393.527711] Trustonic HWKM: Start programming slot: 0
+[11393.531036] Trustonic HWKM: End programing slot: 0
+[11393.531094] ufshcd_get_crypto_para with cfg=0x1204000
+[11393.531104] Trustonic HWKM: Start programming slot: 1
+[11393.533353] Trustonic HWKM: End programing slot: 1
+[11393.533420] ufshcd_get_crypto_para with cfg=0x2204000
+[11393.533438] Trustonic HWKM: Start programming slot: 2
+[11393.536022] Trustonic HWKM: End programing slot: 2
+[11393.536075] ufshcd_get_crypto_para with cfg=0x3204000
+[11393.536084] Trustonic HWKM: Start programming slot: 3
+[11393.538332] Trustonic HWKM: End programing slot: 3
+[11394.115681] [wdtk] kick watchdog
+[11395.060562] [name:spm&][SPM] system_bus wake up by  R12_SYSTIMER, timer_out = 2443, r13 = 0x81001ac0, debug_flag = 0x10000000 0x3, r12 = 0x40000, r12_ext = 0x208a55, raw_sta = 0x0 0x0, req_sta =  0x1f 0x1f000000 0x30 0x16160000 0x0 0x1f000 0x0, req = 0x6360200, pcm_flag = 0x190047 0x2400000 0xfc110047 0x2400000, rsv = 0x0 0x0 0x0 0x0 0xffffffff 0xffffffff 0x0 0x0 0x0, debug = 0x0 0xfc110047 0x10001 0x2400000 0x0, wake_misc = 0x180030, isr = 0x0, clk_settle = 0x60fe, 
+[11395.060656] [name:spm&] Pending Wakeup Sources: temporary 11201000.usb0 
+[11396.088915] [Hang_Detect] hang_detect thread counts down 2147483647:2147483647, status 0.
+[11397.698608] mtk-board-ntc 1c023528.thermal-ntc1: board_ntc_get_temp, get default pullupv :184000
+[11397.698689] mtk-board-ntc 1c023528.thermal-ntc1: val=0xbcda, v_in/r_type/r_ntc/t=87474/0/90622/27096
+[11397.698862] mtk-board-ntc 1c023528.thermal-ntc1: board_ntc_get_temp, get default pullupv :184000
+[11397.698888] mtk-board-ntc 1c023528.thermal-ntc1: val=0xbcda, v_in/r_type/r_ntc/t=87474/0/90622/27096
+[11397.699036] mtk-board-ntc 1c023520.thermal-ntc2: board_ntc_get_temp, get default pullupv :184000
+[11397.699063] mtk-board-ntc 1c023520.thermal-ntc2: val=0xbd0c, v_in/r_type/r_ntc/t=87754/0/91176/26964
+[11397.699206] mtk-board-ntc 1c02351c.thermal-ntc3: board_ntc_get_temp, get default pullupv :184000
+[11397.699234] mtk-board-ntc 1c02351c.thermal-ntc3: val=0xbcd3, v_in/r_type/r_ntc/t=87434/0/90543/27115
+[11397.699415] mtk-board-ntc thermal-ntc9: board_ntc_get_temp, get pullupv :180000
+[11397.699443] mtk-board-ntc thermal-ntc9: val=0x952, v_in/r_type/r_ntc/t=87377/0/94336/26241
+[11397.699617] mtk-board-ntc thermal-ntc8: board_ntc_get_temp, get pullupv :180000
+[11397.699644] mtk-board-ntc thermal-ntc8: val=0x914, v_in/r_type/r_ntc/t=85107/0/89687/27322
+[11397.699895] mtk-board-ntc 1c023528.thermal-ntc1: board_ntc_get_temp, get default pullupv :184000
+[11397.699924] mtk-board-ntc 1c023528.thermal-ntc1: val=0xbcda, v_in/r_type/r_ntc/t=87474/0/90622/27096
+[11397.700051] mtk-board-ntc 1c023528.thermal-ntc1: board_ntc_get_temp, get default pullupv :184000
+[11397.700077] mtk-board-ntc 1c023528.thermal-ntc1: val=0xbcda, v_in/r_type/r_ntc/t=87474/0/90622/27096
+[11397.700202] mtk-board-ntc 1c023520.thermal-ntc2: board_ntc_get_temp, get default pullupv :184000
+[11397.700228] mtk-board-ntc 1c023520.thermal-ntc2: val=0xbd0c, v_in/r_type/r_ntc/t=87754/0/91176/26964
+[11397.700354] mtk-board-ntc 1c02351c.thermal-ntc3: board_ntc_get_temp, get default pullupv :184000
+[11397.700379] mtk-board-ntc 1c02351c.thermal-ntc3: val=0xbcd3, v_in/r_type/r_ntc/t=87434/0/90543/27115
+[11397.700818] mtk-board-ntc thermal-ntc9: board_ntc_get_temp, get pullupv :180000
+[11397.701010] mtk-board-ntc thermal-ntc8: board_ntc_get_temp, get pullupv :180000
+[11397.740849] perfetto: disabled ftrace
+[11397.759776] perfetto: disabled ftrace
+[11397.799284] init 23: ReapLogT PropSet [debug.atrace.app_0]=[lmkd]19425827 [debug.atrace.app_number]=[1]19425830 [debug.atrace.tags.enableflags]=[0xfffeffe]19425833 [debug.atrace.tags.enableflags]=[0]19430805 Done
+[11397.814243] ufshcd_get_crypto_para with cfg=0x204000
+[11397.814315] Trustonic HWKM: Start programming slot: 0
+[11397.816819] Trustonic HWKM: End programing slot: 0
+[11397.816873] ufshcd_get_crypto_para with cfg=0x1204000
+[11397.816890] Trustonic HWKM: Start programming slot: 1
+[11397.819272] Trustonic HWKM: End programing slot: 1
+[11397.819323] ufshcd_get_crypto_para with cfg=0x2204000
+[11397.819340] Trustonic HWKM: Start programming slot: 2
+[11397.822001] Trustonic HWKM: End programing slot: 2
+[11397.822039] ufshcd_get_crypto_para with cfg=0x3204000
+[11397.822056] Trustonic HWKM: Start programming slot: 3
+[11397.824020] Trustonic HWKM: End programing slot: 3
+[11398.644565] [ccci1/dpmf]dpmaif-txq: 0-3(status=0xf)[2048]: 2048-0-0, 2048-0-0, 2048-0-0, 2048-0-0
+[11398.644584] [ccci1/dpmf]dpmaif-txq pos: w/r/rel=(0,0,0)(0,0,0)(0,0,0)(0,0,0), tx_busy=0,0,0,0, last_isr=0,0,0,0
+[11398.644591] [ccci1/dpmf]dpmaif-rxq0: received:0; q_state=1; budget:16383; w/r=(0,0)
+[11398.646050] [ccci1/cif]total cnt=3824;rxq0 isr_cnt=759;rxq1 isr_cnt=95;rxq2 isr_cnt=0;rxq3 isr_cnt=18;rxq4 isr_cnt=2009;rxq5 isr_cnt=944;rxq6 isr_cnt=1;rxq7 isr_cnt=3;rxq8 isr_cnt=0;rxq9 isr_cnt=0;rxq10 isr_cnt=0;rxq11 isr_cnt=0;rxq12 isr_cnt=0;rxq13 isr_cnt=0;rxq14 isr_cnt=0;rxq15 isr_cnt=1;rxq16 isr_cnt=0;rxq17 isr_cnt=0;rxq18 isr_cnt=0;rxq19 isr_cnt=0;rxq20 isr_cnt=0;rxq21 isr_cnt=0;rxq22 isr_cnt=0;rxq23 isr_cnt=0;
+[11400.180568] [name:spm&][SPM] system_bus wake up by  R12_SYSTIMER, timer_out = 337, r13 = 0x81001ac0, debug_flag = 0x10000000 0x3, r12 = 0x40000, r12_ext = 0x208a55, raw_sta = 0x0 0x0, req_sta =  0x1f 0x1f000000 0x1f0 0x3e3e0000 0x0 0x1d000 0x0, req = 0x6360200, pcm_flag = 0x190047 0x2400000 0xfc110047 0x2400000, rsv = 0x0 0x0 0x0 0x0 0xffffffff 0xffffffff 0x0 0x0 0x0, debug = 0x0 0xfc110047 0x10001 0x2400000 0x0, wake_misc = 0x180030, isr = 0x0, clk_settle = 0x60fe, 
+[11400.180673] [name:spm&] Pending Wakeup Sources: temporary 11201000.usb0 
+[11400.213175] [DLPT] imix_r==0, skip
+[11400.483142] primary_chg 5-006b: vbus voltage: 4475000
+[11400.483186] get_ibus: get ibus failed: -95
+[11400.483231] get_ibat: get ibat failed: -95
+[11400.483238] Vbat=4223 vbats=0 vbus:4475 ibus:0 I=27 T=25 uisoc:55 type:usb-h>usb-h pd:5 swchg_ibat:0 cv:4320000
+[11400.483251] mmi_check_typec_conn_temp Error: typec-otp not support
+[11400.483265] mtk_charger_start_timer: alarm timer start:0, 19443 491790986
+[11400.483296] [PEHV]pehv_get_ita_lmt ita(org,throt)=3000(3000,-1)
+[11400.483304] pehv_hal_is_hv_adapter_ready type:0
+[11400.483327] pd_authentication pd type is not snk apdo
+[11400.483332] pe50_hal_is_pd_adapter_ready type:5
+[11400.485705] primary_chg 5-006b: vbus voltage: 4475000
+[11400.485748] [mmi_charger_check_status]batt=4223 mV, 27 mA, 25 C, USB= 4475 mV
+[11400.485771] NORMAL temp zone 3, fv 4530 mV, chg iterm 255 mA
+[11400.485783] [mmi_charger_check_status]FV 4320 mV, FCC 5800 mA
+[11400.485792] [mmi_charger_check_status]Step State = MAX
+[11400.485800] [mmi_charger_check_status]EFFECTIVE: FV = 4320000, CDIS = 0, FCC = 5800000, USBICL = 1500000, DEMO_DISCHARG = 0
+[11400.485814] [mmi_charger_check_status]adaptive charging:disable_ibat = 0, disable_ichg = 0, enable HZ = 0, charging disable = 0
+[11400.486643] bq25980-charger 0-0065: bq25980_is_chg_enabled 0
+[11400.487282] primary_chg 5-006b: vbus voltage: 4475000
+[11400.487896] primary_chg 5-006b: vbus voltage: 4475000
+[11400.487921] tmp:25 (jeita:0 sm:0 cv:0 en:0) (sm:1) en:1 c:0 s:0 ov:0 sc:0 1 1 saf_cmd:-1 bat_mon:0 0
+[11400.488410] [charger_check_status] force disable power path false
+[11400.488435] chg_alg_set_current_limit
+[11400.488492] [PEHV]pehv_get_ita_lmt ita(org,throt)=3000(3000,-1)
+[11400.488649] pehv_hal_is_hv_adapter_ready type:0
+[11400.488682] chg_alg_set_current_limit
+[11400.488725] pd_authentication pd type is not snk apdo
+[11400.488738] pe50_hal_is_pd_adapter_ready type:5
+[11400.488756] chg_alg_set_current_limit
+[11400.488795] m:3 chg1:-1,-1,1500,5800 chg2:-1,-1,0,0 dvchg1:-1 sc:5800000 -1 0 type:6:5 usb_unlimited:0 usbif:0 usbsm:0 aicl:-1 atm:0 bm:0 b:1 fac_c:0
+[11400.488834] do_algorithm is_basic:1, active fast:0
+[11400.491364] pd_authentication pd type is not snk apdo
+[11400.491406] pe50_hal_is_pd_adapter_ready type:5
+[11400.491476] [PEHV]pehv_get_ita_lmt ita(org,throt)=3000(3000,-1)
+[11400.491493] pehv_hal_is_hv_adapter_ready type:0
+[11400.504150] sgm4154x_dump_register: reg[0x00] = 0x0e, reg[0x01] = 0x9a, reg[0x02] = 0x55, reg[0x03] = 0x22, reg[0x04] = 0xa4, reg[0x05] = 0x8f, reg[0x06] = 0xa6, reg[0x07] = 0x0e, reg[0x08] = 0x54, reg[0x09] = 0x00, reg[0x0a] = 0xc3, reg[0x0b] = 0x54, reg[0x0c] = 0x75, reg[0x0d] = 0x01, reg[0x0e] = 0x00, reg[0x0f] = 0x20, reg[0x10] = 0xda, reg[0x11] = 0xb1, reg[0x12] = 0x04, reg[0x13] = 0xad, reg[0x14] = 0xae, reg[0x15] = 0x36, reg[0x16] = 0x26, reg[0x17] = 0x11, reg[0x18] = 0x17, reg[0x19] = 0x00, reg[0x1a] = 0x00, reg[0x1b] = 0x00, reg[0x1c] = 0x00, reg[0x1d] = 0xff, 
+[11400.504631] primary_chg 5-006b: sgm4154x_get_charge_stat: chrg_type:0x40, chrg_stat:0x10
+[11400.504687] [sc]disable_charger: 0
+[11400.504715] get_ibus: get ibus failed: -95
+[11400.504723] [sc1]en:0 t:0,80000,66429,13571 t:3600,9971,-1,-1 c:27,2000 ibus:0 uisoc: 55,80 s:3000 ans:ignore
+[11400.505287] mmi_charge_rate_check ICL:1500, Rp:500, PD:5, chg_type: 0, Charger Detected: Normal
+[11400.505326] [mmi_get_battery_age]battery age is 10000
+[11400.506047] primary_chg 5-006b: vbus voltage: 4475000
+[11400.506382] [mmi_check_power_info] power_watt = 7W, real_charger_type = 3
+[11400.507332] [mmi_get_battery_age]battery age is 10000
+[11400.509358] [mmi_get_battery_age]battery age is 10000
+[11400.509474] [mmi_get_battery_age]battery age is 10000
+[11400.516046] mmi_charge_rate_check ICL:1500, Rp:500, PD:5, chg_type: 0, Charger Detected: Normal
+[11400.516806] healthd: battery l=55 v=4223 t=25.0 h=2 st=2 c=-19800 fc=5310100 cc=0 chg=a
+[11400.517127] mmi_charge_rate_check ICL:1500, Rp:500, PD:5, chg_type: 0, Charger Detected: Normal
+[11401.046901] apexd: getSessions() received by ApexService
+[11401.198147] [wdk-c] cpu=7 o_k=7 lbit=0x80 cbit=0xff,7f,7,1,379749539,ff,2266783,129985,2266924,134140,[11401198136549,15000000] 23 ffffffff
+[11401.198163] [wdk-c] cpu=6 o_k=6 lbit=0xc0 cbit=0xff,3f,7,1,379749539,ff,2266783,129985,2266924,134140,[11401198155011,14999955] 23 ffffffff
+[11401.198167] wdt_dump_cntcv CPU:7 CNTCV_CTL:1 CNTCV_TVAL:7853 CNTVCT:3ae134f9ff SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:3ae134f9fc
+[11401.198173] wdt_dump_cntcv CPU:6 CNTCV_CTL:1 CNTCV_TVAL:77a4 CNTVCT:3ae134faaf SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:3ae134faac
+[11401.198290] [wdk-c] cpu=1 o_k=1 lbit=0xc2 cbit=0xff,3d,7,1,379749539,ff,2266783,129985,2266924,134140,[11401198275011,14999838] 23 ffffffff
+[11401.198306] wdt_dump_cntcv CPU:1 CNTCV_CTL:1 CNTCV_TVAL:42e60 CNTVCT:3ae134fe44 SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:3ae134fe3c
+[11401.198316] [wdk-c] cpu=2 o_k=2 lbit=0xc6 cbit=0xff,39,7,1,379749539,ff,2266783,129985,2266924,134140,[11401198300934,14999812] 23 ffffffff
+[11401.198333] wdt_dump_cntcv CPU:2 CNTCV_CTL:0 CNTCV_TVAL:1ae6fa4a CNTVCT:3ae134fc37 SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:3ae134fc2f
+[11401.198342] [wdk-c] cpu=3 o_k=3 lbit=0xce cbit=0xff,31,7,1,379749539,ff,2266783,129985,2266924,134140,[11401198326703,14999786] 23 ffffffff
+[11401.198360] wdt_dump_cntcv CPU:3 CNTCV_CTL:0 CNTCV_TVAL:ebbb99c0 CNTVCT:3ae134fd0c SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:3ae134fd04
+[11401.198368] [wdk-c] cpu=4 o_k=4 lbit=0xde cbit=0xff,21,7,1,379749539,ff,2266783,129985,2266924,134140,[11401198352857,14999760] 23 ffffffff
+[11401.198384] wdt_dump_cntcv CPU:4 CNTCV_CTL:0 CNTCV_TVAL:2d94cf9a CNTVCT:3ae134fde3 SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:3ae134fddb
+[11401.198394] [wdk-c] cpu=5 o_k=5 lbit=0xfe cbit=0xff,1,7,1,379749539,ff,2266783,129985,2266924,134140,[11401198378703,14999734] 23 ffffffff
+[11401.198411] wdt_dump_cntcv CPU:5 CNTCV_CTL:0 CNTCV_TVAL:878fd1d4 CNTVCT:3ae134fee3 SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:3ae134fedb
+[11401.201388] [thread:112] 2025-10-22 18:27:09.824290 UTC;android time 2025-10-22 18:27:09.824290
+[11401.205359] [wdk-k] cpu=0 o_k=0 lbit=0xff cbit=0xff,0,7,1,379749539,ff,2266783,129985,2266924,134140,[11401201366088,14996749] 23 ffffffff
+[11401.205374] wdt_dump_cntcv CPU:0 CNTCV_CTL:1 CNTCV_TVAL:76f4 CNTVCT:3ae134fb5f SYST_CNTCR:4490d SYST_DISTL:0 SYST_CNTCV:3ae134fb54
+[11402.996828] timesync boot 19436005348755 sched 11402996823015 android 10-22 18:27:11.619730
+[11403.097988] BACK_TEMP=26462
+[11403.702829] mtk-board-ntc 1c023528.thermal-ntc1: board_ntc_get_temp, get default pullupv :184000
+[11403.702910] mtk-board-ntc 1c023528.thermal-ntc1: val=0xbccc, v_in/r_type/r_ntc/t=87395/0/90466/27134
+[11403.702942] mtk-board-ntc 1c023520.thermal-ntc2: board_ntc_get_temp, get default pullupv :184000
+[11403.702964] mtk-board-ntc 1c023520.thermal-ntc2: val=0xbd04, v_in/r_type/r_ntc/t=87709/0/91087/26985
+[11403.702991] mtk-board-ntc 1c02351c.thermal-ntc3: board_ntc_get_temp, get default pullupv :184000
+[11403.703012] mtk-board-ntc 1c02351c.thermal-ntc3: val=0xbcc1, v_in/r_type/r_ntc/t=87333/0/90344/27163
+[11403.703078] mtk-board-ntc thermal-ntc9: board_ntc_get_temp, get pullupv :180000
+[11403.703101] mtk-board-ntc thermal-ntc9: val=0x950, v_in/r_type/r_ntc/t=87304/0/94183/26276
+[11403.703157] mtk-board-ntc thermal-ntc8: board_ntc_get_temp, get pullupv :180000
+[11403.703178] mtk-board-ntc thermal-ntc8: val=0x913, v_in/r_type/r_ntc/t=85070/0/89613/27340
+[11405.300570] [name:spm&][SPM] system_bus wake up by  R12_SYSTIMER, timer_out = 479, r13 = 0x81241ac0, debug_flag = 0x10000000 0x3, r12 = 0x40000, r12_ext = 0x200a55, raw_sta = 0x0 0x0, req_sta =  0x1f 0x1f000000 0x222030 0x2020000 0x0 0x1d0e8 0x0, req = 0x6360200, pcm_flag = 0x190047 0x2400000 0xfc110047 0x2400000, rsv = 0x0 0x0 0x0 0x0 0xffffffff 0xffffffff 0x0 0x0 0x0, debug = 0x0 0xfc110047 0x10001 0x2400000 0x0, wake_misc = 0x180030, isr = 0x0, clk_settle = 0x60fe, 
+[11405.300660] [name:spm&] Pending Wakeup Sources: temporary 11201000.usb0 
+[11408.117139] [ccci1/fsm]poll MD status send msg 0
+[11408.123697] [ccci1/fsm]received MD status response 82f20043
+[11408.124021] [ccci1/fsm]poll MD status wait done 3749
+[11408.884550] [ccci1/dpmf]dpmaif-txq: 0-3(status=0xf)[2048]: 2048-0-0, 2048-0-0, 2048-0-0, 2048-0-0
+[11408.884569] [ccci1/dpmf]dpmaif-txq pos: w/r/rel=(0,0,0)(0,0,0)(0,0,0)(0,0,0), tx_busy=0,0,0,0, last_isr=0,0,0,0
+[11408.884576] [ccci1/dpmf]dpmaif-rxq0: received:0; q_state=1; budget:16383; w/r=(0,0)
+[11408.885490] [ccci1/cif]total cnt=3825;rxq0 isr_cnt=760;rxq1 isr_cnt=95;rxq2 isr_cnt=0;rxq3 isr_cnt=18;rxq4 isr_cnt=2009;rxq5 isr_cnt=944;rxq6 isr_cnt=1;rxq7 isr_cnt=3;rxq8 isr_cnt=0;rxq9 isr_cnt=0;rxq10 isr_cnt=0;rxq11 isr_cnt=0;rxq12 isr_cnt=0;rxq13 isr_cnt=0;rxq14 isr_cnt=0;rxq15 isr_cnt=1;rxq16 isr_cnt=0;rxq17 isr_cnt=0;rxq18 isr_cnt=0;rxq19 isr_cnt=0;rxq20 isr_cnt=0;rxq21 isr_cnt=0;rxq22 isr_cnt=0;rxq23 isr_cnt=0;
+[11408.887137] ufshcd_get_crypto_para with cfg=0x204000
+[11408.887199] Trustonic HWKM: Start programming slot: 0
+[11408.889156] Trustonic HWKM: End programing slot: 0
+[11408.889209] ufshcd_get_crypto_para with cfg=0x1204000
+[11408.889227] Trustonic HWKM: Start programming slot: 1
+[11408.891046] Trustonic HWKM: End programing slot: 1
+[11408.891102] ufshcd_get_crypto_para with cfg=0x2204000
+[11408.891120] Trustonic HWKM: Start programming slot: 2
+[11408.892412] Trustonic HWKM: End programing slot: 2
+[11408.892457] ufshcd_get_crypto_para with cfg=0x3204000
+[11408.892474] Trustonic HWKM: Start programming slot: 3
+[11408.893985] Trustonic HWKM: End programing slot: 3
+[11409.616895] [wdtk] kick watchdog
+[11409.706392] mtk-board-ntc 1c023528.thermal-ntc1: board_ntc_get_temp, get default pullupv :184000
+[11409.706473] mtk-board-ntc 1c023528.thermal-ntc1: val=0xbc6a, v_in/r_type/r_ntc/t=86845/0/89388/27394
+[11409.706647] mtk-board-ntc 1c023528.thermal-ntc1: board_ntc_get_temp, get default pullupv :184000
+[11409.706673] mtk-board-ntc 1c023528.thermal-ntc1: val=0xbc6a, v_in/r_type/r_ntc/t=86845/0/89388/27394
+[11409.706816] mtk-board-ntc 1c023520.thermal-ntc2: board_ntc_get_temp, get default pullupv :184000
+[11409.706844] mtk-board-ntc 1c023520.thermal-ntc2: val=0xbceb, v_in/r_type/r_ntc/t=87569/0/90810/27051
+[11409.706983] mtk-board-ntc 1c02351c.thermal-ntc3: board_ntc_get_temp, get default pullupv :184000
+[11409.707012] mtk-board-ntc 1c02351c.thermal-ntc3: val=0xbc61, v_in/r_type/r_ntc/t=86794/0/89288/27418
+[11409.707197] mtk-board-ntc thermal-ntc9: board_ntc_get_temp, get pullupv :180000
+[11409.707224] mtk-board-ntc thermal-ntc9: val=0x94f, v_in/r_type/r_ntc/t=87268/0/94107/26294
+[11409.707398] mtk-board-ntc thermal-ntc8: board_ntc_get_temp, get pullupv :180000
+[11409.707425] mtk-board-ntc thermal-ntc8: val=0x910, v_in/r_type/r_ntc/t=84960/0/89393/27393
+[11409.707725] mtk-board-ntc 1c023528.thermal-ntc1: board_ntc_get_temp, get default pullupv :184000
+[11409.707754] mtk-board-ntc 1c023528.thermal-ntc1: val=0xbc6a, v_in/r_type/r_ntc/t=86845/0/89388/27394
+[11409.707884] mtk-board-ntc 1c023528.thermal-ntc1: board_ntc_get_temp, get default pullupv :184000
+[11409.707911] mtk-board-ntc 1c023528.thermal-ntc1: val=0xbc6a, v_in/r_type/r_ntc/t=86845/0/89388/27394
+[11409.708039] mtk-board-ntc 1c023520.thermal-ntc2: board_ntc_get_temp, get default pullupv :184000
+[11409.708065] mtk-board-ntc 1c023520.thermal-ntc2: val=0xbceb, v_in/r_type/r_ntc/t=87569/0/90810/27051
+[11409.708191] mtk-board-ntc 1c02351c.thermal-ntc3: board_ntc_get_temp, get default pullupv :184000
+[11409.708217] mtk-board-ntc 1c02351c.thermal-ntc3: val=0xbc61, v_in/r_type/r_ntc/t=86794/0/89288/27418
+[11409.708374] mtk-board-ntc thermal-ntc9: board_ntc_get_temp, get pullupv :180000
+[11409.708772] mtk-board-ntc thermal-ntc8: board_ntc_get_temp, get pullupv :180000
+[11410.448607] [name:spm&][SPM] system_bus wake up by  R12_SYSTIMER, timer_out = 2576, r13 = 0x81001ac0, debug_flag = 0x10000000 0x3, r12 = 0x40000, r12_ext = 0x208a55, raw_sta = 0x0 0x0, req_sta =  0x1f 0x1f000000 0x30 0x3e3e0000 0x0 0x1f000 0x0, req = 0x6360200, pcm_flag = 0x190047 0x2400000 0xfc110047 0x2400000, rsv = 0x0 0x0 0x0 0x0 0xffffffff 0xffffffff 0x0 0x0 0x0, debug = 0x0 0xfc110047 0x10001 0x2400000 0x0, wake_misc = 0x180030, isr = 0x0, clk_settle = 0x60fe, 
+[11410.448743] [name:spm&] Pending Wakeup Sources: temporary 11201000.usb0 
+[11410.490497] primary_chg 5-006b: vbus voltage: 4494000
+[11410.490548] get_ibus: get ibus failed: -95
+[11410.490602] get_ibat: get ibat failed: -95
+[11410.490618] Vbat=4254 vbats=0 vbus:4494 ibus:0 I=92 T=25 uisoc:55 type:usb-h>usb-h pd:5 swchg_ibat:0 cv:4320000
+[11410.490647] mmi_check_typec_conn_temp Error: typec-otp not support
+[11410.490671] mtk_charger_start_timer: alarm timer start:0, 19453 499197063
+[11410.490715] [PEHV]pehv_get_ita_lmt ita(org,throt)=3000(3000,-1)
+[11410.490731] pehv_hal_is_hv_adapter_ready type:0
+[11410.490762] pd_authentication pd type is not snk apdo
+[11410.490773] pe50_hal_is_pd_adapter_ready type:5
+[11410.493000] primary_chg 5-006b: vbus voltage: 4484000
+[11410.493020] [mmi_charger_check_status]batt=4254 mV, 92 mA, 25 C, USB= 4484 mV
+[11410.493040] NORMAL temp zone 3, fv 4530 mV, chg iterm 255 mA
+[11410.493051] [mmi_charger_check_status]FV 4320 mV, FCC 5800 mA
+[11410.493060] [mmi_charger_check_status]Step State = MAX
+[11410.493068] [mmi_charger_check_status]EFFECTIVE: FV = 4320000, CDIS = 0, FCC = 5800000, USBICL = 1500000, DEMO_DISCHARG = 0
+[11410.493081] [mmi_charger_check_status]adaptive charging:disable_ibat = 0, disable_ichg = 0, enable HZ = 0, charging disable = 0
+[11410.494159] bq25980-charger 0-0065: bq25980_is_chg_enabled 0
+[11410.494984] primary_chg 5-006b: vbus voltage: 4484000
+[11410.495596] primary_chg 5-006b: vbus voltage: 4484000
+[11410.495614] tmp:25 (jeita:0 sm:0 cv:0 en:0) (sm:1) en:1 c:0 s:0 ov:0 sc:0 1 1 saf_cmd:-1 bat_mon:0 0
+[11410.496055] [charger_check_status] force disable power path false
+[11410.496073] chg_alg_set_current_limit
+[11410.496107] [PEHV]pehv_get_ita_lmt ita(org,throt)=3000(3000,-1)
+[11410.496120] pehv_hal_is_hv_adapter_ready type:0
+[11410.496137] chg_alg_set_current_limit
+[11410.496161] pd_authentication pd type is not snk apdo
+[11410.496170] pe50_hal_is_pd_adapter_ready type:5
+[11410.496186] chg_alg_set_current_limit
+[11410.496215] m:3 chg1:-1,-1,1500,5800 chg2:-1,-1,0,0 dvchg1:-1 sc:5800000 -1 0 type:6:5 usb_unlimited:0 usbif:0 usbsm:0 aicl:-1 atm:0 bm:0 b:1 fac_c:0
+[11410.496253] do_algorithm is_basic:1, active fast:0
+[11410.498306] pd_authentication pd type is not snk apdo
+[11410.498320] pe50_hal_is_pd_adapter_ready type:5
+[11410.498355] [PEHV]pehv_get_ita_lmt ita(org,throt)=3000(3000,-1)
+[11410.498367] pehv_hal_is_hv_adapter_ready type:0
+[11410.526433] sgm4154x_dump_register: reg[0x00] = 0x0e, reg[0x01] = 0x9a, reg[0x02] = 0x55, reg[0x03] = 0x22, reg[0x04] = 0xa4, reg[0x05] = 0x8f, reg[0x06] = 0xa6, reg[0x07] = 0x0e, reg[0x08] = 0x54, reg[0x09] = 0x00, reg[0x0a] = 0xc3, reg[0x0b] = 0x54, reg[0x0c] = 0x75, reg[0x0d] = 0x01, reg[0x0e] = 0x00, reg[0x0f] = 0x20, reg[0x10] = 0xda, reg[0x11] = 0xb1, reg[0x12] = 0x04, reg[0x13] = 0xb3, reg[0x14] = 0xb4, reg[0x15] = 0x36, reg[0x16] = 0x26, reg[0x17] = 0x17, reg[0x18] = 0x17, reg[0x19] = 0x00, reg[0x1a] = 0x00, reg[0x1b] = 0x00, reg[0x1c] = 0x00, reg[0x1d] = 0xff, 
+[11410.526903] primary_chg 5-006b: sgm4154x_get_charge_stat: chrg_type:0x40, chrg_stat:0x10
+[11410.526945] [sc]disable_charger: 0
+[11410.526981] get_ibus: get ibus failed: -95
+[11410.526998] [sc1]en:0 t:0,80000,66439,13561 t:3600,9961,-1,-1 c:92,2000 ibus:0 uisoc: 55,80 s:3000 ans:ignore
+[11410.527436] mmi_charge_rate_check ICL:1500, Rp:500, PD:5, chg_type: 0, Charger Detected: Normal
+[11410.527468] [mmi_get_battery_age]battery age is 10000
+[11410.528843] primary_chg 5-006b: vbus voltage: 4484000
+[11410.529411] [mmi_check_power_info] power_watt = 7W, real_charger_type = 3
+[11410.530606] [mmi_get_battery_age]battery age is 10000
+[11410.533103] [mmi_get_battery_age]battery age is 10000
+[11410.533196] [mmi_get_battery_age]battery age is 10000
+[11410.540080] mmi_charge_rate_check ICL:1500, Rp:500, PD:5, chg_type: 0, Charger Detected: Normal
+[11410.541374] mmi_charge_rate_check ICL:1500, Rp:500, PD:5, chg_type: 0, Charger Detected: Normal
+[11410.542327] healthd: battery l=55 v=4254 t=25.0 h=2 st=2 c=84500 fc=5310100 cc=0 chg=a
+[11410.577559] logd: logdr: UID=0 GID=0 PID=12146 n tail=0 logMask=bf pid=0 start=0ns deadline=0ns

@@ -1,0 +1,1317 @@
+[android]
+[android.auto_generated_rro_product__]
+[android.auto_generated_rro_vendor__]
+  path: /vendor/overlay/framework-res__auto_generated_rro_vendor.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[android.autoinstalls.config.motorola.layout]
+  path: /product/app/PlayAutoInstallConfig/PlayAutoInstallConfig.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@PlayAutoInstallConfig@PlayAutoInstallConfig.apk@classes.dex]
+[com.amazon.appmanager]
+  path: /product/priv-app/AmazonAppManager/AmazonAppManager.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@AmazonAppManager@AmazonAppManager.apk@classes.dex]
+[com.android.DeviceAsWebcam]
+  path: /system/priv-app/DeviceAsWebcam/DeviceAsWebcam.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@DeviceAsWebcam@DeviceAsWebcam.apk@classes.dex]
+[com.android.avatarpicker]
+  path: /system_ext/priv-app/AvatarPicker/AvatarPicker.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@AvatarPicker@AvatarPicker.apk@classes.vdex]
+[com.android.backupconfirm]
+  path: /system/priv-app/BackupRestoreConfirmation/BackupRestoreConfirmation.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@BackupRestoreConfirmation@BackupRestoreConfirmation.apk@classes.dex]
+[com.android.bips]
+  path: /system/priv-app/BuiltInPrintService/BuiltInPrintService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@BuiltInPrintService@BuiltInPrintService.apk@classes.dex]
+[com.android.bluetooth]
+  path: /apex/com.android.bt/app/Bluetooth@W2WI36M.18/Bluetooth.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.bt@app@Bluetooth@W2WI36M.18@Bluetooth.apk@classes.dex]
+[com.android.bluetoothmidiservice]
+  path: /system/app/BluetoothMidiService/BluetoothMidiService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@BluetoothMidiService@BluetoothMidiService.apk@classes.dex]
+[com.android.bookmarkprovider]
+  path: /system/app/BookmarkProvider/BookmarkProvider.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@BookmarkProvider@BookmarkProvider.apk@classes.dex]
+[com.android.calllogbackup]
+  path: /system/priv-app/CallLogBackup/CallLogBackup.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@CallLogBackup@CallLogBackup.apk@classes.dex]
+[com.android.cameraextensions]
+  path: /system/app/CameraExtensionsProxy/CameraExtensionsProxy.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@CameraExtensionsProxy@CameraExtensionsProxy.apk@classes.vdex]
+[com.android.carrierdefaultapp]
+  path: /system/app/CarrierDefaultApp/CarrierDefaultApp.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@CarrierDefaultApp@CarrierDefaultApp.apk@classes.dex]
+[com.android.cellbroadcast.overlay]
+[com.android.cellbroadcastreceiver]
+  path: /system/priv-app/CellBroadcastLegacyApp/CellBroadcastLegacyApp.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@CellBroadcastLegacyApp@CellBroadcastLegacyApp.apk@classes.dex]
+[com.android.cellbroadcastservice.overlay]
+[com.android.certinstaller]
+  path: /system/app/CertInstaller/CertInstaller.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@CertInstaller@CertInstaller.apk@classes.dex]
+[com.android.chrome]
+  path: /product/app/Chrome64/Chrome64.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@Chrome64@Chrome64.apk@classes.vdex]
+[com.android.companiondevicemanager]
+  path: /system/app/CompanionDeviceManager/CompanionDeviceManager.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@CompanionDeviceManager@CompanionDeviceManager.apk@classes.dex]
+[com.android.credentialmanager]
+  path: /system/priv-app/CredentialManager/CredentialManager.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@CredentialManager@CredentialManager.apk@classes.dex]
+[com.android.cts.ctsshim]
+[com.android.cts.priv.ctsshim]
+[com.android.devicediagnostics]
+  path: /system/priv-app/DeviceDiagnostics/DeviceDiagnostics.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@DeviceDiagnostics@DeviceDiagnostics.apk@classes.dex]
+[com.android.devicelockcontroller]
+  path: /apex/com.android.devicelock/priv-app/DeviceLockController@W2WI36M.18/DeviceLockController.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.devicelock@priv-app@DeviceLockController@W2WI36M.18@DeviceLockController.apk@classes.dex]
+[com.android.dialer.overlay.imei]
+[com.android.dreams.basic]
+  path: /system/app/BasicDreams/BasicDreams.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@BasicDreams@BasicDreams.apk@classes.dex]
+[com.android.dynsystem]
+  path: /system/priv-app/DynamicSystemInstallationService/DynamicSystemInstallationService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@DynamicSystemInstallationService@DynamicSystemInstallationService.apk@classes.dex]
+[com.android.egg]
+  path: /system/app/EasterEgg/EasterEgg.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@EasterEgg@EasterEgg.apk@classes.dex]
+[com.android.emergency]
+  path: /system_ext/priv-app/EmergencyInfoGms/EmergencyInfoGms.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@EmergencyInfoGms@EmergencyInfoGms.apk@classes.dex]
+[com.android.externalstorage]
+  path: /system/priv-app/ExternalStorageProvider/ExternalStorageProvider.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@ExternalStorageProvider@ExternalStorageProvider.apk@classes.dex]
+[com.android.hotwordenrollment.okgoogle]
+  path: /product/priv-app/HotwordEnrollmentOKGoogleRISCV/HotwordEnrollmentOKGoogleRISCV.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@HotwordEnrollmentOKGoogleRISCV@HotwordEnrollmentOKGoogleRISCV.apk@classes.dex]
+[com.android.hotwordenrollment.xgoogle]
+  path: /product/priv-app/HotwordEnrollmentXGoogleRISCV/HotwordEnrollmentXGoogleRISCV.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@HotwordEnrollmentXGoogleRISCV@HotwordEnrollmentXGoogleRISCV.apk@classes.dex]
+[com.android.htmlviewer]
+  path: /system/app/HTMLViewer/HTMLViewer.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@HTMLViewer@HTMLViewer.apk@classes.dex]
+[com.android.imsserviceentitlement]
+  path: /product/priv-app/ImsServiceEntitlement/ImsServiceEntitlement.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@ImsServiceEntitlement@ImsServiceEntitlement.apk@classes.dex]
+[com.android.inputdevices]
+  path: /system/priv-app/InputDevices/InputDevices.apk
+    arm64: [status=speed] [reason=prebuilt] [primary-abi]
+      [location is /system/priv-app/InputDevices/oat/arm64/InputDevices.odex]
+[com.android.intentresolver]
+  path: /system/priv-app/IntentResolver/IntentResolver.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@IntentResolver@IntentResolver.apk@classes.dex]
+[com.android.internal.display.cutout.emulation.corner]
+[com.android.internal.display.cutout.emulation.double]
+[com.android.internal.display.cutout.emulation.hole]
+[com.android.internal.display.cutout.emulation.noCutout]
+[com.android.internal.display.cutout.emulation.tall]
+[com.android.internal.display.cutout.emulation.waterfall]
+[com.android.internal.systemui.navbar.gestural]
+[com.android.internal.systemui.navbar.hidegestural]
+[com.android.internal.systemui.navbar.threebutton]
+[com.android.internal.systemui.navbar.transparent]
+[com.android.keychain]
+  path: /system/app/KeyChain/KeyChain.apk
+    arm64: [status=speed] [reason=prebuilt] [primary-abi]
+      [location is /system/app/KeyChain/oat/arm64/KeyChain.odex]
+[com.android.localtransport]
+  path: /system/priv-app/LocalTransport/LocalTransport.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@LocalTransport@LocalTransport.apk@classes.dex]
+[com.android.location.fused]
+  path: /system/priv-app/FusedLocation/FusedLocation.apk
+    arm64: [status=speed] [reason=prebuilt] [primary-abi]
+      [location is /system/priv-app/FusedLocation/oat/arm64/FusedLocation.odex]
+[com.android.managedprovisioning]
+  path: /system/priv-app/ManagedProvisioning/ManagedProvisioning.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@ManagedProvisioning@ManagedProvisioning.apk@classes.dex]
+[com.android.mms.service]
+  path: /system/priv-app/MmsService/MmsService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@MmsService@MmsService.apk@classes.dex]
+[com.android.mtp]
+  path: /system/priv-app/MtpService/MtpService.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@MtpService@MtpService.apk@classes.dex]
+    used by other apps: [com.android.providers.downloads (isa=arm64)]
+[com.android.networkstack.inprocess.overlay]
+[com.android.networkstack.overlay]
+[com.android.networkstack.tethering.inprocess.overlay]
+[com.android.networkstack.tethering.overlay]
+[com.android.nfc]
+  path: /apex/com.android.nfcservices/priv-app/NfcNciApex@W2WI36M.18/NfcNciApex.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.nfcservices@priv-app@NfcNciApex@W2WI36M.18@NfcNciApex.apk@classes.dex]
+[com.android.nfc.overlay]
+[com.android.ons]
+  path: /system/priv-app/ONS/ONS.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@ONS@ONS.apk@classes.dex]
+    used by other apps: [com.android.phone (isa=arm64)]
+[com.android.pacprocessor]
+  path: /system/app/PacProcessor/PacProcessor.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@PacProcessor@PacProcessor.apk@classes.dex]
+[com.android.phone]
+  path: /system/priv-app/TeleService/TeleService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@TeleService@TeleService.apk@classes.dex]
+[com.android.phone.overlay.carriersettings]
+[com.android.phone.overlay.common]
+  path: /product/overlay/TelephonyResCommonMtk.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.android.phone.overlay.motcommon]
+[com.android.phone.overlay.noHAC]
+[com.android.printspooler]
+  path: /system/app/PrintSpooler/PrintSpooler.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@PrintSpooler@PrintSpooler.apk@classes.dex]
+[com.android.providers.blockednumber]
+  path: /system/priv-app/BlockedNumberProvider/BlockedNumberProvider.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@BlockedNumberProvider@BlockedNumberProvider.apk@classes.dex]
+    used by other apps: [com.android.providers.contacts (isa=arm64), com.android.providers.userdictionary (isa=arm64)]
+[com.android.providers.calendar]
+  path: /system/priv-app/CalendarProvider/CalendarProvider.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@CalendarProvider@CalendarProvider.apk@classes.dex]
+[com.android.providers.contactkeys]
+  path: /system/priv-app/E2eeContactKeysProvider/E2eeContactKeysProvider.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@E2eeContactKeysProvider@E2eeContactKeysProvider.apk@classes.dex]
+    used by other apps: [com.android.providers.contacts (isa=arm64), com.android.providers.userdictionary (isa=arm64)]
+[com.android.providers.contacts]
+  path: /system/priv-app/ContactsProvider/ContactsProvider.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@ContactsProvider@ContactsProvider.apk@classes.dex]
+    used by other apps: [com.android.providers.blockednumber (isa=arm64), com.android.providers.userdictionary (isa=arm64)]
+[com.android.providers.downloads]
+  path: /system/priv-app/DownloadProvider/DownloadProvider.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@DownloadProvider@DownloadProvider.apk@classes.dex]
+    used by other apps: [com.android.mtp (isa=arm64)]
+[com.android.providers.downloads.ui]
+  path: /system/priv-app/DownloadProviderUi/DownloadProviderUi.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@DownloadProviderUi@DownloadProviderUi.apk@classes.dex]
+[com.android.providers.media]
+  path: /system/priv-app/MediaProviderLegacy/MediaProviderLegacy.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@MediaProviderLegacy@MediaProviderLegacy.apk@classes.dex]
+    used by other apps: [com.android.mtp (isa=arm64), com.android.providers.downloads (isa=arm64)]
+[com.android.providers.partnerbookmarks]
+  path: /system/priv-app/PartnerBookmarksProvider/PartnerBookmarksProvider.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@PartnerBookmarksProvider@PartnerBookmarksProvider.apk@classes.dex]
+[com.android.providers.settings]
+  path: /system/priv-app/SettingsProvider/SettingsProvider.apk
+    arm64: [status=speed] [reason=prebuilt] [primary-abi]
+      [location is /system/priv-app/SettingsProvider/oat/arm64/SettingsProvider.odex]
+[com.android.providers.settings.auto_generated_rro_product__]
+[com.android.providers.telephony]
+  path: /system/priv-app/TelephonyProvider/TelephonyProvider.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@TelephonyProvider@TelephonyProvider.apk@classes.dex]
+    used by other apps: [com.android.phone (isa=arm64)]
+[com.android.providers.telephony.overlay.carriersettings]
+[com.android.providers.userdictionary]
+  path: /system/priv-app/UserDictionaryProvider/UserDictionaryProvider.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@UserDictionaryProvider@UserDictionaryProvider.apk@classes.dex]
+    used by other apps: [com.android.providers.contacts (isa=arm64)]
+[com.android.proxyhandler]
+  path: /system/priv-app/ProxyHandler/ProxyHandler.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@ProxyHandler@ProxyHandler.apk@classes.dex]
+[com.android.role.notes.enabled]
+[com.android.se]
+  path: /system/app/SecureElement/SecureElement.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@SecureElement@SecureElement.apk@classes.dex]
+[com.android.server.telecom]
+  path: /system/priv-app/Telecom/Telecom.apk
+    arm64: [status=speed] [reason=prebuilt] [primary-abi]
+      [location is /system/priv-app/Telecom/oat/arm64/Telecom.odex]
+[com.android.settings]
+  path: /system_ext/priv-app/SettingsMoto/SettingsMoto.apk
+    arm64: [status=speed] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@SettingsMoto@SettingsMoto.apk@classes.dex]
+[com.android.settings.intelligence]
+  path: /product/priv-app/SettingsIntelligence/SettingsIntelligence.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@SettingsIntelligence@SettingsIntelligence.apk@classes.dex]
+[com.android.sharedstoragebackup]
+  path: /system/priv-app/SharedStorageBackup/SharedStorageBackup.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@SharedStorageBackup@SharedStorageBackup.apk@classes.dex]
+[com.android.shell]
+  path: /system/priv-app/Shell/Shell.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@Shell@Shell.apk@classes.dex]
+[com.android.simappdialog]
+  path: /system/app/SimAppDialog/SimAppDialog.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@SimAppDialog@SimAppDialog.apk@classes.dex]
+[com.android.soundpicker]
+  path: /system/priv-app/SoundPicker/SoundPicker.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@SoundPicker@SoundPicker.apk@classes.dex]
+[com.android.stk]
+  path: /system/app/Stk/Stk.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@Stk@Stk.apk@classes.dex]
+    used by other apps: [com.android.phone (isa=arm64)]
+[com.android.storagemanager]
+  path: /system_ext/priv-app/StorageManager/StorageManager.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@StorageManager@StorageManager.apk@classes.dex]
+[com.android.systemui]
+  path: /system_ext/priv-app/SystemUI/SystemUI.apk
+    arm64: [status=speed] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@SystemUI@SystemUI.apk@classes.dex]
+[com.android.systemui.accessibility.accessibilitymenu]
+  path: /system_ext/app/AccessibilityMenu/AccessibilityMenu.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@app@AccessibilityMenu@AccessibilityMenu.apk@classes.dex]
+[com.android.systemui.accessibility.accessibilitymenu.auto_generated_rro_product__]
+[com.android.systemui.auto_generated_rro_product__]
+[com.android.systemui.auto_generated_rro_vendor__]
+  path: /vendor/overlay/SystemUI__auto_generated_rro_vendor.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.android.systemui.plugin.globalactions.wallet]
+  path: /system_ext/priv-app/QuickAccessWallet/QuickAccessWallet.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@QuickAccessWallet@QuickAccessWallet.apk@classes.dex]
+[com.android.theme.font.Exo2Regular]
+[com.android.theme.font.RobotoSlabRegular]
+[com.android.theme.font.RookeryRegular]
+[com.android.theme.font.SpaceGrotesk]
+[com.android.theme.font.WorkSans]
+[com.android.theme.icon.pebble]
+[com.android.theme.icon.round]
+[com.android.theme.icon.roundedrect]
+[com.android.theme.icon.teardrop]
+[com.android.traceur]
+  path: /system/app/Traceur/Traceur.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@Traceur@Traceur.apk@classes.dex]
+[com.android.vending]
+  path: /product/priv-app/Phonesky/Phonesky.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@Phonesky@Phonesky.apk@classes.dex]
+[com.android.virtualmachine.res]
+[com.android.vpndialogs]
+  path: /system/priv-app/VpnDialogs/VpnDialogs.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@VpnDialogs@VpnDialogs.apk@classes.dex]
+[com.android.wallpaper.livepicker]
+  path: /system/priv-app/LiveWallpapersPicker/LiveWallpapersPicker.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@LiveWallpapersPicker@LiveWallpapersPicker.apk@classes.dex]
+[com.android.wallpaperbackup]
+  path: /system/app/WallpaperBackup/WallpaperBackup.apk
+    arm64: [status=speed] [reason=prebuilt] [primary-abi]
+      [location is /system/app/WallpaperBackup/oat/arm64/WallpaperBackup.odex]
+[com.android.wallpapercropper]
+  path: /system_ext/priv-app/WallpaperCropper/WallpaperCropper.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@WallpaperCropper@WallpaperCropper.apk@classes.dex]
+[com.android.wifi.mainline.resources.overlay]
+[com.android.wifi.resources.overlay]
+[com.android.wifi.resources.overlay.WifiVodafoneOverlay]
+[com.android.wifi.resources.overlay.motCommon]
+[com.aura.oobe.motorola]
+  path: /product/priv-app/AppCloudOobeMotorolaStub/AppCloudOobeMotorolaStub.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@AppCloudOobeMotorolaStub@AppCloudOobeMotorolaStub.apk@classes.dex]
+[com.aura.oobe.vodafone]
+  path: /product/priv-app/VodafoneAppBox/VodafoneAppBox.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@VodafoneAppBox@VodafoneAppBox.apk@classes.vdex]
+[com.bluetooth.aptxmode]
+  path: /system_ext/priv-app/MotoBtAptxMode/MotoBtAptxMode.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoBtAptxMode@MotoBtAptxMode.apk@classes.dex]
+[com.debug.loggerui]
+  path: /system_ext/app/DebugLoggerUI/DebugLoggerUI.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@app@DebugLoggerUI@DebugLoggerUI.apk@classes.dex]
+[com.dolby.daxservice]
+  path: /system_ext/priv-app/daxService/daxService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@daxService@daxService.apk@classes.dex]
+[com.facebook.appmanager]
+  path: /product/app/facebook-appmanager/facebook-appmanager.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@facebook-appmanager@facebook-appmanager.apk@classes.dex]
+[com.facebook.katana]
+  path: /product/preinstall/facebook/facebook.apk
+    arm64: [status=verify] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@preinstall@facebook@facebook.apk@classes.dex]
+[com.facebook.services]
+  path: /product/priv-app/facebook-services/facebook-services.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@facebook-services@facebook-services.apk@classes.dex]
+[com.facebook.system]
+  path: /product/priv-app/facebook-installer/facebook-installer.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@facebook-installer@facebook-installer.apk@classes.dex]
+[com.glance.lockscreenM]
+  path: /product/priv-app/GlanceSpacesMotorola/GlanceSpacesMotorola.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@GlanceSpacesMotorola@GlanceSpacesMotorola.apk@classes.vdex]
+[com.google.ambient.streaming]
+  path: /product/priv-app/CrossDeviceServices/CrossDeviceServices.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@CrossDeviceServices@CrossDeviceServices.apk@classes.dex]
+[com.google.android.accessibility.switchaccess]
+  path: /product/app/SwitchAccess/SwitchAccess.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@SwitchAccess@SwitchAccess.apk@classes.dex]
+[com.google.android.adservices.api]
+  path: /apex/com.android.adservices/priv-app/AdServicesApkGoogle@360738140/AdServicesApkGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.adservices@priv-app@AdServicesApkGoogle@360738140@AdServicesApkGoogle.apk@classes.dex]
+[com.google.android.apps.bard]
+  path: /product/app/Gemini/Gemini.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@Gemini@Gemini.apk@classes.dex]
+[com.google.android.apps.carrier.carrierwifi]
+  path: /product/priv-app/GWP/GWP.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@GWP@GWP.apk@classes.dex]
+[com.google.android.apps.docs]
+  path: /product/app/Drive/Drive.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@Drive@Drive.apk@classes.dex]
+[com.google.android.apps.maps]
+  path: /product/app/Maps/Maps.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@Maps@Maps.apk@classes.dex]
+[com.google.android.apps.messaging]
+  path: /product/priv-app/Messages/Messages.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@Messages@Messages.apk@classes.dex]
+[com.google.android.apps.nbu.files]
+  path: /product/priv-app/FilesGoogle/FilesGoogle.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@FilesGoogle@FilesGoogle.apk@classes.dex]
+[com.google.android.apps.photos]
+  path: /product/app/Photos/Photos.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@Photos@Photos.apk@classes.dex]
+[com.google.android.apps.restore]
+  path: /product/priv-app/GoogleRestore/GoogleRestore.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@GoogleRestore@GoogleRestore.apk@classes.dex]
+[com.google.android.apps.safetyhub]
+  path: /product/priv-app/PersonalSafety/PersonalSafety.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@PersonalSafety@PersonalSafety.apk@classes.dex]
+[com.google.android.apps.tachyon]
+  path: /product/app/Meet/Meet.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@Meet@Meet.apk@classes.dex]
+[com.google.android.apps.turbo]
+  path: /product/priv-app/Turbo/Turbo.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@Turbo@Turbo.apk@classes.dex]
+[com.google.android.apps.wallpaper]
+  path: /system_ext/priv-app/GoogleWallpapers/GoogleWallpapers.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@GoogleWallpapers@GoogleWallpapers.apk@classes.vdex]
+[com.google.android.apps.wellbeing]
+  path: /product/priv-app/Wellbeing/Wellbeing.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@Wellbeing@Wellbeing.apk@classes.dex]
+[com.google.android.apps.work.clouddpc]
+  path: /product/app/AndroidDevicePolicy/AndroidDevicePolicy.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@AndroidDevicePolicy@AndroidDevicePolicy.apk@classes.dex]
+[com.google.android.apps.youtube.music]
+  path: /product/app/YTMusic/YTMusic.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@YTMusic@YTMusic.apk@classes.dex]
+[com.google.android.appsearch.apk]
+  path: /apex/com.android.appsearch/priv-app/com.google.android.appsearch.apk@360743400/com.google.android.appsearch.apk.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.appsearch@priv-app@com.google.android.appsearch.apk@360743400@com.google.android.appsearch.apk.apk@classes.dex]
+[com.google.android.as]
+  path: /product/priv-app/AndroidSystemIntelligence/AndroidSystemIntelligence.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@AndroidSystemIntelligence@AndroidSystemIntelligence.apk@classes.dex]
+[com.google.android.as.oss]
+  path: /product/priv-app/PrivateComputeServices/PrivateComputeServices.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@PrivateComputeServices@PrivateComputeServices.apk@classes.dex]
+[com.google.android.calculator]
+  path: /product/app/CalculatorGoogle/CalculatorGoogle.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@CalculatorGoogle@CalculatorGoogle.apk@classes.dex]
+[com.google.android.calendar]
+  path: /product/app/CalendarGoogle/CalendarGoogle.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@CalendarGoogle@CalendarGoogle.apk@classes.dex]
+[com.google.android.captiveportallogin]
+  path: /system/app/CaptivePortalLoginGoogle/CaptivePortalLoginGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@CaptivePortalLoginGoogle@CaptivePortalLoginGoogle.apk@classes.dex]
+[com.google.android.carrier]
+  path: /product/priv-app/CarrierSettings/CarrierSettings.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@CarrierSettings@CarrierSettings.apk@classes.dex]
+[com.google.android.cellbroadcastreceiver]
+  path: /apex/com.android.cellbroadcast/priv-app/GoogleCellBroadcastApp@360735060/GoogleCellBroadcastApp.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.cellbroadcast@priv-app@GoogleCellBroadcastApp@360735060@GoogleCellBroadcastApp.apk@classes.dex]
+[com.google.android.cellbroadcastservice]
+  path: /apex/com.android.cellbroadcast/priv-app/GoogleCellBroadcastServiceModule@360735060/GoogleCellBroadcastServiceModule.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.cellbroadcast@priv-app@GoogleCellBroadcastServiceModule@360735060@GoogleCellBroadcastServiceModule.apk@classes.dex]
+    used by other apps: [com.google.android.networkstack (isa=arm64)]
+[com.google.android.configupdater]
+  path: /product/priv-app/ConfigUpdater/ConfigUpdater.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@ConfigUpdater@ConfigUpdater.apk@classes.dex]
+[com.google.android.connectivity.resources]
+[com.google.android.contacts]
+  path: /product/app/GoogleContacts/GoogleContacts.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@GoogleContacts@GoogleContacts.apk@classes.dex]
+[com.google.android.deskclock]
+  path: /product/app/DeskClockGoogle/DeskClockGoogle.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@DeskClockGoogle@DeskClockGoogle.apk@classes.dex]
+[com.google.android.dialer]
+  path: /product/priv-app/GoogleDialer/GoogleDialer.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@GoogleDialer@GoogleDialer.apk@classes.dex]
+[com.google.android.documentsui]
+  path: /system/priv-app/DocumentsUIGoogle/DocumentsUIGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@DocumentsUIGoogle@DocumentsUIGoogle.apk@classes.dex]
+[com.google.android.euicc]
+  path: /product/priv-app/EuiccGoogle/EuiccGoogle.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@EuiccGoogle@EuiccGoogle.apk@classes.vdex]
+[com.google.android.ext.services]
+  path: /apex/com.android.extservices/priv-app/GoogleExtServices@360737100/GoogleExtServices.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.extservices@priv-app@GoogleExtServices@360737100@GoogleExtServices.apk@classes.dex]
+[com.google.android.ext.shared]
+  path: /system/app/GoogleExtShared/GoogleExtShared.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@GoogleExtShared@GoogleExtShared.apk@classes.dex]
+[com.google.android.federatedcompute]
+  path: /apex/com.android.ondevicepersonalization/app/FederatedComputeGoogle@360738140/FederatedComputeGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.ondevicepersonalization@app@FederatedComputeGoogle@360738140@FederatedComputeGoogle.apk@classes.dex]
+[com.google.android.feedback]
+  path: /system_ext/priv-app/GoogleFeedback/GoogleFeedback.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@GoogleFeedback@GoogleFeedback.apk@classes.dex]
+[com.google.android.gm]
+  path: /product/app/Gmail2/Gmail2.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@Gmail2@Gmail2.apk@classes.dex]
+[com.google.android.gms]
+  path: /product/priv-app/GmsCore/GmsCore.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@GmsCore@GmsCore.apk@classes.dex]
+    used by other apps: [com.google.android.apps.docs (isa=arm64), com.motorola.bug2go (isa=arm64)]
+  known secondary dex files:
+    /data/user_de/0/com.google.android.gms/app_chimera/m/00000001/CronetDynamite.apk (public)
+      arm64: [status=verify] [reason=bg-dexopt] [primary-abi]
+        [location is /data/user_de/0/com.google.android.gms/app_chimera/m/00000001/oat/arm64/CronetDynamite.odex]
+      class loader context: =VaryingClassLoaderContexts=
+        com.google.android.apps.maps: DLC[];PCL[/product/app/Maps/Maps.apk]{PCL[/system/framework/org.apache.http.legacy.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.google.android.apps.tachyon: DLC[];PCL[/product/app/Meet/Meet.apk]{PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.google.android.gm: DLC[];PCL[/product/app/Gmail2/Gmail2.apk]{PCL[/system/framework/org.apache.http.legacy.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.google.android.gms: DLC[];PCL[/product/priv-app/GmsCore/GmsCore.apk]{PCL[/system/framework/org.apache.http.legacy.jar]#PCL[/system/framework/com.android.media.remotedisplay.jar]#PCL[/system/framework/com.android.location.provider.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.google.android.googlequicksearchbox: DLC[];PCL[/product/priv-app/VelvetForCircleToSearch/VelvetForCircleToSearch.apk]{PCL[/system/framework/org.apache.http.legacy.jar]#PCL[/system_ext/framework/com.android.extensions.appfunctions.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.google.android.inputmethod.latin: DLC[];PCL[/product/app/LatinImeGoogle/LatinImeGoogle.apk]{PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+      used by other apps: [com.google.android.apps.maps (isa=arm64), com.google.android.apps.tachyon (isa=arm64), com.google.android.gm (isa=arm64), com.google.android.googlequicksearchbox (isa=arm64), com.google.android.inputmethod.latin (isa=arm64)]
+    /data/user_de/0/com.google.android.gms/app_chimera/m/00000002/DynamiteLoader.apk (public)
+      arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+        [location is /data/user_de/0/com.google.android.gms/app_chimera/m/00000002/oat/arm64/DynamiteLoader.odex]
+      class loader context: DLC[];PCL[]
+      used by other apps: [com.android.chrome (isa=arm64), com.android.vending (isa=arm64), com.google.android.apps.maps (isa=arm64), com.google.android.apps.nbu.files (isa=arm64), com.google.android.apps.photos (isa=arm64), com.google.android.apps.tachyon (isa=arm64), com.google.android.apps.youtube.music (isa=arm64), com.google.android.gm (isa=arm64), com.google.android.googlequicksearchbox (isa=arm64), com.google.android.inputmethod.latin (isa=arm64), com.google.android.youtube (isa=arm64), com.motorola.enterprise.adapter.service (isa=arm64), com.motorola.help (isa=arm64), com.motorola.smartfeed (isa=arm64), com.motorola.timeweatherwidget (isa=arm64)]
+    /data/user_de/0/com.google.android.gms/app_chimera/m/00000005/GoogleCertificates.apk (public)
+      arm64: [status=verify] [reason=bg-dexopt] [primary-abi]
+        [location is /data/user_de/0/com.google.android.gms/app_chimera/m/00000005/oat/arm64/GoogleCertificates.odex]
+      class loader context: =VaryingClassLoaderContexts=
+        com.android.chrome: DLC[];PCL[/product/app/Chrome64/Chrome64.apk]{PCL[]}
+        com.google.android.apps.maps: DLC[];PCL[/product/app/Maps/Maps.apk]{PCL[/system/framework/org.apache.http.legacy.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.google.android.apps.tachyon: DLC[];PCL[/product/app/Meet/Meet.apk]{PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.google.android.googlequicksearchbox: DLC[];PCL[/product/priv-app/VelvetForCircleToSearch/VelvetForCircleToSearch.apk]{PCL[/system/framework/org.apache.http.legacy.jar]#PCL[/system_ext/framework/com.android.extensions.appfunctions.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+      used by other apps: [com.android.chrome (isa=arm64), com.google.android.apps.maps (isa=arm64), com.google.android.apps.tachyon (isa=arm64), com.google.android.googlequicksearchbox (isa=arm64)]
+    /data/user_de/0/com.google.android.gms/app_chimera/m/00000007/MeasurementDynamite.apk (public)
+      arm64: [status=verify] [reason=bg-dexopt] [primary-abi]
+        [location is /data/user_de/0/com.google.android.gms/app_chimera/m/00000007/oat/arm64/MeasurementDynamite.odex]
+      class loader context: =VaryingClassLoaderContexts=
+        com.android.vending: DLC[];PCL[/product/priv-app/Phonesky/Phonesky.apk]{PCL[/system/framework/org.apache.http.legacy.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.google.android.apps.nbu.files: DLC[];PCL[/product/priv-app/FilesGoogle/FilesGoogle.apk]{PCL[/system/framework/org.apache.http.legacy.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.google.android.apps.photos: DLC[];PCL[/product/app/Photos/Photos.apk]{PCL[/system/framework/org.apache.http.legacy.jar]#PCL[/system_ext/framework/com.android.extensions.appfunctions.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.motorola.enterprise.adapter.service: DLC[];PCL[/system_ext/priv-app/EnterpriseAdapterService/EnterpriseAdapterService.apk]{PCL[/apex/com.motorola.enterprise/javalib/moto-enterprise.jar]#PCL[/system/framework/moto-settings.jar]#PCL[/system/framework/moto-checkin.jar]}
+        com.motorola.help: DLC[];PCL[/product/priv-app/MotoHelp/MotoHelp.apk]{PCL[/system/framework/moto-checkin.jar]#PCL[/system/framework/moto-settings.jar]#PCL[/system/framework/org.apache.http.legacy.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.motorola.smartfeed: DLC[];PCL[/product/priv-app/SmartFeed/SmartFeed.apk]{PCL[/system/framework/moto-core_services.jar]#PCL[/system/framework/moto-checkin.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+        com.motorola.timeweatherwidget: DLC[];PCL[/product/app/TimeWeather/TimeWeather.apk]{PCL[/system/framework/com.motorola.motosignature.jar]#PCL[/system/framework/moto-checkin.jar]#PCL[/system_ext/framework/androidx.window.extensions.jar]#PCL[/system_ext/framework/androidx.window.sidecar.jar]}
+      used by other apps: [com.android.vending (isa=arm64), com.google.android.apps.nbu.files (isa=arm64), com.google.android.apps.photos (isa=arm64), com.motorola.enterprise.adapter.service (isa=arm64), com.motorola.help (isa=arm64), com.motorola.smartfeed (isa=arm64), com.motorola.timeweatherwidget (isa=arm64)]
+[com.google.android.gms.location.history]
+  path: /product/app/GoogleLocationHistory/GoogleLocationHistory.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@GoogleLocationHistory@GoogleLocationHistory.apk@classes.dex]
+[com.google.android.gms.supervision]
+  path: /product/priv-app/FamilyLinkParentalControls/FamilyLinkParentalControls.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@FamilyLinkParentalControls@FamilyLinkParentalControls.apk@classes.dex]
+[com.google.android.googlequicksearchbox]
+  path: /product/priv-app/VelvetForCircleToSearch/VelvetForCircleToSearch.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@VelvetForCircleToSearch@VelvetForCircleToSearch.apk@classes.dex]
+[com.google.android.gsf]
+[com.google.android.health.connect.backuprestore]
+  path: /apex/com.android.healthfitness/app/HealthConnectBackupRestoreGoogle@360745040/HealthConnectBackupRestoreGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.healthfitness@app@HealthConnectBackupRestoreGoogle@360745040@HealthConnectBackupRestoreGoogle.apk@classes.dex]
+[com.google.android.healthconnect.controller]
+  path: /apex/com.android.healthfitness/priv-app/HealthConnectControllerGoogle@360745040/HealthConnectControllerGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.healthfitness@priv-app@HealthConnectControllerGoogle@360745040@HealthConnectControllerGoogle.apk@classes.dex]
+[com.google.android.hotspot2.osulogin]
+  path: /apex/com.android.wifi/app/OsuLoginGoogle@360735060/OsuLoginGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.wifi@app@OsuLoginGoogle@360735060@OsuLoginGoogle.apk@classes.dex]
+[com.google.android.inputmethod.latin]
+  path: /product/app/LatinImeGoogle/LatinImeGoogle.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@LatinImeGoogle@LatinImeGoogle.apk@classes.dex]
+[com.google.android.marvin.talkback]
+  path: /product/app/talkback/talkback.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@talkback@talkback.apk@classes.dex]
+[com.google.android.modulemetadata]
+[com.google.android.networkstack]
+  path: /system/priv-app/NetworkStackGoogle/NetworkStackGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@NetworkStackGoogle@NetworkStackGoogle.apk@classes.dex]
+[com.google.android.networkstack.overlay]
+[com.google.android.networkstack.tethering]
+  path: /apex/com.android.tethering/priv-app/TetheringGoogle@360743340/TetheringGoogle.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.tethering@priv-app@TetheringGoogle@360743340@TetheringGoogle.apk@classes.dex]
+    used by other apps: [com.google.android.networkstack (isa=arm64)]
+[com.google.android.networkstack.tethering.overlay]
+[com.google.android.ondevicepersonalization.services]
+  path: /apex/com.android.ondevicepersonalization/priv-app/OnDevicePersonalizationGoogle@360738140/OnDevicePersonalizationGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.ondevicepersonalization@priv-app@OnDevicePersonalizationGoogle@360738140@OnDevicePersonalizationGoogle.apk@classes.dex]
+[com.google.android.onetimeinitializer]
+  path: /product/priv-app/GoogleOneTimeInitializer/GoogleOneTimeInitializer.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@GoogleOneTimeInitializer@GoogleOneTimeInitializer.apk@classes.dex]
+[com.google.android.overlay.gmsconfig.asi]
+[com.google.android.overlay.gmsconfig.common]
+[com.google.android.overlay.gmsconfig.comms]
+[com.google.android.overlay.gmsconfig.contextualsearch]
+[com.google.android.overlay.gmsconfig.geotz]
+[com.google.android.overlay.gmsconfig.gsa]
+[com.google.android.overlay.gmsconfig.personalsafety]
+[com.google.android.overlay.gmsconfig.photos]
+[com.google.android.overlay.gmsconfig.searchselector]
+[com.google.android.overlay.modules.captiveportallogin.forframework]
+[com.google.android.overlay.modules.documentsui]
+[com.google.android.overlay.modules.ext.services]
+[com.google.android.overlay.modules.healthfitness.forframework]
+[com.google.android.overlay.modules.modulemetadata.forframework]
+[com.google.android.overlay.modules.permissioncontroller]
+[com.google.android.overlay.modules.permissioncontroller.forframework]
+[com.google.android.packageinstaller]
+  path: /system/priv-app/GooglePackageInstaller/GooglePackageInstaller.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@GooglePackageInstaller@GooglePackageInstaller.apk@classes.dex]
+[com.google.android.partnersetup]
+  path: /product/priv-app/GooglePartnerSetup/GooglePartnerSetup.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@GooglePartnerSetup@GooglePartnerSetup.apk@classes.dex]
+[com.google.android.permissioncontroller]
+  path: /apex/com.android.permission/priv-app/GooglePermissionController@360743220/GooglePermissionController.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.permission@priv-app@GooglePermissionController@360743220@GooglePermissionController.apk@classes.dex]
+[com.google.android.photopicker]
+  path: /apex/com.android.mediaprovider/priv-app/PhotopickerGoogle@360738280/PhotopickerGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.mediaprovider@priv-app@PhotopickerGoogle@360738280@PhotopickerGoogle.apk@classes.dex]
+[com.google.android.printservice.recommendation]
+  path: /system/app/GooglePrintRecommendationService/GooglePrintRecommendationService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@GooglePrintRecommendationService@GooglePrintRecommendationService.apk@classes.dex]
+[com.google.android.projection.gearhead]
+  path: /product/priv-app/AndroidAutoStub/AndroidAutoStub.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@AndroidAutoStub@AndroidAutoStub.apk@classes.dex]
+[com.google.android.providers.media.module]
+  path: /apex/com.android.mediaprovider/priv-app/MediaProviderGoogle@360738280/MediaProviderGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.mediaprovider@priv-app@MediaProviderGoogle@360738280@MediaProviderGoogle.apk@classes.dex]
+[com.google.android.rkpdapp]
+  path: /apex/com.android.rkpd/priv-app/rkpdapp.google@360671160/rkpdapp.google.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.rkpd@priv-app@rkpdapp.google@360671160@rkpdapp.google.apk@classes.dex]
+[com.google.android.safetycenter.resources]
+  path: /apex/com.android.permission/priv-app/GoogleSafetyCenterResources@360743220/GoogleSafetyCenterResources.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.google.android.sdksandbox]
+  path: /apex/com.android.adservices/app/SdkSandboxGoogle@360738140/SdkSandboxGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.adservices@app@SdkSandboxGoogle@360738140@SdkSandboxGoogle.apk@classes.dex]
+[com.google.android.server.deviceconfig.resources]
+[com.google.android.setupwizard]
+  path: /system_ext/priv-app/SetupWizard/SetupWizard.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@SetupWizard@SetupWizard.apk@classes.dex]
+[com.google.android.tag]
+  path: /system/priv-app/TagGoogle/TagGoogle.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@TagGoogle@TagGoogle.apk@classes.dex]
+[com.google.android.trichromelibrary_725814333]
+[com.google.android.tts]
+  path: /product/app/SpeechServicesByGoogle/SpeechServicesByGoogle.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@SpeechServicesByGoogle@SpeechServicesByGoogle.apk@classes.dex]
+[com.google.android.uwb.resources]
+[com.google.android.verifier]
+  path: /product/priv-app/AndroidDeveloperVerifier/AndroidDeveloperVerifier.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@AndroidDeveloperVerifier@AndroidDeveloperVerifier.apk@classes.dex]
+[com.google.android.verifier.overlay]
+[com.google.android.videos]
+  path: /product/app/Videos/Videos.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@Videos@Videos.apk@classes.dex]
+[com.google.android.webview]
+  path: /product/app/WebViewGoogle64/WebViewGoogle64.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@WebViewGoogle64@WebViewGoogle64.apk@classes.vdex]
+[com.google.android.wfcactivation]
+  path: /product/priv-app/WfcActivation/WfcActivation.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@WfcActivation@WfcActivation.apk@classes.vdex]
+[com.google.android.wifi.dialog]
+  path: /apex/com.android.wifi/app/WifiDialogGoogle@360735060/WifiDialogGoogle.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/apex@com.android.wifi@app@WifiDialogGoogle@360735060@WifiDialogGoogle.apk@classes.dex]
+[com.google.android.wifi.resources]
+[com.google.android.youtube]
+  path: /product/app/YouTube/YouTube.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@YouTube@YouTube.apk@classes.dex]
+[com.google.ar.core]
+  path: /product/app/ARCore/ARCore.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@ARCore@ARCore.apk@classes.dex]
+[com.google.mainline.adservices]
+[com.google.mainline.telemetry]
+[com.handmark.expressweather]
+  path: /product/app/expressweatherStub/expressweatherStub.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@expressweatherStub@expressweatherStub.apk@classes.dex]
+[com.inmobi.weather]
+  path: /product/app/inmobiStub/inmobiStub.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@inmobiStub@inmobiStub.apk@classes.dex]
+[com.instagram.android]
+  path: /product/preinstall/facebook-instagram/facebook-instagram.apk
+    arm64: [status=verify] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@preinstall@facebook-instagram@facebook-instagram.apk@classes.dex]
+[com.ironsource.appcloud.oobe.hutchison]
+  path: /product/priv-app/AppCloudHutchison/AppCloudHutchison.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@AppCloudHutchison@AppCloudHutchison.apk@classes.vdex]
+[com.mediatek]
+[com.mediatek.FrameworkResOverlayExt]
+[com.mediatek.MtkSettingsResOverlay]
+[com.mediatek.SettingsProviderResOverlay]
+[com.mediatek.apmonitor]
+  path: /system_ext/priv-app/ApmService/ApmService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@ApmService@ApmService.apk@classes.dex]
+[com.mediatek.capctrl.service]
+  path: /system_ext/priv-app/MtkCapCtrl/MtkCapCtrl.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MtkCapCtrl@MtkCapCtrl.apk@classes.dex]
+    used by other apps: [com.android.phone (isa=arm64)]
+[com.mediatek.carrierexpress]
+  path: /system_ext/priv-app/CarrierExpress/CarrierExpress.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@CarrierExpress@CarrierExpress.apk@classes.dex]
+[com.mediatek.engineermode]
+  path: /system_ext/app/EngineerMode/EngineerMode.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@app@EngineerMode@EngineerMode.apk@classes.dex]
+[com.mediatek.frameworkresoverlay]
+[com.mediatek.gbaservice]
+  path: /system_ext/priv-app/MtkGbaService/MtkGbaService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MtkGbaService@MtkGbaService.apk@classes.dex]
+[com.mediatek.ims]
+  path: /system_ext/priv-app/ImsService/ImsService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@ImsService@ImsService.apk@classes.dex]
+[com.mediatek.ims.rcsua.service]
+  path: /system_ext/priv-app/RcsUaService/RcsUaService.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@RcsUaService@RcsUaService.apk@classes.dex]
+    used by other apps: [com.android.phone (isa=arm64)]
+[com.mediatek.location.lppe.main]
+  path: /system_ext/priv-app/LPPeService/LPPeService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@LPPeService@LPPeService.apk@classes.dex]
+[com.mediatek.mdmconfig]
+  path: /system_ext/app/MDMConfig/MDMConfig.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@app@MDMConfig@MDMConfig.apk@classes.dex]
+[com.mediatek.mdmlsample]
+  path: /system_ext/app/MDMLSample/MDMLSample.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@app@MDMLSample@MDMLSample.apk@classes.dex]
+[com.mediatek.op12.ims]
+  path: /system_ext/app/OP12Ims/OP12Ims.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@app@OP12Ims@OP12Ims.apk@classes.dex]
+[com.mediatek.presence]
+  path: /system_ext/priv-app/Presence/Presence.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@Presence@Presence.apk@classes.dex]
+[com.mediatek.telephony]
+  path: /system_ext/priv-app/MtkTelephonyAssist/MtkTelephonyAssist.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MtkTelephonyAssist@MtkTelephonyAssist.apk@classes.dex]
+    used by other apps: [com.android.phone (isa=arm64)]
+[com.motorola.account]
+  path: /product/priv-app/MotoAccount/MotoAccount.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoAccount@MotoAccount.apk@classes.dex]
+[com.motorola.actions]
+  path: /product/priv-app/MotoActions/MotoActions.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoActions@MotoActions.apk@classes.dex]
+[com.motorola.actions.overlay]
+  path: /product/overlay/framework-rro-irservice.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.motorola.aiservices]
+  path: /product/priv-app/AiServices/AiServices.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@AiServices@AiServices.apk@classes.dex]
+[com.motorola.android.connectivity.resources.overlay]
+[com.motorola.android.coresettingsext.overlay.doubletap]
+[com.motorola.android.coresettingsext.overlay.naples]
+[com.motorola.android.fmradio]
+  path: /system_ext/app/FMRadioService/FMRadioService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@app@FMRadioService@FMRadioService.apk@classes.dex]
+[com.motorola.android.launcher.overlay.amx]
+[com.motorola.android.launcher.overlay.animation.scale]
+[com.motorola.android.launcher.overlay.applabeltwolines]
+[com.motorola.android.launcher.overlay.koodo]
+[com.motorola.android.launcher.overlay.retail.global]
+[com.motorola.android.launcher.overlay.telus]
+[com.motorola.android.launcher.overlay.vivo]
+[com.motorola.android.nativedropboxagent]
+  path: /system_ext/priv-app/com.motorola.android.nativedropboxagent/com.motorola.android.nativedropboxagent.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@com.motorola.android.nativedropboxagent@com.motorola.android.nativedropboxagent.apk@classes.dex]
+[com.motorola.android.networkstack.overlay.mcc460]
+[com.motorola.android.networkstack.tethering.overlay.motCommon]
+[com.motorola.android.overlay.appclone]
+[com.motorola.android.overlay.common]
+[com.motorola.android.overlay.deviceconfig.naples]
+[com.motorola.android.overlay.dualsim]
+[com.motorola.android.overlay.hw_dualsim]
+[com.motorola.android.overlay.lpptoga]
+[com.motorola.android.overlay.mtk.common]
+[com.motorola.android.overlay.payjoy]
+[com.motorola.android.providers.chromehomepage]
+  path: /system_ext/priv-app/ChromeHomePageProvider/ChromeHomePageProvider.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@ChromeHomePageProvider@ChromeHomePageProvider.apk@classes.dex]
+[com.motorola.android.providers.settings]
+  path: /system_ext/priv-app/MotorolaSettingsProvider/MotorolaSettingsProvider.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotorolaSettingsProvider@MotorolaSettingsProvider.apk@classes.dex]
+[com.motorola.android.providers.settings.auto_generated_rro_product__]
+  path: /product/overlay/MotorolaSettingsProvider__naples_g_sys__auto_generated_rro_product.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.motorola.android.providers.settings.overlay.dppcamera]
+[com.motorola.android.providers.settings.overlay.dppnone]
+[com.motorola.android.provisioning]
+  path: /product/priv-app/OMAProvisioning/OMAProvisioning.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@OMAProvisioning@OMAProvisioning.apk@classes.dex]
+[com.motorola.android.server.telecom.overlay.jp]
+[com.motorola.android.settings.overlay.appclone]
+[com.motorola.android.settings.overlay.fps.display]
+[com.motorola.android.settings.overlay.global]
+[com.motorola.android.settings.overlay.power.bottom]
+[com.motorola.android.systemui.overlay.att]
+[com.motorola.android.systemui.overlay.sprint]
+[com.motorola.android.systemui.overlay.tmo]
+[com.motorola.android.systemui.overlay.usc]
+[com.motorola.android.systemui.overlay.vzw]
+[com.motorola.appdirectedsmsproxy]
+  path: /system/priv-app/AppDirectedSmsProxy/AppDirectedSmsProxy.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@AppDirectedSmsProxy@AppDirectedSmsProxy.apk@classes.dex]
+[com.motorola.appforecast]
+  path: /product/priv-app/MotoAppForecast/MotoAppForecast.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoAppForecast@MotoAppForecast.apk@classes.dex]
+[com.motorola.att.phone.extensions]
+  path: /product/priv-app/AttPhoneExt/AttPhoneExt.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@AttPhoneExt@AttPhoneExt.apk@classes.dex]
+[com.motorola.attvowifi]
+  path: /product/priv-app/Vowifi/Vowifi.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@Vowifi@Vowifi.apk@classes.dex]
+[com.motorola.audiorecorder]
+  path: /product/app/AudioRecorder/AudioRecorder.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@AudioRecorder@AudioRecorder.apk@classes.dex]
+    used by other apps: [com.android.systemui (isa=arm64)]
+[com.motorola.bach.modemstats]
+  path: /system_ext/priv-app/ModemStatsService/ModemStatsService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@ModemStatsService@ModemStatsService.apk@classes.dex]
+[com.motorola.batterycare]
+  path: /system_ext/priv-app/BatteryCare/BatteryCare.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@BatteryCare@BatteryCare.apk@classes.dex]
+[com.motorola.batterycare.overlay]
+[com.motorola.batterycare.overlay.appside]
+[com.motorola.brapps]
+  path: /product/priv-app/BRApps2/BRApps2.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@BRApps2@BRApps2.apk@classes.dex]
+[com.motorola.bug2go]
+  path: /system_ext/priv-app/Bug2Go/Bug2Go.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@Bug2Go@Bug2Go.apk@classes.dex]
+[com.motorola.callredirectionservice]
+  path: /product/priv-app/CallRedirectionService/CallRedirectionService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@CallRedirectionService@CallRedirectionService.apk@classes.dex]
+[com.motorola.camera5]
+  path: /product/priv-app/MotCamera5/MotCamera5.apk
+    arm64: [status=speed] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotCamera5@MotCamera5.apk@classes.dex]
+[com.motorola.carrierconfig]
+  path: /product/priv-app/TMOConfig/TMOConfig.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@TMOConfig@TMOConfig.apk@classes.dex]
+[com.motorola.carriersettingsext]
+  path: /product/priv-app/CarrierSettingsExt/CarrierSettingsExt.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@CarrierSettingsExt@CarrierSettingsExt.apk@classes.dex]
+[com.motorola.ccc.devicemanagement]
+  path: /system_ext/priv-app/3c_devicemanagement-binary/3c_devicemanagement-binary.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@3c_devicemanagement-binary@3c_devicemanagement-binary.apk@classes.dex]
+[com.motorola.ccc.notification]
+  path: /system_ext/priv-app/3c_notification/3c_notification.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@3c_notification@3c_notification.apk@classes.dex]
+[com.motorola.ccc.ota]
+  path: /system_ext/priv-app/3c_ota/3c_ota.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@3c_ota@3c_ota.apk@classes.dex]
+[com.motorola.contacts.preloadcontacts]
+  path: /product/priv-app/PreloadContacts/PreloadContacts.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@PreloadContacts@PreloadContacts.apk@classes.dex]
+[com.motorola.contacts.preloadcontacts.overlay.vzw]
+[com.motorola.coresettingsext]
+  path: /system_ext/priv-app/CoreSettingsExt/CoreSettingsExt.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@CoreSettingsExt@CoreSettingsExt.apk@classes.dex]
+[com.motorola.demo]
+  path: /system_ext/priv-app/DemoMode/DemoMode.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@DemoMode@DemoMode.apk@classes.dex]
+[com.motorola.dfconnect.android]
+  path: /product/app/dfconnect/dfconnect.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@dfconnect@dfconnect.apk@classes.dex]
+[com.motorola.dimo]
+  path: /system_ext/priv-app/motoDigitalAccount/motoDigitalAccount.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@motoDigitalAccount@motoDigitalAccount.apk@classes.dex]
+[com.motorola.dolby.dolbyui]
+  path: /system/app/MotoDolbyDax3/MotoDolbyDax3.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@MotoDolbyDax3@MotoDolbyDax3.apk@classes.dex]
+[com.motorola.dynamicvolume]
+  path: /product/priv-app/MotoMultiVolume/MotoMultiVolume.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoMultiVolume@MotoMultiVolume.apk@classes.dex]
+[com.motorola.easyprefix]
+  path: /product/priv-app/EasyPrefix/EasyPrefix.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@EasyPrefix@EasyPrefix.apk@classes.dex]
+[com.motorola.emporium]
+  path: /product/app/Emporium/Emporium.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@Emporium@Emporium.apk@classes.dex]
+[com.motorola.enterprise.adapter.service]
+  path: /system_ext/priv-app/EnterpriseAdapterService/EnterpriseAdapterService.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@EnterpriseAdapterService@EnterpriseAdapterService.apk@classes.dex]
+[com.motorola.enterprise.service]
+  path: /system_ext/priv-app/MotoThinkUEM/MotoThinkUEM.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoThinkUEM@MotoThinkUEM.apk@classes.dex]
+[com.motorola.entitlement]
+  path: /product/priv-app/Entitlement/Entitlement.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@Entitlement@Entitlement.apk@classes.dex]
+[com.motorola.faceunlock]
+  path: /product/priv-app/MotoFaceUnlock/MotoFaceUnlock.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoFaceUnlock@MotoFaceUnlock.apk@classes.dex]
+[com.motorola.fmplayer]
+  path: /product/priv-app/FMPlayer/FMPlayer.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@FMPlayer@FMPlayer.apk@classes.dex]
+[com.motorola.freeform]
+  path: /system_ext/priv-app/MotoFreeForm/MotoFreeForm.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoFreeForm@MotoFreeForm.apk@classes.dex]
+[com.motorola.gamemode]
+  path: /product/priv-app/GameMode/GameMode.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@GameMode@GameMode.apk@classes.dex]
+[com.motorola.genie]
+  path: /product/priv-app/GuideMe/GuideMe.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@GuideMe@GuideMe.apk@classes.vdex]
+[com.motorola.gesture]
+  path: /system_ext/priv-app/GestureNavigationTutorial/GestureNavigationTutorial.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@GestureNavigationTutorial@GestureNavigationTutorial.apk@classes.dex]
+[com.motorola.hce]
+  path: /system/priv-app/MotHceService/MotHceService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@MotHceService@MotHceService.apk@classes.dex]
+[com.motorola.help]
+  path: /product/priv-app/MotoHelp/MotoHelp.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoHelp@MotoHelp.apk@classes.dex]
+[com.motorola.help.extlog]
+  path: /product/priv-app/MotoFeedbackAssistant/MotoFeedbackAssistant.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoFeedbackAssistant@MotoFeedbackAssistant.apk@classes.vdex]
+[com.motorola.hiddenmenuapp]
+  path: /system_ext/priv-app/HiddenMenu/HiddenMenu.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@HiddenMenu@HiddenMenu.apk@classes.dex]
+[com.motorola.imagertuning_w]
+  path: /system_ext/priv-app/ImagerTuning-W/ImagerTuning-W.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@ImagerTuning-W@ImagerTuning-W.apk@classes.dex]
+[com.motorola.imsconfigtest]
+  path: /system_ext/priv-app/ImsConfigTest/ImsConfigTest.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@ImsConfigTest@ImsConfigTest.apk@classes.vdex]
+[com.motorola.installer]
+  path: /system_ext/priv-app/MotoInstaller/MotoInstaller.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoInstaller@MotoInstaller.apk@classes.vdex]
+[com.motorola.iotservice]
+  path: /product/priv-app/MotoIotService/MotoIotService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoIotService@MotoIotService.apk@classes.dex]
+[com.motorola.iplog]
+  path: /system/app/IPLog/IPLog.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@app@IPLog@IPLog.apk@classes.dex]
+[com.motorola.launcher3]
+  path: /system_ext/priv-app/Launcher3QuickStep/Launcher3QuickStep.apk
+    arm64: [status=speed] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@Launcher3QuickStep@Launcher3QuickStep.apk@classes.dex]
+[com.motorola.launcher3.auto_generated_rro_product__]
+[com.motorola.launcherconfig]
+  path: /product/app/LauncherConfig/LauncherConfig.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@LauncherConfig@LauncherConfig.apk@classes.dex]
+[com.motorola.launcherconfig.overlay.amxcl]
+  path: /product/overlay/LauncherConfig-rro-amxcl.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.motorola.launcherconfig.overlay.amxco]
+  path: /product/overlay/LauncherConfig-rro-amxco.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.motorola.launcherconfig.overlay.amxla]
+  path: /product/overlay/LauncherConfig-rro-amxla.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.motorola.launcherconfig.overlay.amxmx]
+  path: /product/overlay/LauncherConfig-rro-amxmx.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.motorola.launcherconfig.overlay.amxpe]
+  path: /product/overlay/LauncherConfig-rro-amxpe.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.motorola.launcherconfig.overlay.oraeu]
+  path: /product/overlay/LauncherConfig-rro-oraeu.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.motorola.lifetimedata]
+  path: /system_ext/priv-app/LifetimeData/LifetimeData.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@LifetimeData@LifetimeData.apk@classes.dex]
+[com.motorola.livewallpaper3]
+[com.motorola.mobiledesktop]
+  path: /product/priv-app/MotoDesktop/MotoDesktop.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoDesktop@MotoDesktop.apk@classes.dex]
+    used by other apps: [com.motorola.mobiledesktop.core (isa=arm64)]
+[com.motorola.mobiledesktop.core]
+  path: /system_ext/priv-app/MotoDesktopCore/MotoDesktopCore.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoDesktopCore@MotoDesktopCore.apk@classes.vdex]
+[com.motorola.motcameradesktop]
+  path: /system_ext/priv-app/MotCameraDesktop/MotCameraDesktop.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotCameraDesktop@MotCameraDesktop.apk@classes.vdex]
+[com.motorola.moto]
+  path: /product/priv-app/MotoAppUIRefresh/MotoAppUIRefresh.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoAppUIRefresh@MotoAppUIRefresh.apk@classes.dex]
+[com.motorola.moto_stats]
+  path: /product/priv-app/MotoStats/MotoStats.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoStats@MotoStats.apk@classes.dex]
+[com.motorola.motocare]
+  path: /system_ext/priv-app/MotoCare/MotoCare.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoCare@MotoCare.apk@classes.dex]
+[com.motorola.motocit]
+  path: /system_ext/priv-app/CQATest/CQATest.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@CQATest@CQATest.apk@classes.dex]
+[com.motorola.motosecurecore]
+  path: /system_ext/priv-app/MotoSecureCore/MotoSecureCore.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoSecureCore@MotoSecureCore.apk@classes.dex]
+[com.motorola.motosignature.app]
+[com.motorola.motosignature2.app]
+[com.motorola.msimsettings]
+  path: /system_ext/priv-app/MSimSettings/MSimSettings.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MSimSettings@MSimSettings.apk@classes.vdex]
+[com.motorola.msimsettings.overlay]
+[com.motorola.mykey]
+  path: /system_ext/priv-app/MyKey/MyKey.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MyKey@MyKey.apk@classes.dex]
+[com.motorola.nfwlocationattribution]
+  path: /system_ext/app/NFWLocationAttribution/NFWLocationAttribution.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@app@NFWLocationAttribution@NFWLocationAttribution.apk@classes.vdex]
+[com.motorola.om]
+  path: /product/priv-app/MotoOm/MotoOm.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoOm@MotoOm.apk@classes.dex]
+[com.motorola.omadm.service]
+  path: /product/priv-app/DMService/DMService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@DMService@DMService.apk@classes.dex]
+[com.motorola.omadm.vzw]
+  path: /product/priv-app/VzwDM/VzwDM.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@VzwDM@VzwDM.apk@classes.dex]
+[com.motorola.overlay.launcher3]
+[com.motorola.paks]
+  path: /system_ext/priv-app/PAKSFinance/PAKSFinance.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@PAKSFinance@PAKSFinance.apk@classes.dex]
+[com.motorola.paks.notification]
+  path: /system_ext/priv-app/PaksFinanceNotification/PaksFinanceNotification.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@PaksFinanceNotification@PaksFinanceNotification.apk@classes.dex]
+[com.motorola.perfmonitor]
+  path: /product/app/PerfMonitor/PerfMonitor.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@PerfMonitor@PerfMonitor.apk@classes.vdex]
+[com.motorola.personalize]
+  path: /system_ext/priv-app/Personalize/Personalize.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@Personalize@Personalize.apk@classes.dex]
+    used by other apps: [com.android.systemui (isa=arm64)]
+[com.motorola.playautoinstallext]
+  path: /product/app/PlayAutoInstallExt/PlayAutoInstallExt.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@PlayAutoInstallExt@PlayAutoInstallExt.apk@classes.dex]
+[com.motorola.rcsConfigService]
+  path: /system_ext/priv-app/rcsConfigService/rcsConfigService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@rcsConfigService@rcsConfigService.apk@classes.dex]
+[com.motorola.revoker.services]
+  path: /system_ext/priv-app/RevokerServices/RevokerServices.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@RevokerServices@RevokerServices.apk@classes.dex]
+[com.motorola.safetycenter.resources.overlay]
+[com.motorola.sarcontrol]
+  path: /system/priv-app/MtkSarControlService/MtkSarControlService.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@MtkSarControlService@MtkSarControlService.apk@classes.vdex]
+[com.motorola.screenshoteditor]
+  path: /product/priv-app/MotoScreenshotEditor/MotoScreenshotEditor.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoScreenshotEditor@MotoScreenshotEditor.apk@classes.dex]
+[com.motorola.securevault]
+  path: /system_ext/priv-app/MotoSecureVault/MotoSecureVault.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoSecureVault@MotoSecureVault.apk@classes.dex]
+[com.motorola.securityhub]
+  path: /system_ext/priv-app/MotoSecurityHub/MotoSecurityHub.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoSecurityHub@MotoSecurityHub.apk@classes.dex]
+[com.motorola.securityhubext]
+  path: /system_ext/priv-app/MotoSecurityHubExt/MotoSecurityHubExt.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoSecurityHubExt@MotoSecurityHubExt.apk@classes.dex]
+[com.motorola.settings.mep.overlay]
+[com.motorola.setup]
+  path: /system_ext/priv-app/SetupWizardExt/SetupWizardExt.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@SetupWizardExt@SetupWizardExt.apk@classes.dex]
+[com.motorola.setup.auto_generated_rro_product__]
+  path: /product/overlay/SetupWizardExt__naples_g_sys__auto_generated_rro_product.apk
+    arm64: [status=unknown] [reason=unknown] [primary-abi]
+      [location is none]
+[com.motorola.setup.overlay.gemini]
+[com.motorola.setup.overlay.pai]
+[com.motorola.setup.overlay.skipglance.naples]
+[com.motorola.slpc_sys]
+  path: /system_ext/app/SlpcSystem/SlpcSystem.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@app@SlpcSystem@SlpcSystem.apk@classes.dex]
+[com.motorola.smart5g]
+  path: /system_ext/priv-app/MotoSmart5G/MotoSmart5G.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoSmart5G@MotoSmart5G.apk@classes.dex]
+[com.motorola.smartfeed]
+  path: /product/priv-app/SmartFeed/SmartFeed.apk
+    arm64: [status=speed-profile] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@SmartFeed@SmartFeed.apk@classes.dex]
+[com.motorola.spaces]
+  path: /product/priv-app/MotoSpaces/MotoSpaces.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@MotoSpaces@MotoSpaces.apk@classes.dex]
+[com.motorola.spectrum.setup.extensions]
+  path: /system_ext/priv-app/SpectrumSetupExt/SpectrumSetupExt.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@SpectrumSetupExt@SpectrumSetupExt.apk@classes.dex]
+[com.motorola.sstservice]
+  path: /system_ext/priv-app/MotoSstSoundService/MotoSstSoundService.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoSstSoundService@MotoSstSoundService.apk@classes.vdex]
+[com.motorola.systemserver]
+  path: /system/priv-app/MotoSystemServer/MotoSystemServer.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system@priv-app@MotoSystemServer@MotoSystemServer.apk@classes.dex]
+[com.motorola.systemui.desk]
+  path: /system_ext/priv-app/MotoTaskBar/MotoTaskBar.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoTaskBar@MotoTaskBar.apk@classes.dex]
+[com.motorola.systemui.overlay.dcm]
+[com.motorola.systemui.overlay.jp]
+[com.motorola.systemui.overlay.moto.sysbar]
+[com.motorola.thermalservice]
+  path: /product/app/ThermalService/ThermalService.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@ThermalService@ThermalService.apk@classes.dex]
+[com.motorola.timeweatherwidget]
+  path: /product/app/TimeWeather/TimeWeather.apk
+    arm64: [status=speed] [reason=bg-dexopt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@app@TimeWeather@TimeWeather.apk@classes.dex]
+    used by other apps: [com.android.systemui (isa=arm64)]
+[com.motorola.vzw.pco.extensions.pcoreceiver]
+  path: /product/priv-app/vzwPcoExt/vzwPcoExt.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@vzwPcoExt@vzwPcoExt.apk@classes.dex]
+[com.motorola.wifi.motowifimetrics]
+  path: /system_ext/priv-app/MotoWifiMetrics/MotoWifiMetrics.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@priv-app@MotoWifiMetrics@MotoWifiMetrics.apk@classes.dex]
+[com.oem.euiccpartnerapp]
+  path: /product/priv-app/EuiccPartnerApp/EuiccPartnerApp.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@EuiccPartnerApp@EuiccPartnerApp.apk@classes.dex]
+[com.oem.euiccpartnerapp.overlay.att]
+[com.oem.euiccpartnerapp.overlay.br]
+[com.oem.euiccpartnerapp.overlay.cc]
+[com.oem.euiccpartnerapp.overlay.na]
+[com.oem.euiccpartnerapp.overlay.retca]
+[com.oem.euiccpartnerapp.overlay.tmo]
+[com.oem.euiccpartnerapp.overlay.vzw]
+[com.orange.aura.oobe]
+  path: /product/priv-app/OrangeManualSelector/OrangeManualSelector.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@OrangeManualSelector@OrangeManualSelector.apk@classes.vdex]
+[com.orange.update]
+  path: /product/priv-app/OrangeUpdates/OrangeUpdates.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@OrangeUpdates@OrangeUpdates.apk@classes.dex]
+[com.payjoy.access]
+  path: /product/priv-app/PayJoyAccess/PayJoyAccess.apk
+    arm64: [status=verify] [reason=prebuilt] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@PayJoyAccess@PayJoyAccess.apk@classes.dex]
+[com.trustonic.teeservice]
+  path: /system_ext/app/TeeService/TeeService.apk
+    arm64: [status=verify] [reason=first-boot] [primary-abi]
+      [location is /data/dalvik-cache/arm64/system_ext@app@TeeService@TeeService.apk@classes.dex]
+[de.telekom.tsc]
+  path: /product/priv-app/AppAssistantEnabler/AppAssistantEnabler.apk
+    arm64: [status=verify] [reason=vdex] [primary-abi]
+      [location is /data/dalvik-cache/arm64/product@priv-app@AppAssistantEnabler@AppAssistantEnabler.apk@classes.vdex]
+
+Current GC: CollectorTypeCMC

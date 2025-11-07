@@ -1,0 +1,74 @@
+Load: 11.35 / 11.19 / 11.1
+CPU usage from 56911ms to 11240ms ago (2025-10-23 02:26:11.424 to 2025-10-23 02:26:57.094):
+3.5% TOTAL: 1% user + 2.1% kernel + 0% iowait + 0.2% irq + 0.1% softirq
+  11% 1679/system_server: 4% user + 7.7% kernel / faults: 1266 minor
+  1% 7680/adbd: 0.1% user + 0.8% kernel / faults: 1911 minor
+  0.8% 1009/android.hardware.memtrack-service.mediatek: 0% user + 0.7% kernel / faults: 605 minor
+  0.6% 679/logd: 0.1% user + 0.5% kernel / faults: 74 minor
+  0.3% 1288/aplogd: 0.1% user + 0.1% kernel / faults: 5 minor
+  0.2% 11751/kworker/u16:1-events_unbound: 0% user + 0.2% kernel / faults: 63 minor
+  0.1% 145/irq/131-11201000.usb0: 0% user + 0.1% kernel
+  0.1% 14/rcu_preempt: 0% user + 0.1% kernel
+  0.1% 3143/batt_health: 0% user + 0.1% kernel / faults: 8 minor
+  0.1% 993/android.hardware.health-service.example: 0% user + 0.1% kernel / faults: 20 minor
+  0.1% 2203/com.android.systemui: 0.1% user + 0% kernel / faults: 62 minor
+  0.1% 3319/com.motorola.modemservice: 0% user + 0% kernel / faults: 5 minor
+  0.1% 10424/com.android.vending: 0% user + 0.1% kernel / faults: 190 minor 531 major
+  0.1% 3477/com.motorola.mobiledesktop: 0% user + 0% kernel / faults: 2 minor
+  0.1% 10544/com.android.vending:background: 0% user + 0% kernel / faults: 307 minor 659 major
+  0% 203/charger_thread: 0% user + 0% kernel
+  0% 74/kworker/1:1-mm_percpu_wq: 0% user + 0% kernel
+  0% 8396/com.google.android.apps.nbu.files: 0% user + 0% kernel / faults: 162 minor 502 major
+  0% 11768/kworker/u16:2-events_unbound: 0% user + 0% kernel / faults: 28 minor
+  0% 11787/kworker/u16:0-events_unbound: 0% user + 0% kernel / faults: 39 minor
+  0% 62/ksoftirqd/6: 0% user + 0% kernel
+  0% 69/ksoftirqd/7: 0% user + 0% kernel
+  0% 112/wdtk-0: 0% user + 0% kernel
+  0% 157/tee_worker/3: 0% user + 0% kernel
+  0% 265/ueventd: 0% user + 0% kernel
+  0% 681/servicemanager: 0% user + 0% kernel / faults: 1 minor
+  0% 998/android.hardware.usb-aidl-service.mediatekv1.0: 0% user + 0% kernel / faults: 120 minor
+  0% 1325/thermal_core: 0% user + 0% kernel / faults: 6 minor
+  0% 3180/com.google.android.apps.wellbeing: 0% user + 0% kernel / faults: 95 minor 259 major
+  0% 6849/com.motorola.freeform: 0% user + 0% kernel / faults: 7 minor
+  0% 7750/com.google.android.googlequicksearchbox:googleapp: 0% user + 0% kernel / faults: 5 minor
+  0% 10268/com.android.chrome: 0% user + 0% kernel / faults: 51 minor 182 major
+  0% 11366/com.motorola.dolby.dolbyui: 0% user + 0% kernel / faults: 103 minor 214 major
+  0% 13/ksoftirqd/0: 0% user + 0% kernel
+  0% 25/migration/1: 0% user + 0% kernel
+  0% 27/ksoftirqd/1: 0% user + 0% kernel
+  0% 34/ksoftirqd/2: 0% user + 0% kernel
+  0% 41/ksoftirqd/3: 0% user + 0% kernel
+  0% 48/ksoftirqd/4: 0% user + 0% kernel
+  0% 55/ksoftirqd/5: 0% user + 0% kernel
+  0% 84/kcompactd0: 0% user + 0% kernel
+  0% 777/aee_aed64_v2: 0% user + 0% kernel
+  0% 812/f2fs_ckpt-254:54: 0% user + 0% kernel
+  0% 947/netd: 0% user + 0% kernel
+  0% 951/iptables-restore: 0% user + 0% kernel / faults: 176 minor
+  0% 1030/kworker/4:2H-kverityd: 0% user + 0% kernel
+  0% 1102/surfaceflinger: 0% user + 0% kernel
+  0% 1111/fuelgauged: 0% user + 0% kernel
+  0% 1320/traced: 0% user + 0% kernel
+  0% 2428/com.motorola.actions: 0% user + 0% kernel / faults: 2 minor
+  0% 2527/kworker/6:97H-kblockd: 0% user + 0% kernel
+  0% 3428/com.motorola.personalize: 0% user + 0% kernel / faults: 8 minor
+  0% 3661/com.motorola.mykey.trigger: 0% user + 0% kernel
+  0% 3663/com.motorola.gamemode: 0% user + 0% kernel
+  0% 7777/kworker/0:0H-kblockd: 0% user + 0% kernel
+  0% 8336/kworker/3:3-rcu_gp: 0% user + 0% kernel
+  0% 9323/kworker/4:2+events: 0% user + 0% kernel
+  0% 9517/kworker/5:0: 0% user + 0% kernel
+  0% 9545/kworker/6:0-events_freezable_power_: 0% user + 0% kernel
+  0% 10345/com.google.android.apps.turbo:ssb: 0% user + 0% kernel / faults: 3 minor 1 major
+  0% 10393/com.google.android.as.oss: 0% user + 0% kernel / faults: 43 minor 122 major
+  0% 10439/com.google.android.tts: 0% user + 0% kernel / faults: 51 minor 163 major
+  0% 10643/com.google.android.rkpdapp: 0% user + 0% kernel
+  0% 10810/kworker/7:1-mm_percpu_wq: 0% user + 0% kernel
+  0% 11404/com.motorola.securityhub: 0% user + 0% kernel / faults: 2 minor
+  0% 11439/com.motorola.help: 0% user + 0% kernel / faults: 57 minor 171 major
+  0% 11477/com.motorola.spaces: 0% user + 0% kernel / faults: 1 minor
+  0% 11530/com.motorola.camera5: 0% user + 0% kernel / faults: 82 minor 164 major
+  0% 11658/kworker/u17:1-ufs_clk_gating_0: 0% user + 0% kernel
+  0% 11796/kworker/0:1-events: 0% user + 0% kernel
+ +0% 12050/dumpsys: 0% user + 0% kernel
