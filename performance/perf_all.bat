@@ -14,13 +14,16 @@ if %ERRORLEVEL% neq 0 (
 if "%1"=="" goto show_help
 if /i "%1"=="-h" goto show_help
 if /i "%1"=="help" goto show_help
+if /i "%1"=="cmd" goto cmd
 if /i "%1"=="base" goto base
 if /i "%1"=="more" goto more
-if /i "%1"=="record" goto screenRecord
+if /i "%1"=="io" goto input_output
+if /i "%1"=="screen" goto screen
 if /i "%1"=="full" goto full
 if /i "%1"=="cmd" goto command
 if /i "%1"=="online" goto online
 if /i "%1"=="origin" goto origin
+if /i "%1"=="reset" goto reset
 
 
 echo Unknown command: %1
@@ -36,7 +39,7 @@ echo 更多性能信息： perf_more.bat
 echo 全量性能抓取： perf_full.bat
 echo 文件系统性能： perf_ioblock.bat
 echo 带日志性能抓取： perf_log.bat
-echo 带录屏性能抓取： perf_record.bat
+echo 带录屏性能抓取： perf_screen.bat
 
 echo
 echo Usage: Performance [command]
@@ -54,51 +57,58 @@ echo   perf base 5
 echo  =======================
 exit /b
 
+:cmd
+call perf_cmd.bat %1 %2
+exit /b
+
 :base
-call perf_base.bat %2
+call perf_base.bat %1 %2
 exit /b
 
 :more
-if %2==5(
-	set record_time=5000
-)else if %2 == 10 (
-	set record_time=10000
-)else(
-	set record_time=10000
-)
-call perf_more.bat %2
+call perf_more.bat %1 %2
 exit /b
 
 :full
-if %2==5 (
-	set record_time=5000
-)else if %2==10 (
-	set record_time=10000
-)else(
-	set record_time=10000
-)
-call Full_capture.bat %record_time%
+call perf_full.bat %1 %2
 exit /b
 
-:screenRecord
-if %2==10 (
-	set record_time=10000
-)else if %2==20 (
-	set record_time=20000
-)else(
-	set record_time=10000
-)
-call ScreenRecord.Capture.bat %record_time%
+:screen
+call perf_screen.bat %1 %2
 exit /b
 
-:command
-echo adb shell perfetto -o /data/misc/perfetto-traces/trace_file.perfetto-trace -t 10s sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+:input_output
+call perf_io.bat %1 %2
+exit /b
+
+:online_ready
+set targetFile=%SCRIPT_DIR%record_android_trace
+echo record_android_trace path = %targetFile%
+set "maxDays=30"
+if not exist "%targetFile%" (
+	curl -O https://raw.githubusercontent.com/google/perfetto/master/tools/record_android_trace
+)
+:: 获取当前日期
+for /f %%A in ('powershell -command "Get-Date -Format yyyy-MM-dd"') do set "today=%%A"
+echo today=%today%
+:: 获取文件最后修改日期
+for /f %%A in ('powershell -command "(Get-Item '%targetFile%').LastWriteTime.ToString('yyyy-MM-dd')"') do set "fileDate=%%A"
+echo fileDate = %fileDate%
+:: 计算时间差(单位：天)
+for /f %%A in ('powershell -command "(New-TimeSpan -Start '%fileDate%' -End '%today%').Days"') do set "diffDays=%%A"
+if %diffDays% GEQ %maxDays% (
+    echo 文件已过期，准备删除并重新下载...
+    del "%targetFile%"
+    :: 在这里添加你的下载命令，例如：
+    curl -O https://raw.githubusercontent.com/google/perfetto/master/tools/record_android_trace
+)
+echo 工具已下载，请重新执行抓trace命令
 exit /b
 
 :online
-echo record_android_trace path = %SCRIPT_DIR%record_android_trace
-if not exist "%SCRIPT_DIR%record_android_trace" (
-	curl -O https://raw.githubusercontent.com/google/perfetto/master/tools/record_android_trace
+set targetFile=%SCRIPT_DIR%record_android_trace
+if not exist "%targetFile%" (
+	goto online_ready
 )
 set "hasPython=0"
 :: 检查是否安装了 python
@@ -107,14 +117,28 @@ if %hasPython%=="0" (
 	echo 未检测到 Python，请先安装 Python 环境
 	exit /b
 )
-python3 record_android_trace -o trace_file.perfetto-trace -t 10s -b 64mb sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
-
-echo adb shell perfetto -o /data/misc/perfetto-traces/trace_file.perfetto-trace -t 10s sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory
+set "duration=%~2"
+if "%~2"=="" (
+    set "duration=10"
+)
+:: 查看支持的TAG, adb shell atrace --list_categories
+python3 record_android_trace -o trace_file.perfetto-trace -t %duration%s -b 64mb sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory thermal 
 exit /b
 
 :origin
 rem "" 是窗口标题
 start "" %USERPROFILE%\"batScript\performance\perfettoCaptureTools_original"
+exit /b
+
+:reset
+REM 自动查找并终止 trace_processor_shell.exe 进程
+
+REM 1. 使用 tasklist 查找进程ID (PID)
+REM /nh (无列头) /fi "imagename eq..." (按名称过滤)
+REM tokens=2 提取 PID (第二列)
+for /f "tokens=2" %%i in ('tasklist /nh /fi "imagename eq trace_processor_shell.exe"') do (
+    taskkill /F /PID %%i
+)
 exit /b
 
 endlocal

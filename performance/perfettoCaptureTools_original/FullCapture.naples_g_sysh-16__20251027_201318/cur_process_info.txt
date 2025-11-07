@@ -1,0 +1,896 @@
+================= cur process version info ================= 
+com.motorola.launcher3
+    versionCode=36 minSdk=36 targetSdk=36
+    versionName=16
+    signatures=PackageSignatures{6127299 version:3, signatures:[fc5bde53], past signatures:[]}
+================= cur process meminfo info ================= 
+Applications Memory Usage (in Kilobytes):
+Uptime: 11399110 Realtime: 19432143
+
+** MEMINFO in pid 2951 [com.motorola.launcher3] **
+                   Pss  Private  Private  SwapPss      Rss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty    Total     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------   ------
+  Native Heap    39382    37944     1384    11964    43652    58332    54896     3435
+  Dalvik Heap     5465     5284       80        8    13276    14672     6480     8192
+ Dalvik Other     2731     2592      120       64     3596                           
+        Stack      948      944        4      352      956                           
+       Ashmem       12        0        0        0      920                           
+    Other dev      152        0      152        0      616                           
+     .so mmap     4932      252      296      264    78792                           
+    .jar mmap     1580        0       44        0    47084                           
+    .apk mmap    11065        0     6092        0    23816                           
+    .ttf mmap      281        0      220        0      524                           
+    .dex mmap     8583       20     8544        0     9708                           
+    .oat mmap      383        0        0        0    13392                           
+    .art mmap     1163      544      192      128    33712                           
+   Other mmap      532      332       88        0     2936                           
+   EGL mtrack    19388    19388        0        0    19388                           
+    GL mtrack     5304     5304        0        0     5304                           
+      Unknown      610      356      248      544     2020                           
+        TOTAL   115835    72960    17464    13324   299692    73004    61376    11627
+ 
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:     6020                          46988
+         Native Heap:    37944                          43652
+                Code:    15468                         173340
+               Stack:      944                            956
+            Graphics:    24692                          24692
+       Private Other:     5356
+              System:    25411
+             Unknown:                                   10064
+ 
+           TOTAL PSS:   115835            TOTAL RSS:   299692       TOTAL SWAP PSS:    13324
+ 
+ Objects
+               Views:      397         ViewRootImpl:        2
+         AppContexts:       16           Activities:        1
+              Assets:       75        AssetManagers:        0
+       Local Binders:       92        Proxy Binders:       99
+       Parcel memory:      278         Parcel count:      140
+    Death Recipients:        2             WebViews:        0
+ 
+ Native Allocations
+                         Count                       Total(kB)
+                        ------                         ------
+   Bitmap (malloced):       51                          22060
+Bitmap (nonmalloced):       42                          19335
+    Other (malloced):     2062                            195
+ Other (nonmalloced):      224                            150
+ 
+ SQL
+         MEMORY_USED:     1046
+  PAGECACHE_OVERFLOW:      599          MALLOC_SIZE:       46
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b) cache hits cache misses cache size  Dbname
+PER CONNECTION STATS
+         4     1320             81   858    22     6  /data/user/0/com.motorola.launcher3/databases/app_icons.db
+         4      120             93    26    36    12  /data/user/0/com.motorola.launcher3/databases/launcher.db
+         4      104             48    57    99    25  /data/user/0/com.motorola.launcher3/no_backup/androidx.work.workdb
+         4        8                    0     0     0    (attached) temp
+         4      104             57    11    27     6  /data/user/0/com.motorola.launcher3/no_backup/androidx.work.workdb (1)
+POOL STATS
+     cache hits  cache misses    cache size  Dbname
+            858            23           881  /data/user/0/com.motorola.launcher3/databases/app_icons.db
+             26            37            63  /data/user/0/com.motorola.launcher3/databases/launcher.db
+             68           130           198  /data/user/0/com.motorola.launcher3/no_backup/androidx.work.workdb
+================= cur process package info ================= 
+Activity Resolver Table:
+  Non-Data Actions:
+      com.motorola.launcher3.action.MOBILE_UI_LAUNCHER:
+        15aba24 com.motorola.launcher3/com.android.launcher3.MobileUiLauncher filter 430698d
+          Action: "com.motorola.launcher3.action.MOBILE_UI_LAUNCHER"
+          Category: "android.intent.category.SECONDARY_HOME"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.MONKEY"
+          Category: "android.intent.category.LAUNCHER_APP"
+      com.motorola.launcher3.action.SHOW_WIDGET_BOTTOM_SHEET:
+        7a055b6 com.motorola.launcher3/com.android.launcher3.CustomizationPanelLauncher filter a2622b7
+          Action: "com.motorola.launcher3.action.SHOW_WIDGET_BOTTOM_SHEET"
+          Action: "android.intent.action.MAIN"
+          Action: "android.intent.action.SHOW_WORK_APPS"
+          Action: "android.intent.action.ALL_APPS"
+          Category: "android.intent.category.HOME"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.MONKEY"
+          Category: "android.intent.category.LAUNCHER_APP"
+      com.android.settings.action.EXTRA_SETTINGS:
+        b90658e com.motorola.launcher3/com.android.launcher3.settings.SettingsActivity filter f0929bc
+          Action: "com.android.settings.action.EXTRA_SETTINGS"
+          Category: "android.intent.category.DEFAULT"
+      com.motorola.launcher3.action.FOLDER_CHOOSER:
+        81a6ef9 com.motorola.launcher3/com.android.launcher3.allapps.folder.FolderChooser filter 907649f
+          Action: "com.motorola.launcher3.action.FOLDER_CHOOSER"
+          Category: "android.intent.category.DEFAULT"
+      android.intent.action.MAIN:
+        5c52e78 com.motorola.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher filter 1ed8951
+          Action: "android.intent.action.MAIN"
+          Action: "android.intent.action.SHOW_WORK_APPS"
+          Action: "android.intent.action.ALL_APPS"
+          Category: "android.intent.category.HOME"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.MONKEY"
+          Category: "android.intent.category.LAUNCHER_APP"
+        7a055b6 com.motorola.launcher3/com.android.launcher3.CustomizationPanelLauncher filter a2622b7
+          Action: "com.motorola.launcher3.action.SHOW_WIDGET_BOTTOM_SHEET"
+          Action: "android.intent.action.MAIN"
+          Action: "android.intent.action.SHOW_WORK_APPS"
+          Action: "android.intent.action.ALL_APPS"
+          Category: "android.intent.category.HOME"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.MONKEY"
+          Category: "android.intent.category.LAUNCHER_APP"
+        8d41742 com.motorola.launcher3/com.android.launcher3.Launcher filter 703353
+          Action: "android.intent.action.MAIN"
+          Action: "android.intent.action.SHOW_WORK_APPS"
+          Action: "android.intent.action.ALL_APPS"
+          Category: "android.intent.category.HOME"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.MONKEY"
+          Category: "android.intent.category.LAUNCHER_APP"
+        1dbcffd com.motorola.launcher3/com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher filter ea4d4f2
+          Action: "android.intent.action.MAIN"
+          Action: "com.motorola.launcher3.action.SECONDARY_DISPLAY_LAUNCHER"
+          Category: "android.intent.category.SECONDARY_HOME"
+          Category: "android.intent.category.DEFAULT"
+        a3c9743 com.motorola.launcher3/com.android.launcher3.allapps.folder.AllAppsFolderEditor filter 2b501c0
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.DEFAULT"
+        81a6ef9 com.motorola.launcher3/com.android.launcher3.allapps.folder.FolderChooser filter ea74e3e
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.DEFAULT"
+        8c6104a com.motorola.launcher3/com.android.launcher3.discovery.DiscoverySettingActivity filter 887abbb
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.DEFAULT"
+        5b948d8 com.motorola.launcher3/com.android.launcher3.discovery.DiscoveryKeyboardActivity filter 3260431
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.DEFAULT"
+        b5ce716 com.motorola.launcher3/com.android.launcher3.discovery.DiscoveryPrivacyActivity filter 5fb4897
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.DEFAULT"
+        7e61a84 com.motorola.launcher3/com.android.launcher3.discovery.LicenseActivity filter f25b26d
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.DEFAULT"
+      android.intent.action.PICK:
+        961c2ee com.motorola.launcher3/com.android.launcher3.WidgetPickerActivity filter a18b38f
+          Action: "android.intent.action.PICK"
+          Category: "android.intent.category.DEFAULT"
+      android.content.pm.action.CONFIRM_PIN_APPWIDGET:
+        49b5490 com.motorola.launcher3/com.android.launcher3.dragndrop.AddItemActivity filter 1471189
+          Action: "android.content.pm.action.CONFIRM_PIN_APPWIDGET"
+          Action: "android.content.pm.action.CONFIRM_PIN_SHORTCUT"
+      com.motorola.launcher3.secondarydisplay.action.SECONDARY_DISPLAY_APP_DRAWER2:
+        ac879ec com.motorola.launcher3/com.android.launcher3.secondarydisplay.SecondaryDisplayAppDrawer2 filter 50a01b5
+          Action: "com.motorola.launcher3.secondarydisplay.action.SECONDARY_DISPLAY_APP_DRAWER2"
+          Category: "android.intent.category.DEFAULT"
+      android.intent.action.APPLICATION_PREFERENCES:
+        b90658e com.motorola.launcher3/com.android.launcher3.settings.SettingsActivity filter 540b1af
+          Action: "android.intent.action.APPLICATION_PREFERENCES"
+          Category: "android.intent.category.DEFAULT"
+      android.intent.action.SHOW_WORK_APPS:
+        5c52e78 com.motorola.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher filter 1ed8951
+          Action: "android.intent.action.MAIN"
+          Action: "android.intent.action.SHOW_WORK_APPS"
+          Action: "android.intent.action.ALL_APPS"
+          Category: "android.intent.category.HOME"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.MONKEY"
+          Category: "android.intent.category.LAUNCHER_APP"
+        7a055b6 com.motorola.launcher3/com.android.launcher3.CustomizationPanelLauncher filter a2622b7
+          Action: "com.motorola.launcher3.action.SHOW_WIDGET_BOTTOM_SHEET"
+          Action: "android.intent.action.MAIN"
+          Action: "android.intent.action.SHOW_WORK_APPS"
+          Action: "android.intent.action.ALL_APPS"
+          Category: "android.intent.category.HOME"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.MONKEY"
+          Category: "android.intent.category.LAUNCHER_APP"
+        8d41742 com.motorola.launcher3/com.android.launcher3.Launcher filter 703353
+          Action: "android.intent.action.MAIN"
+          Action: "android.intent.action.SHOW_WORK_APPS"
+          Action: "android.intent.action.ALL_APPS"
+          Category: "android.intent.category.HOME"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.MONKEY"
+          Category: "android.intent.category.LAUNCHER_APP"
+      android.intent.action.ALL_APPS:
+        5c52e78 com.motorola.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher filter 1ed8951
+          Action: "android.intent.action.MAIN"
+          Action: "android.intent.action.SHOW_WORK_APPS"
+          Action: "android.intent.action.ALL_APPS"
+          Category: "android.intent.category.HOME"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.MONKEY"
+          Category: "android.intent.category.LAUNCHER_APP"
+        7a055b6 com.motorola.launcher3/com.android.launcher3.CustomizationPanelLauncher filter a2622b7
+          Action: "com.motorola.launcher3.action.SHOW_WIDGET_BOTTOM_SHEET"
+          Action: "android.intent.action.MAIN"
+          Action: "android.intent.action.SHOW_WORK_APPS"
+          Action: "android.intent.action.ALL_APPS"
+          Category: "android.intent.category.HOME"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.MONKEY"
+          Category: "android.intent.category.LAUNCHER_APP"
+        8d41742 com.motorola.launcher3/com.android.launcher3.Launcher filter 703353
+          Action: "android.intent.action.MAIN"
+          Action: "android.intent.action.SHOW_WORK_APPS"
+          Action: "android.intent.action.ALL_APPS"
+          Category: "android.intent.category.HOME"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.MONKEY"
+          Category: "android.intent.category.LAUNCHER_APP"
+      com.motorola.launcher3.ACTION_SINGLE_LAYER_STYLE_SETTINGS:
+        a4f27a7 com.motorola.launcher3/com.android.launcher3.settings.SingleLayerStyleSettingsActivity filter 3f2f454
+          Action: "com.motorola.launcher3.ACTION_SINGLE_LAYER_STYLE_SETTINGS"
+          Category: "android.intent.category.DEFAULT"
+      com.motorola.launcher3.ACTION_HOME_SCREEN_STYLE_SETTINGS:
+        9d268c1 com.motorola.launcher3/com.android.launcher3.settings.HomeScreenStyleSettingsActivity filter c79866
+          Action: "com.motorola.launcher3.ACTION_HOME_SCREEN_STYLE_SETTINGS"
+          Category: "android.intent.category.DEFAULT"
+      com.motorola.launcher3.ACTION_ICON_PERSONALIZED_SETTINGS:
+        3f0b9cb com.motorola.launcher3/com.android.launcher3.settings.IconPersonalizedActivity filter 41d25a8
+          Action: "com.motorola.launcher3.ACTION_ICON_PERSONALIZED_SETTINGS"
+          Category: "android.intent.category.DEFAULT"
+      com.motorola.launcher3.ACTION_APP_DRAWER_STYLE_SETTINGS:
+        5063d45 com.motorola.launcher3/com.android.launcher3.settings.AppDrawerStyleSettings filter 2b14c9a
+          Action: "com.motorola.launcher3.ACTION_APP_DRAWER_STYLE_SETTINGS"
+          Category: "android.intent.category.DEFAULT"
+      com.android.quickstep.action.GESTURE_SANDBOX:
+        cb85ea2 com.motorola.launcher3/com.android.quickstep.interaction.GestureSandboxActivity filter aa1d733
+          Action: "com.android.quickstep.action.GESTURE_SANDBOX"
+          Category: "android.intent.category.DEFAULT"
+      com.motorola.launcher3.action.SECONDARY_DISPLAY_LAUNCHER:
+        1dbcffd com.motorola.launcher3/com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher filter ea4d4f2
+          Action: "android.intent.action.MAIN"
+          Action: "com.motorola.launcher3.action.SECONDARY_DISPLAY_LAUNCHER"
+          Category: "android.intent.category.SECONDARY_HOME"
+          Category: "android.intent.category.DEFAULT"
+      com.android.quickstep.action.GESTURE_ONBOARDING_ALL_SET:
+        aec5af0 com.motorola.launcher3/com.android.quickstep.interaction.AllSetActivity filter ff80869
+          Action: "com.android.quickstep.action.GESTURE_ONBOARDING_ALL_SET"
+          Category: "android.intent.category.DEFAULT"
+      android.content.pm.action.CONFIRM_PIN_SHORTCUT:
+        49b5490 com.motorola.launcher3/com.android.launcher3.dragndrop.AddItemActivity filter 1471189
+          Action: "android.content.pm.action.CONFIRM_PIN_APPWIDGET"
+          Action: "android.content.pm.action.CONFIRM_PIN_SHORTCUT"
+
+Receiver Resolver Table:
+  Non-Data Actions:
+      android.intent.action.BATTERY_OKAY:
+        1bac39e com.motorola.launcher3/androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy filter e539e7f
+          Action: "android.intent.action.BATTERY_OKAY"
+          Action: "android.intent.action.BATTERY_LOW"
+      android.intent.action.ACTION_POWER_DISCONNECTED:
+        6046020 com.motorola.launcher3/androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy filter de6ddd9
+          Action: "android.intent.action.ACTION_POWER_DISCONNECTED"
+          Action: "android.intent.action.ACTION_POWER_CONNECTED"
+      androidx.profileinstaller.action.SAVE_PROFILE:
+        b93d602 com.motorola.launcher3/androidx.profileinstaller.ProfileInstallReceiver filter 6adef49
+          Action: "androidx.profileinstaller.action.SAVE_PROFILE"
+      android.intent.action.DEVICE_STORAGE_LOW:
+        91f5e4c com.motorola.launcher3/androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy filter bde7e95
+          Action: "android.intent.action.DEVICE_STORAGE_LOW"
+          Action: "android.intent.action.DEVICE_STORAGE_OK"
+      android.net.conn.CONNECTIVITY_CHANGE:
+        48b7baa com.motorola.launcher3/androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy filter e8da39b
+          Action: "android.net.conn.CONNECTIVITY_CHANGE"
+      com.motorola.launcher3.action.DEACTIVATE_BRANCH:
+        f59b452 com.motorola.launcher3/com.android.launcher3.discovery.BranchSwitchReceiver filter 78ef323
+          Action: "com.motorola.launcher3.action.DEACTIVATE_BRANCH"
+          Action: "com.motorola.launcher3.action.ACTIVATE_BRANCH"
+      android.intent.action.DEVICE_STORAGE_OK:
+        91f5e4c com.motorola.launcher3/androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy filter bde7e95
+          Action: "android.intent.action.DEVICE_STORAGE_LOW"
+          Action: "android.intent.action.DEVICE_STORAGE_OK"
+      com.motorola.launcher3.action.INSTALL_SHORTCUT:
+        b2b1ffa com.motorola.launcher3/com.android.launcher3.InstallShortcutReceiver2 filter a76f9ab
+          Action: "com.motorola.launcher3.action.INSTALL_SHORTCUT"
+      android.content.pm.action.SESSION_COMMITTED:
+        9fc9808 com.motorola.launcher3/com.android.launcher3.SessionCommitReceiver filter 50f5ba1
+          Action: "android.content.pm.action.SESSION_COMMITTED"
+      androidx.profileinstaller.action.INSTALL_PROFILE:
+        b93d602 com.motorola.launcher3/androidx.profileinstaller.ProfileInstallReceiver filter b2eb13
+          Action: "androidx.profileinstaller.action.INSTALL_PROFILE"
+      android.intent.action.BATTERY_LOW:
+        1bac39e com.motorola.launcher3/androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy filter e539e7f
+          Action: "android.intent.action.BATTERY_OKAY"
+          Action: "android.intent.action.BATTERY_LOW"
+      android.intent.action.TIMEZONE_CHANGED:
+        f0a1338 com.motorola.launcher3/androidx.work.impl.background.systemalarm.RescheduleReceiver filter e756f11
+          Action: "android.intent.action.TIMEZONE_CHANGED"
+          Action: "android.intent.action.TIME_SET"
+          Action: "android.intent.action.BOOT_COMPLETED"
+      android.intent.action.TIME_SET:
+        f0a1338 com.motorola.launcher3/androidx.work.impl.background.systemalarm.RescheduleReceiver filter e756f11
+          Action: "android.intent.action.TIMEZONE_CHANGED"
+          Action: "android.intent.action.TIME_SET"
+          Action: "android.intent.action.BOOT_COMPLETED"
+      androidx.profileinstaller.action.SKIP_FILE:
+        b93d602 com.motorola.launcher3/androidx.profileinstaller.ProfileInstallReceiver filter 3801150
+          Action: "androidx.profileinstaller.action.SKIP_FILE"
+      com.android.launcher.action.INSTALL_SHORTCUT:
+        2d4361c com.motorola.launcher3/com.android.launcher3.InstallShortcutReceiver filter 27fc225
+          Action: "com.android.launcher.action.INSTALL_SHORTCUT"
+      com.motorola.launcher3.action.HOME_SCREEN_STYLE_SETTING:
+        fc72cb4 com.motorola.launcher3/com.android.launcher3.settings.HomeScreenStyleHelper filter ea510dd
+          Action: "com.motorola.launcher3.action.HOME_SCREEN_STYLE_SETTING"
+      androidx.profileinstaller.action.BENCHMARK_OPERATION:
+        b93d602 com.motorola.launcher3/androidx.profileinstaller.ProfileInstallReceiver filter 26d504e
+          Action: "androidx.profileinstaller.action.BENCHMARK_OPERATION"
+      android.intent.action.BOOT_COMPLETED:
+        f0a1338 com.motorola.launcher3/androidx.work.impl.background.systemalarm.RescheduleReceiver filter e756f11
+          Action: "android.intent.action.TIMEZONE_CHANGED"
+          Action: "android.intent.action.TIME_SET"
+          Action: "android.intent.action.BOOT_COMPLETED"
+      com.motorola.launcher3.action.ACTIVATE_BRANCH:
+        f59b452 com.motorola.launcher3/com.android.launcher3.discovery.BranchSwitchReceiver filter 78ef323
+          Action: "com.motorola.launcher3.action.DEACTIVATE_BRANCH"
+          Action: "com.motorola.launcher3.action.ACTIVATE_BRANCH"
+      android.appwidget.action.APPWIDGET_HOST_RESTORED:
+        4fb41c6 com.motorola.launcher3/com.android.launcher3.AppWidgetsRestoredReceiver filter 2298587
+          Action: "android.appwidget.action.APPWIDGET_HOST_RESTORED"
+      android.intent.action.ACTION_POWER_CONNECTED:
+        6046020 com.motorola.launcher3/androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy filter de6ddd9
+          Action: "android.intent.action.ACTION_POWER_DISCONNECTED"
+          Action: "android.intent.action.ACTION_POWER_CONNECTED"
+      androidx.work.diagnostics.REQUEST_DIAGNOSTICS:
+        8e92ae4 com.motorola.launcher3/androidx.work.impl.diagnostics.DiagnosticsReceiver filter 6b0eb4d
+          Action: "androidx.work.diagnostics.REQUEST_DIAGNOSTICS"
+      androidx.work.impl.background.systemalarm.UpdateProxies:
+        7fda876 com.motorola.launcher3/androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver filter 198de77
+          Action: "androidx.work.impl.background.systemalarm.UpdateProxies"
+
+Service Resolver Table:
+  Non-Data Actions:
+      android.intent.action.QUICKSTEP_SERVICE:
+        4c85367 com.motorola.launcher3/com.android.quickstep.TouchInteractionService filter b5f1514 permission android.permission.STATUS_BAR_SERVICE
+          Action: "android.intent.action.QUICKSTEP_SERVICE"
+      android.service.notification.NotificationListenerService:
+        b5aa98b com.motorola.launcher3/com.android.launcher3.notification.NotificationListener filter 1c4ba68 permission android.permission.BIND_NOTIFICATION_LISTENER_SERVICE
+          Action: "android.service.notification.NotificationListenerService"
+      android.service.appprediction.AppPredictionService:
+        5ff3e81 com.motorola.launcher3/com.android.launcher3.appprediction.AppPredictionServiceImpl filter b7f1b26 permission android.permission.MANAGE_APP_PREDICTIONS
+          Action: "android.service.appprediction.AppPredictionService"
+
+Provider Resolver Table:
+  Non-Data Actions:
+      android.content.action.SEARCH_INDEXABLES_PROVIDER:
+        157256f com.motorola.launcher3/com.android.launcher3.settings.MySearchProvider filter 25cf27c
+          Action: "android.content.action.SEARCH_INDEXABLES_PROVIDER"
+        b5d3705 com.motorola.launcher3/com.android.quickstep.LauncherSearchIndexablesProvider filter 52235a
+          Action: "android.content.action.SEARCH_INDEXABLES_PROVIDER"
+
+Preferred Activities User 0:
+  Non-Data Actions:
+      android.intent.action.MAIN:
+        660e62c com.motorola.launcher3/com.android.launcher3.CustomizationPanelLauncher
+         mMatch=0x100000 mAlways=true
+          Selected from:
+            com.motorola.launcher3/com.android.launcher3.CustomizationPanelLauncher
+            com.android.settings/.FallbackHome
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.HOME"
+          Category: "android.intent.category.DEFAULT"
+
+Domain verification status:
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.SEND_OVERVIEW_STATE_CHANGE_BROADCASTS] (64030d2):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{7571e9e com.motorola.launcher3.permission.SEND_OVERVIEW_STATE_CHANGE_BROADCASTS}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.ALL_APPS_OVERLAY] (ca0f5a3):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{afeb14c com.motorola.launcher3.permission.ALL_APPS_OVERLAY}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.SEND_GRID_CHANGE_BROADCASTS] (a7270a0):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{71286aa com.motorola.launcher3.permission.SEND_GRID_CHANGE_BROADCASTS}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.SEND_WALLPAPER_THEME_CHANGE_BROADCASTS] (ccae459):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{b0b9638 com.motorola.launcher3.permission.SEND_WALLPAPER_THEME_CHANGE_BROADCASTS}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST] (9cc881e):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{36a6376 com.motorola.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.WRITE_SETTINGS] (2c348ff):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{6ffdde4 com.motorola.launcher3.permission.WRITE_SETTINGS}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.RECEIVE_WALLPAPER_THEME_CHANGE_BROADCASTS] (19df6cc):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{914102 com.motorola.launcher3.permission.RECEIVE_WALLPAPER_THEME_CHANGE_BROADCASTS}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.GRID_CONTROL] (f3c6d15):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{7cef450 com.motorola.launcher3.permission.GRID_CONTROL}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.settings.HOME_SCREEN_STYLE] (935082a):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{1566b4e com.motorola.launcher3.settings.HOME_SCREEN_STYLE}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.RECEIVE_OVERVIEW_STATE_CHANGE_BROADCASTS] (e8d761b):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{37057c com.motorola.launcher3.permission.RECEIVE_OVERVIEW_STATE_CHANGE_BROADCASTS}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.START_WIDGET_PICKER_ACTIVITY] (19b3b8):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{431ee5a com.motorola.launcher3.permission.START_WIDGET_PICKER_ACTIVITY}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.OVERVIEW_STATUS_CHANGE] (803c591):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{eacfd68 com.motorola.launcher3.permission.OVERVIEW_STATUS_CHANGE}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.secondarydisplay.permission.SETTINGS] (ef37cf6):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{5109626 com.motorola.launcher3.secondarydisplay.permission.SETTINGS}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.RECEIVE_GRID_CHANGE_BROADCASTS] (a0358f7):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{2088814 com.motorola.launcher3.permission.RECEIVE_GRID_CHANGE_BROADCASTS}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.ASSIST] (e925364):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{fdfeeb2 com.motorola.launcher3.permission.ASSIST}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.SWITCH_BRANCH] (d0e29cd):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{cf01180 com.motorola.launcher3.permission.SWITCH_BRANCH}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.UNREAD_BADGE] (1527282):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=normal
+    perm=PermissionInfo{fda43fe com.motorola.launcher3.permission.UNREAD_BADGE}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.READ_SETTINGS] (18a8d93):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{404c5ac com.motorola.launcher3.permission.READ_SETTINGS}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.SEND_WALLPAPER_EXTRACTION_COMPLETE_BROADCASTS] (1d341d0):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{792a20a com.motorola.launcher3.permission.SEND_WALLPAPER_EXTRACTION_COMPLETE_BROADCASTS}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.permission.SMART_PLUGINS] (be095c9):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{2ce9098 com.motorola.launcher3.permission.SMART_PLUGINS}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION] (eb934ce):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature
+    perm=PermissionInfo{dc0d4d6 com.motorola.launcher3.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION}
+    flags=0x0
+
+Permissions:
+  Permission [com.motorola.launcher3.secondarydisplay.permission.ALL_APPS_DISPLAY2] (8466fef):
+    sourcePackage=com.motorola.launcher3
+    uid=10300 gids=[] type=0 prot=signature|privileged
+    perm=PermissionInfo{3681e44 com.motorola.launcher3.secondarydisplay.permission.ALL_APPS_DISPLAY2}
+    flags=0x0
+
+Registered ContentProviders:
+  com.motorola.launcher3/com.android.launcher3.graphics.GridCustomizationsProvider:
+    Provider{925cb2d com.motorola.launcher3/com.android.launcher3.graphics.GridCustomizationsProvider}
+  com.motorola.launcher3/com.android.launcher3.settings.MySearchProvider:
+    Provider{157256f com.motorola.launcher3/com.android.launcher3.settings.MySearchProvider}
+  com.motorola.launcher3/com.android.launcher3.LauncherProvider:
+    Provider{acd6862 com.motorola.launcher3/com.android.launcher3.LauncherProvider}
+  com.motorola.launcher3/androidx.startup.InitializationProvider:
+    Provider{d0f7df3 com.motorola.launcher3/androidx.startup.InitializationProvider}
+  com.motorola.launcher3/com.android.launcher3.testing.TestInformationProvider:
+    Provider{4eadab0 com.motorola.launcher3/com.android.launcher3.testing.TestInformationProvider}
+  com.motorola.launcher3/com.android.quickstep.LauncherSearchIndexablesProvider:
+    Provider{b5d3705 com.motorola.launcher3/com.android.quickstep.LauncherSearchIndexablesProvider}
+  com.motorola.launcher3/com.android.launcher3.secondarydisplay.SecondaryDisplayLauncherProvider:
+    Provider{ac0ed29 com.motorola.launcher3/com.android.launcher3.secondarydisplay.SecondaryDisplayLauncherProvider}
+  com.motorola.launcher3/com.android.launcher3.provider.ShortcutsQueryProvider:
+    Provider{31da8ae com.motorola.launcher3/com.android.launcher3.provider.ShortcutsQueryProvider}
+  com.motorola.launcher3/com.android.launcher3.UnreadNumBadgeProvider:
+    Provider{19a064f com.motorola.launcher3/com.android.launcher3.UnreadNumBadgeProvider}
+  com.motorola.launcher3/androidx.core.content.FileProvider:
+    Provider{c9af1dc com.motorola.launcher3/androidx.core.content.FileProvider}
+
+ContentProvider Authorities:
+  [com.motorola.launcher3.secondarydisplay.settings]:
+    Provider{ac0ed29 com.motorola.launcher3/com.android.launcher3.secondarydisplay.SecondaryDisplayLauncherProvider}
+      applicationInfo=ApplicationInfo{df2aafc com.motorola.launcher3}
+  [com.motorola.launcher3.shortcut_query]:
+    Provider{31da8ae com.motorola.launcher3/com.android.launcher3.provider.ShortcutsQueryProvider}
+      applicationInfo=ApplicationInfo{b53c585 com.motorola.launcher3}
+  [com.motorola.launcher3.TestInfo]:
+    Provider{4eadab0 com.motorola.launcher3/com.android.launcher3.testing.TestInformationProvider}
+      applicationInfo=ApplicationInfo{2b7cfda com.motorola.launcher3}
+  [com.motorola.launcher3.grid_control]:
+    Provider{925cb2d com.motorola.launcher3/com.android.launcher3.graphics.GridCustomizationsProvider}
+      applicationInfo=ApplicationInfo{6341c0b com.motorola.launcher3}
+  [com.motorola.launcher3]:
+    Provider{b5d3705 com.motorola.launcher3/com.android.quickstep.LauncherSearchIndexablesProvider}
+      applicationInfo=ApplicationInfo{3d7ae8 com.motorola.launcher3}
+  [com.motorola.launcher3.settings_search]:
+    Provider{157256f com.motorola.launcher3/com.android.launcher3.settings.MySearchProvider}
+      applicationInfo=ApplicationInfo{d103501 com.motorola.launcher3}
+  [com.motorola.launcher3.overview.fileprovider]:
+    Provider{c9af1dc com.motorola.launcher3/androidx.core.content.FileProvider}
+      applicationInfo=ApplicationInfo{fd30fa6 com.motorola.launcher3}
+  [com.motorola.launcher3.unread_badge]:
+    Provider{19a064f com.motorola.launcher3/com.android.launcher3.UnreadNumBadgeProvider}
+      applicationInfo=ApplicationInfo{c066de7 com.motorola.launcher3}
+  [com.motorola.launcher3.settings]:
+    Provider{acd6862 com.motorola.launcher3/com.android.launcher3.LauncherProvider}
+      applicationInfo=ApplicationInfo{be35d94 com.motorola.launcher3}
+  [com.motorola.launcher3.androidx-startup]:
+    Provider{d0f7df3 com.motorola.launcher3/androidx.startup.InitializationProvider}
+      applicationInfo=ApplicationInfo{aca203d com.motorola.launcher3}
+
+Key Set Manager:
+  [com.motorola.launcher3]
+      Signing KeySets: 4
+
+Packages:
+  Package [com.motorola.launcher3] (313c9e3):
+    appId=10300
+    pkg=Package{f824fe0 com.motorola.launcher3}
+    codePath=/system_ext/priv-app/Launcher3QuickStep
+    resourcePath=/system_ext/priv-app/Launcher3QuickStep
+    legacyNativeLibraryDir=/system_ext/priv-app/Launcher3QuickStep/lib
+    extractNativeLibs=true
+    primaryCpuAbi=null
+    secondaryCpuAbi=null
+    cpuAbiOverride=null
+    versionCode=36 minSdk=36 targetSdk=36
+    minExtensionVersions=[]
+    versionName=16
+    hiddenApiEnforcementPolicy=0
+    usesNonSdkApi=true
+    splits=[base]
+    apkSigningVersion=3
+    flags=[ SYSTEM HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP KILL_AFTER_RESTORE RESTORE_ANY_VERSION LARGE_HEAP ]
+    privateFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE BACKUP_IN_FOREGROUND PARTIALLY_DIRECT_BOOT_AWARE PRIVILEGED SYSTEM_EXT PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]
+    forceQueryable=true
+    pageSizeCompat=0
+    queriesPackages=[com.motorola.smarteye]
+    queriesIntents=[Intent { act=com.motorola.plugin.action.PLUGIN_DISCOVERY }]
+    scannedAsStoppedSystemApp=false
+    supportsScreens=[small, medium, large, xlarge, resizeable, anyDensity]
+    usesLibraries:
+      moto-settings
+      moto-checkin
+      moto-core_services
+    usesOptionalLibraries:
+      androidx.window.extensions
+      androidx.window.sidecar
+    usesLibraryFiles:
+      /system/framework/moto-settings.jar
+      /system/framework/moto-checkin.jar
+      /system/framework/moto-core_services.jar
+      /system_ext/framework/androidx.window.extensions.jar
+      /system_ext/framework/androidx.window.sidecar.jar
+    timeStamp=2009-01-01 08:00:00
+    lastUpdateTime=2023-01-01 08:04:53
+    installerPackageName=null
+    installerPackageUid=-1
+    initiatingPackageName=null
+    originatingPackageName=null
+    packageSource=0
+    appMetadataFilePath=null
+    appMetadataSource=0
+    signatures=PackageSignatures{6127299 version:3, signatures:[fc5bde53], past signatures:[]}
+    installPermissionsFixed=false
+    pkgFlags=[ SYSTEM HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP KILL_AFTER_RESTORE RESTORE_ANY_VERSION LARGE_HEAP ]
+    privatePkgFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE BACKUP_IN_FOREGROUND PARTIALLY_DIRECT_BOOT_AWARE PRIVILEGED SYSTEM_EXT PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]
+    apexModuleName=null
+    declared permissions:
+      com.motorola.launcher3.permission.READ_SETTINGS: prot=signature|privileged
+      com.motorola.launcher3.permission.WRITE_SETTINGS: prot=signature|privileged
+      com.motorola.launcher3.secondarydisplay.permission.SETTINGS: prot=signature|privileged
+      com.motorola.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST: prot=signature|privileged
+      com.motorola.launcher3.permission.SEND_WALLPAPER_EXTRACTION_COMPLETE_BROADCASTS: prot=signature|privileged
+      com.motorola.launcher3.permission.RECEIVE_WALLPAPER_THEME_CHANGE_BROADCASTS: prot=signature|privileged
+      com.motorola.launcher3.permission.SEND_WALLPAPER_THEME_CHANGE_BROADCASTS: prot=signature|privileged
+      com.motorola.launcher3.permission.ASSIST: prot=signature|privileged
+      com.motorola.launcher3.permission.SEND_GRID_CHANGE_BROADCASTS: prot=signature|privileged
+      com.motorola.launcher3.permission.RECEIVE_GRID_CHANGE_BROADCASTS: prot=signature|privileged
+      com.motorola.launcher3.permission.GRID_CONTROL: prot=signature|privileged
+      com.motorola.launcher3.permission.UNREAD_BADGE: prot=normal
+      com.motorola.launcher3.secondarydisplay.permission.ALL_APPS_DISPLAY2: prot=signature|privileged
+      com.motorola.launcher3.settings.HOME_SCREEN_STYLE: prot=signature|privileged
+      com.motorola.launcher3.permission.SEND_OVERVIEW_STATE_CHANGE_BROADCASTS: prot=signature|privileged
+      com.motorola.launcher3.permission.RECEIVE_OVERVIEW_STATE_CHANGE_BROADCASTS: prot=signature|privileged
+      com.motorola.launcher3.permission.SWITCH_BRANCH: prot=signature|privileged
+      com.motorola.launcher3.permission.ALL_APPS_OVERLAY: prot=signature|privileged
+      com.motorola.launcher3.permission.SMART_PLUGINS: prot=signature|privileged
+      com.motorola.launcher3.permission.OVERVIEW_STATUS_CHANGE: prot=signature|privileged
+      com.motorola.launcher3.permission.START_WIDGET_PICKER_ACTIVITY: prot=signature|privileged
+      com.motorola.launcher3.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION: prot=signature
+    requested permissions:
+      com.motorola.launcher3.permission.SEND_OVERVIEW_STATE_CHANGE_BROADCASTS
+      android.permission.READ_WALLPAPER_INTERNAL
+      com.motorola.launcher3.permission.ALL_APPS_OVERLAY
+      android.permission.POST_NOTIFICATIONS
+      android.permission.READ_CALL_LOG
+      com.motorola.launcher3.permission.SEND_GRID_CHANGE_BROADCASTS
+      com.motorola.launcher3.permission.SEND_WALLPAPER_THEME_CHANGE_BROADCASTS
+      com.motorola.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST
+      android.permission.ACCESS_HIDDEN_PROFILES_FULL
+      android.permission.READ_HOME_APP_SEARCH_DATA
+      com.motorola.permission.SET_ACTIVITY_WATCHER
+      android.permission.START_TASKS_FROM_RECENTS
+      android.permission.MONITOR_INPUT
+      android.permission.ACCESS_CONTEXTUAL_SEARCH
+      com.motorola.deviceguard.permission.ACCELERATE_BROADCAST
+      android.permission.INTERNAL_SYSTEM_WINDOW
+      com.motorola.freeform.permission.CHECK_IN_REPORT
+      android.permission.FOREGROUND_SERVICE
+      android.permission.READ_MEDIA_VISUAL_USER_SELECTED
+      com.motorola.smartservice.permission.UPDATE_WIDGET
+      com.motorola.permission.READ_MOTO_SECURE_VAULT_PROVIDER
+      android.permission.MANAGE_ACTIVITY_TASKS
+      android.permission.RECEIVE_BOOT_COMPLETED
+      com.motorola.launcher3.permission.WRITE_SETTINGS
+      com.motorola.permission.DESKTOP_STATUS_BAR
+      android.permission.REMOVE_TASKS
+      com.motorola.launcher3.permission.GRID_CONTROL
+      android.permission.BLUETOOTH
+      android.permission.INTERNET
+      com.microsoft.permission.ACCESS_COPILOT
+      android.permission.ROTATE_SURFACE_FLINGER
+      android.permission.READ_EXTERNAL_STORAGE
+      android.permission.MANAGE_ACCESSIBILITY
+      android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS
+      android.permission.BIND_APPWIDGET
+      android.permission.STOP_APP_SWITCHES
+      android.permission.PACKAGE_USAGE_STATS
+      android.permission.WRITE_SECURE_SETTINGS
+      android.permission.MANAGE_APP_PREDICTIONS
+      android.permission.STATUS_BAR_SERVICE
+      android.permission.READ_PHONE_STATE
+      com.motorola.launcher3.permission.OVERVIEW_STATUS_CHANGE
+      android.permission.CALL_PHONE
+      android.permission.READ_MEDIA_IMAGES
+      com.motorola.launcher3.secondarydisplay.permission.SETTINGS
+      android.permission.SYSTEM_APPLICATION_OVERLAY
+      android.permission.SET_ORIENTATION
+      android.permission.MANAGE_USERS
+      android.permission.ACCESS_NETWORK_STATE
+      android.permission.CHANGE_CONFIGURATION
+      android.permission.SET_WALLPAPER
+      com.motorola.launcher3.permission.ASSIST
+      com.motorola.smarteye.provider.permission.READ_MODE
+      android.permission.WAKEUP_SURFACE_FLINGER
+      android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS
+      com.motorola.edgeassistant.provider.permission.READ_MODE
+      com.motorola.launcher3.permission.SWITCH_BRANCH
+      com.motorola.myscreen.permission.ACCESS_MYSCREEN
+      com.motorola.permission.BIND_EXPERIENCE
+      android.permission.ACCESS_SHORTCUTS
+      com.motorola.launcher3.permission.READ_SETTINGS
+      android.permission.REQUEST_DELETE_PACKAGES
+      com.motorola.permission.WRITE_SECURE_SETTINGS
+      android.permission.SET_WALLPAPER_HINTS
+      android.permission.ALLOW_SLIPPERY_TOUCHES
+      com.motorola.permission.ACCESS_CHECKIN
+      android.permission.WRITE_EXTERNAL_STORAGE
+      android.permission.VIBRATE
+      android.permission.VIEW_INSTANT_APPS
+      android.permission.ACCESS_WIFI_STATE
+      com.motorola.permission.livewallpaper3.BIND_CUSTOMIZE_SERVICE
+      com.motorola.launcher3.permission.SEND_WALLPAPER_EXTRACTION_COMPLETE_BROADCASTS
+      android.permission.STATUS_BAR
+      android.permission.READ_FRAME_BUFFER
+      android.permission.QUERY_ALL_PACKAGES
+      com.google.android.gms.permission.AD_ID
+      android.permission.READ_DEVICE_CONFIG
+      android.permission.WAKE_LOCK
+      android.permission.READ_CONTACTS
+      com.motorola.launcher3.permission.SMART_PLUGINS
+      com.motorola.launcher3.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+      com.motorola.permission.ACCESS_DESKTOP
+      com.motorola.launcher3.secondarydisplay.permission.ALL_APPS_DISPLAY2
+    install permissions:
+      com.motorola.launcher3.permission.SEND_OVERVIEW_STATE_CHANGE_BROADCASTS: granted=true
+      android.permission.READ_WALLPAPER_INTERNAL: granted=true
+      com.motorola.launcher3.permission.ALL_APPS_OVERLAY: granted=true
+      com.motorola.launcher3.permission.SEND_GRID_CHANGE_BROADCASTS: granted=true
+      com.motorola.launcher3.permission.SEND_WALLPAPER_THEME_CHANGE_BROADCASTS: granted=true
+      com.motorola.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST: granted=true
+      android.permission.ACCESS_HIDDEN_PROFILES_FULL: granted=true
+      android.permission.READ_HOME_APP_SEARCH_DATA: granted=true, flags=[ GRANTED_BY_ROLE]
+      com.motorola.permission.SET_ACTIVITY_WATCHER: granted=true
+      android.permission.START_TASKS_FROM_RECENTS: granted=true
+      android.permission.MONITOR_INPUT: granted=true
+      android.permission.ACCESS_CONTEXTUAL_SEARCH: granted=true
+      android.permission.INTERNAL_SYSTEM_WINDOW: granted=true
+      com.motorola.freeform.permission.CHECK_IN_REPORT: granted=true
+      android.permission.FOREGROUND_SERVICE: granted=true
+      com.motorola.permission.READ_MOTO_SECURE_VAULT_PROVIDER: granted=true
+      android.permission.MANAGE_ACTIVITY_TASKS: granted=true
+      android.permission.RECEIVE_BOOT_COMPLETED: granted=true
+      com.motorola.launcher3.permission.WRITE_SETTINGS: granted=true
+      com.motorola.permission.DESKTOP_STATUS_BAR: granted=true
+      android.permission.REMOVE_TASKS: granted=true
+      com.motorola.launcher3.permission.GRID_CONTROL: granted=true
+      android.permission.BLUETOOTH: granted=true
+      android.permission.INTERNET: granted=true
+      android.permission.ROTATE_SURFACE_FLINGER: granted=true
+      android.permission.MANAGE_ACCESSIBILITY: granted=true
+      android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS: granted=true
+      android.permission.BIND_APPWIDGET: granted=true
+      android.permission.STOP_APP_SWITCHES: granted=true
+      android.permission.PACKAGE_USAGE_STATS: granted=true
+      android.permission.WRITE_SECURE_SETTINGS: granted=true
+      android.permission.STATUS_BAR_SERVICE: granted=true
+      com.motorola.launcher3.permission.OVERVIEW_STATUS_CHANGE: granted=true
+      com.motorola.launcher3.secondarydisplay.permission.SETTINGS: granted=true
+      android.permission.SYSTEM_APPLICATION_OVERLAY: granted=true
+      android.permission.SET_ORIENTATION: granted=true
+      android.permission.MANAGE_USERS: granted=true
+      android.permission.ACCESS_NETWORK_STATE: granted=true
+      android.permission.CHANGE_CONFIGURATION: granted=true
+      android.permission.SET_WALLPAPER: granted=true
+      com.motorola.launcher3.permission.ASSIST: granted=true
+      android.permission.WAKEUP_SURFACE_FLINGER: granted=true
+      android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS: granted=true
+      com.motorola.edgeassistant.provider.permission.READ_MODE: granted=true
+      com.motorola.launcher3.permission.SWITCH_BRANCH: granted=true
+      com.motorola.myscreen.permission.ACCESS_MYSCREEN: granted=true
+      com.motorola.permission.BIND_EXPERIENCE: granted=true
+      android.permission.ACCESS_SHORTCUTS: granted=true
+      com.motorola.launcher3.permission.READ_SETTINGS: granted=true
+      android.permission.REQUEST_DELETE_PACKAGES: granted=true
+      com.motorola.permission.WRITE_SECURE_SETTINGS: granted=true
+      android.permission.SET_WALLPAPER_HINTS: granted=true
+      android.permission.ALLOW_SLIPPERY_TOUCHES: granted=true
+      com.motorola.permission.ACCESS_CHECKIN: granted=true
+      android.permission.VIBRATE: granted=true
+      android.permission.VIEW_INSTANT_APPS: granted=true
+      android.permission.ACCESS_WIFI_STATE: granted=true
+      com.motorola.permission.livewallpaper3.BIND_CUSTOMIZE_SERVICE: granted=true
+      com.motorola.launcher3.permission.SEND_WALLPAPER_EXTRACTION_COMPLETE_BROADCASTS: granted=true
+      android.permission.STATUS_BAR: granted=true
+      android.permission.READ_FRAME_BUFFER: granted=true
+      android.permission.QUERY_ALL_PACKAGES: granted=true
+      com.google.android.gms.permission.AD_ID: granted=true
+      android.permission.READ_DEVICE_CONFIG: granted=true
+      android.permission.WAKE_LOCK: granted=true
+      com.motorola.launcher3.permission.SMART_PLUGINS: granted=true
+      com.motorola.launcher3.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION: granted=true
+      com.motorola.permission.ACCESS_DESKTOP: granted=true
+      com.motorola.launcher3.secondarydisplay.permission.ALL_APPS_DISPLAY2: granted=true
+    User 0: ceDataInode=7749 deDataInode=5537 installed=true hidden=false suspended=false distractionFlags=0 stopped=false notLaunched=false enabled=0 instant=false virtual=false quarantined=false
+      installReason=0
+      dataDir=/data/user/0/com.motorola.launcher3
+      firstInstallTime=2023-01-01 08:04:53
+      uninstallReason=0
+      overlay paths:
+        /product/overlay/NavigationBarMode3Button/NavigationBarMode3ButtonOverlay.apk
+        /data/resource-cache/com.android.systemui-neutral-SG7Y.frro
+        /product/overlay/FontRookeryRegular/FontRookeryRegularOverlay.apk
+        /data/resource-cache/com.android.systemui-accent-euQB.frro
+        /data/resource-cache/com.android.systemui-dynamic-DxfQ.frro
+        /product/overlay/MotoLauncherOverlayRetailGlobal.apk
+      legacy overlay paths:
+        /product/overlay/NavigationBarMode3Button/NavigationBarMode3ButtonOverlay.apk
+        /product/overlay/FontRookeryRegular/FontRookeryRegularOverlay.apk
+        /product/overlay/MotoLauncherOverlayRetailGlobal.apk
+      lastEnableComponentCaller: androidx.work.impl.background.systemalarm.RescheduleReceiver_com.motorola.launcher3
+      gids=[3002, 3003]
+      runtime permissions:
+        android.permission.POST_NOTIFICATIONS: granted=true, flags=[ GRANTED_BY_DEFAULT]
+        android.permission.READ_CALL_LOG: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|RESTRICTION_UPGRADE_EXEMPT]
+        android.permission.READ_MEDIA_VISUAL_USER_SELECTED: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED]
+        android.permission.READ_EXTERNAL_STORAGE: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|RESTRICTION_UPGRADE_EXEMPT]
+        android.permission.READ_PHONE_STATE: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED]
+        android.permission.CALL_PHONE: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED]
+        android.permission.READ_MEDIA_IMAGES: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED]
+        android.permission.WRITE_EXTERNAL_STORAGE: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|RESTRICTION_UPGRADE_EXEMPT]
+        android.permission.READ_CONTACTS: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED]
+      enabledComponents:
+        androidx.work.impl.background.systemalarm.RescheduleReceiver
+        androidx.work.impl.background.systemjob.SystemJobService
+
+Queries:
+  system apps queryable: false
+  queries via forceQueryable:
+  forceQueryable:
+    com.motorola.launcher3
+  queries via package name:
+  queries via component:
+  queryable via interaction:
+    User 0:
+      [com.android.settings,com.motorola.perfmonitor,com.mediatek.location.lppe.main,com.android.server.telecom,com.trustonic.teeservice,com.android.DeviceAsWebcam,android,com.android.localtransport,com.android.location.fused,com.motorola.moto_stats,com.motorola.android.providers.settings,com.android.providers.settings,com.android.dynsystem,com.android.keychain,com.android.inputdevices,com.motorola.iplog]:
+        com.motorola.launcher3
+      com.motorola.smartfeed:
+        com.motorola.launcher3
+      com.google.android.apps.wellbeing:
+        com.motorola.launcher3
+      com.google.android.googlequicksearchbox:
+        com.motorola.launcher3
+      com.google.android.inputmethod.latin:
+        com.motorola.launcher3
+      com.motorola.timeweatherwidget:
+        com.motorola.launcher3
+      com.motorola.launcher3:
+        [com.android.settings,com.motorola.perfmonitor,com.mediatek.location.lppe.main,com.android.server.telecom,com.trustonic.teeservice,com.android.DeviceAsWebcam,android,com.android.localtransport,com.android.location.fused,com.motorola.moto_stats,com.motorola.android.providers.settings,com.android.providers.settings,com.android.dynsystem,com.android.keychain,com.android.inputdevices,com.motorola.iplog]
+        com.android.settings.intelligence
+        com.motorola.smartfeed
+        com.motorola.msimsettings
+        com.google.android.setupwizard
+        com.android.systemui
+      com.motorola.freeform:
+        com.motorola.launcher3
+      com.android.systemui:
+        com.motorola.launcher3
+  queryable via uses-library:
+
+Dexopt state:
+  [com.motorola.launcher3]
+    path: /system_ext/priv-app/Launcher3QuickStep/Launcher3QuickStep.apk
+      arm64: [status=speed] [reason=prebuilt] [primary-abi]
+        [location is /data/dalvik-cache/arm64/system_ext@priv-app@Launcher3QuickStep@Launcher3QuickStep.apk@classes.dex]
+
+Compiler stats:
+  [com.motorola.launcher3]
+    (No recorded stats)

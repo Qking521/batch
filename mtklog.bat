@@ -1,7 +1,20 @@
 @echo off
 setlocal
 
-cd %~dp0%
+:: 获取当前脚本所在目录,自带反斜杠
+set "SCRIPT_DIR=%~dp0"
+
+:: 先调用基础脚本检查ADB和设备（使用完整路径）
+call "%SCRIPT_DIR%adb_check.bat"
+if %ERRORLEVEL% neq 0 (
+    echo [错误]: 基础检测失败，退出操作。
+    exit /b %ERRORLEVEL%
+)
+
+set OUT_DIR=%SCRIPT_DIR%OUT\bugreport
+if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
+
+cd %SCRIPT_DIR%
 call base_time.bat
 echo ftime = %ftime%
 
@@ -77,12 +90,12 @@ adb shell "rm -rf /data/debuglogger/debuglog.tar.gz"
 adb shell "cd /data/debuglogger/ && tar -cvzf debuglog.tar.gz *"
 echo Step 3: Pull to local
 adb pull /data/debuglogger/debuglog.tar.gz .
-if not exist mtklog (
-	mkdir  mtklog\mtklog_%ftime%
+if not exist %OUT_DIR% (
+	mkdir  %OUT_DIR%\mtklog_%ftime%
 )
-adb pull /data/debuglogger/ mtklog\mtklog_%ftime%
+adb pull /data/debuglogger/ %OUT_DIR%\mtklog_%ftime%
 echo Step 4: Open directory
-start "" mtklog\mtklog_%ftime%
+start "" %OUT_DIR%\mtklog_%ftime%
 echo Log files pulled to current directory
 exit /b
 

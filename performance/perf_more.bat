@@ -1,82 +1,77 @@
 @echo off
-title Perfetto_Capture_Tools
-
+:: 获取格式化的时间ftime
+call %SCRIPT_DIR%base_time.bat
+setlocal enabledelayedexpansion
 @REM **************************set record time*********************************
-set duration_ms=%1
-echo duration_ms = %duration_ms%
-if %duration_ms%==5000 (
-	set file_write_period_ms=1000
-	set flush_period_ms=1000
-)else (
-	set file_write_period_ms=2000
-	set flush_period_ms=2000
+set record_time=%2
+:: 标志变量，初始为未找到
+set "found=0"
+set "timelist=5 10"
+
+for %%i in (%timelist%) do (
+	if %record_time%==%%i (
+		set "found=1"
+	)
 )
+if "%found%"=="0" (
+	set record_time=5
+)
+echo record_time = %record_time%
+
+if "%record_time%"=="5" (
+    set duration_ms=5000
+    set file_write_period_ms=1000
+    set flush_period_ms=1000
+)
+
+if "%record_time%"=="10" (
+    set duration_ms=10000
+    set file_write_period_ms=2000
+    set flush_period_ms=2000
+)
+
 @REM **************************set record time*********************************
 
 set config_name=config.pbtxt
-for %%a in (adb.exe) do if not "%%~$PATH:a" == "" echo use %%~$PATH:a
-for %%a in (adb.exe) do if "%%~$PATH:a" == "" set PATH=%cd%\envs\platform-tools;%PATH%
+for /f "delims= " %%a in ('adb shell getprop ro.product.board') do @set model=%%a
 
-set hour=%time:~,2%
-if "%time:~,1%"==" " set hour=0%time:~1,1%
-for /f "delims= " %%a in ('adb shell getprop ro.product.name') do @set model=%%a
-for /f "delims= " %%a in ('adb shell getprop ro.build.version.release') do @set android_version=%%a
+::获取脚本所在目录，自带反斜杠
+set "scriptDir=%~dp0"
+:: 去掉最后一个反斜杠（如果有）
+set "currentDir=%scriptDir:~0,-1%"
+:: 获取上一级目录路径
+for %%i in ("%currentDir%") do set "parentDir=%%~dpi"
+set OUT_DIR=%parentDir%OUT\performance\%~1
+set trace_file=%model%_%ftime%.perfetto
+set configPath=/data/misc/perfetto-configs
 
-set "CURR_TIME=%date:~,4%%date:~5,2%%date:~8,2%_%time:~,2%%time:~3,2%%time:~6,2%"
-if %time:~,2% lss 10 set "CURR_TIME=%date:~,4%%date:~5,2%%date:~8,2%_0%time:~1,1%%time:~3,2%%time:~6,2%"
-
-set devinfo=Pure.Extended.%model%-%android_version%__%CURR_TIME%
-set traceFile=%model%-%android_version%__%CURR_TIME%.perfetto
-
-mkdir %devinfo%
-echo wait adb connect ...
-adb wait-for-device
-adb root
-
-set infodir=%cd%\%devinfo%\
-adb shell "rm -rf /data/local/tmp/*"
-adb shell "logcat -b all -c; dmesg -C"
+if not exist %OUT_DIR% (
+	mkdir %OUT_DIR%
+)
 
 REM 调用 generate_config 函数
 call :generate_config
-adb push %cd%\%config_name% /data/local/tmp/config.pbtxt
-move %cd%\%config_name% %infodir%\config.pbtxt > NUL
+adb shell "rm -rf %configPath%/*"
+adb shell "rm -rf /data/misc/perfetto-traces/*"
+REM 本地生成的config文件push手机中供生成trace文件
+adb push %cd%\%config_name% %configPath%/config.pbtxt > nul 2>&1
+REM 本地生成的config文件push out目录中供验证
+move %cd%\%config_name% %OUT_DIR%\%~n0_%record_time%_config.pbtxt > nul
 
-
-setlocal EnableDelayedExpansion
-echo **************************************************************************
 echo Capturing perfetto...please reproduce the issue
-echo **************************************************************************
+REM 第一个echo 0 是为了保证正常抓取
 adb shell "echo 0 > /sys/kernel/tracing/tracing_on"
-adb shell "setprop debug.traceur.weaken false"
-adb shell "cat /data/local/tmp/config.pbtxt | perfetto --txt -c - -o /data/misc/perfetto-traces/%traceFile%"
+adb shell perfetto --txt -c %configPath%/config.pbtxt -o /data/misc/perfetto-traces/%trace_file% > nul 2>&1
+REM 第二个echo 0是为了保证正常结束
 adb shell "echo 0 > /sys/kernel/tracing/tracing_on"
-echo .
-adb pull /data/misc/perfetto-traces/%traceFile%   %devinfo%\%traceFile%
-echo saving perfetto file to %devinfo%\%traceFile%
-echo/
-adb shell "logcat -b all -d" > %devinfo%\logcat.d
-adb shell "dmesg" > %devinfo%\dmesg
-rem kill 掉 之前 trace_processor_shell 对 perfetto的加载
-set process_name=trace_processor_shell.exe
-tasklist | findstr /i "%process_name%" >nul && (
-    echo Process is running, killing...
-    taskkill /f /im "%process_name%"
-) || (
-    echo Process is not running
-)
+adb pull /data/misc/perfetto-traces/%trace_file%   %OUT_DIR%\%trace_file% > nul 2>&1
+echo perfetto file path: %OUT_DIR%%trace_file%
 
-rem kill 掉 之前 抓取perfetto的窗口，避免后续要手动关闭
-for /f "tokens=5" %%A in ('wmic process where "CommandLine like '%%startperfetto.bat%%'" get ProcessId^,Caption^,CommandLine ^| findstr "cmd.exe" ^| findstr /v "wmic"') do taskkill /PID %%A"
-%cd%\envs\trace_processor_shell.exe -D %devinfo%\%traceFile% --httpd
-rem start "" /B %cd%\envs\trace_processor_shell.exe -D   %devinfo%\%traceFile%  &
-rem start "" /B ".\startperfetto.bat"
-
-echo please load "https://ui.perfetto.dev/#!/" and select "Yes, use loaded trace"
-echo\
-
-
+REM 调用浏览器自动加载trace文件
+rem start startperfetto.bat" %OUT_DIR%\%trace_file%
+endlocal
 goto :END
+
 :generate_config
 (
   echo buffers: {

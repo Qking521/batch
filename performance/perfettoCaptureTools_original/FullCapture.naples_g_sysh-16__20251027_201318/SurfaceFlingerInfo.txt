@@ -1,0 +1,1002 @@
+Build configuration: [sf PRESENT_TIME_OFFSET=0 FORCE_HWC_FOR_RBG_TO_YUV=1 MAX_VIRT_DISPLAY_DIM=0 RUNNING_WITHOUT_SYNC_FRAMEWORK=0 NUM_FRAMEBUFFER_SURFACE_BUFFERS=4 mIsCLISupported=0]
+
+android_time: 2025-10-23 02:27:11.573, kernel_timestamps: 11402.925953 s
+Display identification data:
+Display 4627039422300187648 (HWC display 0): port=0 pnpId=MTK displayName="MTKDEV"
+
+Wide-Color information:
+Device supports wide color: 1
+mIsBoostedMode: 0
+DisplayColorSetting: Unmanaged
+Display 4627039422300187648 color modes:
+    ColorMode::NATIVE (0)
+    ColorMode::SRGB (7)
+    ColorMode::DISPLAY_P3 (9)
+    Current color mode: ColorMode::NATIVE (0)
+
+HDR events for display 4627039422300187648
+20096288308: numHdrLayers(0), size(0x0), flags(0), desiredRatio(0.00)
+
+Sync configuration: [using: EGL_ANDROID_native_fence_sync EGL_KHR_wait_sync]
+
+Scheduler:
+Features
+    PresentFences=true
+    KernelIdleTimer=false
+    ContentDetection=true
+    ExpectedPresentTime=true
+
+Policy
+    pacesetterDisplayId=4627039422300187648
+    layerHistory={size=101, active=0}
+	GameFrameRateOverrides=
+		(uid, gameModeOverride, gameDefaultOverride)=, 
+	mConsistentFpsMarginPercent=0, mCheckDirty=0
+    touchTimer=1000.000 ms
+    displayPowerTimer=nullopt
+
+FrameRateOverrides=none
+mAcceptScrollEvent=true
+mHasPartitionRR=false
+
+           app phase:     -2777778 ns	         SF phase:     -5555556 ns
+           app duration:  19444444 ns	         SF duration:  16666667 ns
+     early app phase:     -2777778 ns	   early SF phase:     -5555556 ns
+     early app duration:  19444444 ns	   early SF duration:  16666667 ns
+  GL early app phase:     -2777778 ns	GL early SF phase:     -5555556 ns
+  GL early app duration:  19444444 ns	GL early SF duration:  16666667 ns
+       HWC min duration:  23000000 ns
+
+  MTKDuration:   current type: 0
+  Decouple mode switch: false     Using decouple mode: false
+  Decouple app phase:            0 ns	Decouple SF phase:            0 ns
+  Decouple app duration:        -1 ns	Decouple SF duration:        -1 ns
+  Override mode switch: false     Using Override mode: false
+  Override app phase:            0 ns	Override SF phase:            0 ns
+  Override app duration:         0 ns	Override SF duration:         0 ns
+  ExtraVsyncSupported=no
+
+  DispMML[0]: dispId=0, mode=false
+
+
+ScreenOff: 0d02:40:19.171
+90.00 Hz: 0d00:01:01.931
+60.00 Hz: 0d00:28:12.267
+120.00 Hz: 0d00:00:16.225
+
+Overall statistics of the current version and the previous version: running time in seconds
+curFingerprint:motorola/naples_g_sys/naples:16/W2WI36M.18/783798:user/release-keys
+90Hz : 0d00:03:44.931 -- 224931ms
+60Hz : 0d01:35:04.267 -- 5704267ms
+120Hz : 0d00:01:16.225 -- 76225ms
+preFingerprint:
+
+Pacesetter Display 4627039422300187648
+    renderRate=120.00 Hz
+    activeMode={id=0, hwcId=0, resolution=1080x2352, vsyncRate=120.00 Hz, dpi=381.70x381.44, group=0x0, vrrConfig=N/A, supportedHdrTypes=INVALID}
+    displayModes=
+        {id=0, hwcId=0, resolution=1080x2352, vsyncRate=120.00 Hz, dpi=381.70x381.44, group=0x0, vrrConfig=N/A, supportedHdrTypes=INVALID}
+        {id=1, hwcId=1, resolution=1080x2352, vsyncRate=90.00 Hz, dpi=381.70x381.44, group=0x0, vrrConfig=N/A, supportedHdrTypes=INVALID}
+        {id=2, hwcId=2, resolution=1080x2352, vsyncRate=60.00 Hz, dpi=381.70x381.44, group=0x0, vrrConfig=N/A, supportedHdrTypes=INVALID}
+    mHasMultiRRGroup=false
+    mSpecialIdleDisplayModes=
+    displayManagerPolicy={defaultModeId=1, allowGroupSwitching=false, primaryRanges={physical=[90.00 Hz, 90.00 Hz], render=[60.00 Hz, 90.00 Hz]}, appRequestRanges={physical=[0.00 Hz, 120.00 Hz], render=[0.00 Hz, 120.00 Hz]} idleScreenConfig=nullptr}
+      mStrPrimaryRefreshrates={fps=90.00 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}} 
+      mStrAppRefreshrates={fps=20.00 Hz, modePtr={id=2, vsyncRate=60.00 Hz, peakRefreshRate=60.00 Hz}} {fps=22.50 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}} {fps=24.00 Hz, modePtr={id=0, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}} {fps=30.00 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}} {fps=40.00 Hz, modePtr={id=0, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}} {fps=45.00 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}} {fps=60.00 Hz, modePtr={id=2, vsyncRate=60.00 Hz, peakRefreshRate=60.00 Hz}} {fps=90.00 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}} {fps=120.00 Hz, modePtr={id=0, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}} 
+    frameRateOverrideConfig=Enabled
+    idleTimer=
+        interval=500.000 ms
+        controller=Platform
+    BoostRefreshrates=
+        scrollBoostRefreshRate=120
+        touchBoostRefreshRate=90
+        touchBoostRefreshRate=90
+        mTouchBoostFrameRateModeOpt={fps=90.00 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}}
+        mActual120HzModeOpt={fps=120.00 Hz, modePtr={id=0, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}}
+    SpecialIdleRefreshrates=
+          mStrSpecialIdleRefreshrates=
+          mSpecialIdleFlag=1
+          mAllowSwitchingGroupFlag=0
+          mAppPreferredGroupFlag=0
+    Total missed frame count: 74
+    HWC missed frame count: 73
+    GPU missed frame count: 15
+
+
+debugDisplayModeSetByBackdoor=false
+
+app: state=Idle VSyncState={displayId=4627039422300187648, count=6890, synthetic}
+mWorkDuration=19.44 mReadyDuration=16.67 last vsync time -6961604.50ms relative to now
+ with vsync committed at -2356.45ms  pending events (count=0):
+  connections (count=44):
+    Connection{0xb4000079d3d3bf80, VSyncRequest::None}
+    Connection{0xb4000079e2b18ec0, VSyncRequest::None}
+    Connection{0xb4000079e2b18740, VSyncRequest::None}
+    Connection{0xb4000079d2599240, VSyncRequest::None}
+    Connection{0xb4000079d2599540, VSyncRequest::None}
+    Connection{0xb4000079d2599600, VSyncRequest::None}
+    Connection{0xb4000079d25996c0, VSyncRequest::None}
+    Connection{0xb4000079d2599c00, VSyncRequest::None}
+    Connection{0xb4000079d2599d80, VSyncRequest::None}
+    Connection{0xb4000079d2599e40, VSyncRequest::None}
+    Connection{0xb4000079d259a140, VSyncRequest::None}
+    Connection{0xb4000079d259a500, VSyncRequest::None}
+    Connection{0xb4000079d259b280, VSyncRequest::None}
+    Connection{0xb4000079d259b1c0, VSyncRequest::None}
+    Connection{0xb4000079d259b880, VSyncRequest::None}
+    Connection{0xb4000079d39e7900, VSyncRequest::None}
+    Connection{0xb4000079d39e8380, VSyncRequest::None}
+    Connection{0xb4000079d39e8140, VSyncRequest::None}
+    Connection{0xb4000079d39e8680, VSyncRequest::None}
+    Connection{0xb4000079d39e8740, VSyncRequest::None}
+    Connection{0xb4000079d39e9100, VSyncRequest::None}
+    Connection{0xb4000079d39e91c0, VSyncRequest::None}
+    Connection{0xb4000079d3abb1c0, VSyncRequest::None}
+    Connection{0xb4000079d39e85c0, VSyncRequest::None}
+    Connection{0xb4000079d3ab9c00, VSyncRequest::None}
+    Connection{0xb4000079d3bbb000, VSyncRequest::None}
+    Connection{0xb4000079e2d20640, VSyncRequest::None}
+    Connection{0xb4000079d38d4780, VSyncRequest::None}
+    Connection{0xb4000079d38d4900, VSyncRequest::None}
+    Connection{0xb4000079d3bbb480, VSyncRequest::None}
+    Connection{0xb4000079d3bbb600, VSyncRequest::None}
+    Connection{0xb4000079d3bbd100, VSyncRequest::None}
+    Connection{0xb4000079d38d6b80, VSyncRequest::None}
+    Connection{0xb4000079d2599780, VSyncRequest::None}
+    Connection{0xb4000079e2d201c0, VSyncRequest::None}
+    Connection{0xb4000079cf6250c0, VSyncRequest::None}
+    Connection{0xb4000079cf627580, VSyncRequest::None}
+    Connection{0xb4000079d259be80, VSyncRequest::None}
+    Connection{0xb4000079cf6253c0, VSyncRequest::None}
+    Connection{0xb4000079d39e8e00, VSyncRequest::None}
+    Connection{0xb4000079d38d4840, VSyncRequest::None}
+    Connection{0xb4000079d39e9400, VSyncRequest::None}
+    Connection{0xb4000079d3ab9240, VSyncRequest::None}
+    Connection{0xb4000079d3ab9e40, VSyncRequest::None}
+
+VsyncSchedule for pacesetter 4627039422300187648:
+hwVsyncState=Enabled
+pendingHwVsyncState=Enabled
+
+VsyncController:
+VsyncReactor in use
+Has 0 unfired fences
+mInternalIgnoreFences=1 mExternalIgnoreFences=0
+mMoreSamplesNeeded=1 mPeriodConfirmationInProgress=1
+mModePtrTransitioningTo={id=1, hwcId=1, resolution=1080x2352, vsyncRate=90.00 Hz, dpi=381.70x381.44, group=0x0, vrrConfig=N/A, supportedHdrTypes=INVALID}
+No Last HW vsync
+VSyncTracker:
+	mDisplayModePtr={id=0, hwcId=0, resolution=1080x2352, vsyncRate=120.00 Hz, dpi=381.70x381.44, group=0x0, vrrConfig=N/A, supportedHdrTypes=INVALID}
+	Refresh Rate Map:
+		For ideal period 16.67ms: period = 16.67ms, intercept = 0
+		For ideal period 11.11ms: period = 11.11ms, intercept = 0
+		For ideal period 8.33ms: period = 8.33ms, intercept = 0
+	mTimelines.size()=1
+VsyncDispatch:
+	Timer:
+		DebugState: Waiting
+	mTimerSlack: 0.50ms mMinVsyncDistance: 3.00ms
+	mIntendedWakeupTime: 9223360479232.00ms from now
+	mLastTimerCallback: 64705.05ms ago mLastTimerSchedule: 64708.86ms ago
+	Callbacks:
+		sf:  
+			workDuration: 16.67ms readyDuration: 0.00ms lastVsync: -6960897.00ms relative to now committedVsync: -6960897.00ms relative to now
+			mLastDispatchTime: 64688.52ms ago
+		app:  
+			workDuration: 13.89ms readyDuration: 13.89ms lastVsync: -6961605.00ms relative to now committedVsync: -6961605.00ms relative to now
+			mLastDispatchTime: 6961605.00ms ago
+		appSf:  
+			workDuration: 8.33ms readyDuration: 13.89ms lastVsync: -6961596.50ms relative to now committedVsync: -6961596.50ms relative to now
+			mLastDispatchTime: 6961588.50ms ago
+
+SurfaceFlinger New Frontend Enabled:true
+Active Layers - layers with client handles (count = 101)
+
+Composition list (bottom to top)
+LayerStack=0
+  Layer [341] Wallpaper BBQ wrapper/@c2c66c0#341
+    visible reason= buffer=9461812953135 frame=1 color{< 0, 0, 0, 1 >}
+    bounds={-537,0,2352,1618} toDisplayTransform={ scale x=0.9977 y=0.9979  tx=-537.0000 ty=0.0000 }
+    input{(NO_INPUT_CHANNEL | NOT_TOUCHABLE) touchableRegion={-536,0,0,-536}}
+  Layer [88] StatusBar/@a9ae7a7#88
+    visible reason= buffer=9461812953107 frame=564 color{< 0, 0, 0, 1 >}
+    bounds={0,0,120,1080}
+    input{(NOT_FOCUSABLE | NOT_TOUCHABLE | TRUSTED_OVERLAY) touchableRegion={0,0,120,1080}}
+  Layer [386] NotificationShade/@692bf52#386
+    visible reason= buffer=9461812953159 frame=569 color{< 0, 0, 0, 1 >}
+    bounds={0,0,2352,1080}
+    input{(NOT_TOUCHABLE | TRUSTED_OVERLAY | WATCH_OUTSIDE_TOUCH | DISABLE_USER_ACTIVITY) touchableRegion={-1080,-2352,4704,2160}}
+  Layer [408] ColorFade BLAST/@e609e96#408
+    visible reason= buffer=7211250090024 frame=50 color{< 0, 0, 0, 1 >}
+    bounds={0,0,2352,1080}
+    input{(NO_INPUT_CHANNEL | NOT_TOUCHABLE) touchableRegion={0,0,0,0}}
+
+Input list
+LayerStack=0
+  Layer [408] ColorFade BLAST/@e609e96#408
+    visible reason= buffer=7211250090024 frame=50 color{< 0, 0, 0, 1 >}
+    bounds={0,0,2352,1080}
+    input{(NO_INPUT_CHANNEL | NOT_TOUCHABLE) touchableRegion={0,0,0,0}}
+  Layer [84] NavigationBar0/@f49ccca#84
+    invisible reason=hidden by parent or layer flag
+    bounds={0,2235,2352,1080} toDisplayTransform={ tx=0.0000 ty=2235.0000 }
+    input{(NOT_VISIBLE | NOT_FOCUSABLE | NOT_TOUCHABLE | TRUSTED_OVERLAY | WATCH_OUTSIDE_TOUCH | SLIPPERY) touchableRegion={0,2235,2352,1080}}
+  Layer [386] NotificationShade/@692bf52#386
+    visible reason= buffer=9461812953159 frame=569 color{< 0, 0, 0, 1 >}
+    bounds={0,0,2352,1080}
+    input{(NOT_TOUCHABLE | TRUSTED_OVERLAY | WATCH_OUTSIDE_TOUCH | DISABLE_USER_ACTIVITY) touchableRegion={-1080,-2352,4704,2160}}
+  Layer [88] StatusBar/@a9ae7a7#88
+    visible reason= buffer=9461812953107 frame=564 color{< 0, 0, 0, 1 >}
+    bounds={0,0,120,1080}
+    input{(NOT_FOCUSABLE | NOT_TOUCHABLE | TRUSTED_OVERLAY) touchableRegion={0,0,120,1080}}
+  Layer [204] f3489c1 ActivityRecordInputSink com.google.android.apps.nbu.files/.documentbrowser.filepreview.FilePreviewActivity/@12cdcfa#204
+    invisible reason=hidden by parent or layer flag
+    bounds={26.933,53,2062.51,1053.07} toDisplayTransform={ scale x=0.9501 y=0.9501  tx=26.9330 ty=53.0000 } roundedCorner.radius={< 107.986, 107.986 >}
+    input{(NO_INPUT_CHANNEL | NOT_VISIBLE | NOT_FOCUSABLE | NOT_TOUCHABLE) replaceTouchableRegionWithCrop touchableRegion={27,53,2063,1053}}
+  Layer [196] 6b96ff7 ActivityRecordInputSink com.google.android.apps.nbu.files/.advancedbrowsing.browser.AdvancedBrowsingActivity/@fbe35d7#196
+    invisible reason=hidden by parent or layer flag
+    bounds={-233.976,0,2352,1080.02} toDisplayTransform={ tx=-233.9758 ty=0.0000 }
+    input{(NO_INPUT_CHANNEL | NOT_VISIBLE | NOT_FOCUSABLE | NOT_TOUCHABLE) replaceTouchableRegionWithCrop touchableRegion={-234,0,2352,1080}}EdgeExtensionEffect={edges=[RIGHT, ]}
+  Layer [156] 576b362 ActivityRecordInputSink com.google.android.apps.nbu.files/.home.HomeActivity/@b9dbb09#156
+    invisible reason=hidden by parent or layer flag
+    bounds={-233.976,0,2352,1080.02} toDisplayTransform={ tx=-233.9758 ty=0.0000 }
+    input{(NO_INPUT_CHANNEL | NOT_VISIBLE | NOT_FOCUSABLE | NOT_TOUCHABLE) replaceTouchableRegionWithCrop touchableRegion={-234,0,2352,1080}}EdgeExtensionEffect={edges=[RIGHT, ]}
+  Layer [64] Dim layer/@be3ef62#64
+    invisible reason=hidden by parent or layer flag
+    bounds={-10800,-23520,23520,10800}
+    input{(NO_INPUT_CHANNEL | NOT_VISIBLE | NOT_TOUCHABLE) touchableRegion={0,0,0,0}}
+  Layer [63] Dim layer/@13c275d#63
+    invisible reason=hidden by parent or layer flag
+    bounds={-10800,-23520,23520,10800}
+    input{(NO_INPUT_CHANNEL | NOT_VISIBLE | NOT_TOUCHABLE) touchableRegion={0,0,0,0}}
+  Layer [100] 528059e ActivityRecordInputSink com.motorola.launcher3/com.android.launcher3.uioverrides.QuickstepLauncher/@5cae3ac#100
+    invisible reason=hidden by parent or layer flag
+    bounds={-10800,-23520,23520,10800}
+    input{(NO_INPUT_CHANNEL | NOT_VISIBLE | NOT_FOCUSABLE | NOT_TOUCHABLE) replaceTouchableRegionWithCrop touchableRegion={-10800,-23520,23520,10800}}
+  Layer [341] Wallpaper BBQ wrapper/@c2c66c0#341
+    visible reason= buffer=9461812953135 frame=1 color{< 0, 0, 0, 1 >}
+    bounds={-537,0,2352,1618} toDisplayTransform={ scale x=0.9977 y=0.9979  tx=-537.0000 ty=0.0000 }
+    input{(NO_INPUT_CHANNEL | NOT_TOUCHABLE) touchableRegion={-536,0,0,-536}}
+  Layer [340] com.android.systemui.wallpapers.ImageWallpaper/@645e53f#340
+    invisible reason=nothing to draw
+    bounds={-10800,-23520,23520,10800} toDisplayTransform={ scale x=0.9977 y=0.9979  tx=-537.0000 ty=0.0000 }
+    input{(NOT_FOCUSABLE | NOT_TOUCHABLE | IS_WALLPAPER) touchableRegion={-536,0,0,-536}}
+
+Layer Hierarchy
+ ROOT
+ ├─ Display 0 name="Built-in Screen"/@cee6fa6#47 10-22-21:03:34 flags:2 a:1 pid=1679 uid=1000
+ │  ├─ WindowedMagnification:0:31/@a1490ed#3 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  ├─ HideDisplayCutout:0:14/@57419b3#4 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │  └─ OneHanded:0:14/@5b5ab70#5 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     ├─ AppZoomOut:0:0/@1364ee9#6 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     │  └─ Leaf:0:0/@160c76e#7 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     ├─ Leaf:1:1/@c9e0f#8 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     │  └─ WallpaperWindowToken{1b7ca4f showWhenLocked=false}/@2ff65dc#338 10-22-21:18:10 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     │     └─ a7c83e0 com.android.systemui.wallpapers.ImageWallpaper/@c02ed5e#339 10-22-21:18:10 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     │        └─ com.android.systemui.wallpapers.ImageWallpaper/@645e53f#340 10-22-21:18:10 flags:0 a:1 pid=2203 uid=10331
+ │  │  │     │           └─ Wallpaper BBQ wrapper/@c2c66c0#341 10-22-21:18:10 flags:256 a:1 pid=2203 uid=10331
+ │  │  │     └─ AppZoomOut:2:14/@c220e9c#9 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        ├─ DefaultTaskDisplayArea0/@39bf0a5#10 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │  ├─ Task=1/@769cd7e#51 10-22-21:03:34 flags:1 a:1 pid=1679 uid=1000
+ │  │  │        │  │  ├─ Task=23/@e962895#89 10-22-21:03:43 flags:1 a:1 pid=1679 uid=1000
+ │  │  │        │  │  │  └─ ActivityRecord{93841369 u0 com.motor[...]stomizationPanelLauncher/@c265d9b#90 10-22-21:03:43 flags:1 a:1 pid=1679 uid=1000
+ │  │  │        │  │  │     ├─ 528059e ActivityRecordInputSink com.[...]rides.QuickstepLauncher/@5cae3ac#100 10-22-21:11:35 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │  │  │     ├─ cb4f9b5 com.motorola.launcher3/com.a[...]stomizationPanelLauncher/@6d763bb#93 10-22-21:03:44 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │  │  │     ├─ ImeContainer/@98f7888#13 parent=90 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │  │  │     │  └─ WindowToken{bf73235 type=2011 android.os.Binder@e621c6c}/@38ab6ca#104 10-22-21:11:35 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │  │  │     │     └─ Surface(name=6a2d88a InputMethod)/@0[...]ash of insets_animation/@d906a63#382 10-22-21:19:17 flags:0 a:0 pid=1679 uid=1000
+ │  │  │        │  │  │     │        └─ 6a2d88a InputMethod/@e3deb18#111 10-22-21:11:35 flags:4096 a:1 pid=1679 uid=1000
+ │  │  │        │  │  │     └─ 6c49bf5 (1-1)-Window{2541807 alpha=1.0 fl=}/@b5b6ffb#105 10-22-21:11:35 flags:4096 a:1 pid=1679 uid=1000
+ │  │  │        │  │  └─ home_task_overlay_container/@b623799#57 10-22-21:03:38 flags:0 a:1 pid=2203 uid=10331
+ │  │  │        │  ├─ Task=3/@cb13fd6#58 10-22-21:03:38 flags:1 a:1 pid=1679 uid=1000
+ │  │  │        │  │  ├─ Task=4/@67eb4c3#59 10-22-21:03:38 flags:1 a:1 pid=1679 uid=1000
+ │  │  │        │  │  │  └─ Dim layer/@13c275d#63 10-22-21:03:38 flags:1 a:1 pid=2203 uid=10331
+ │  │  │        │  │  └─ Task=5/@23ded46#60 10-22-21:03:38 flags:1 a:1 pid=1679 uid=1000
+ │  │  │        │  │     └─ Dim layer/@be3ef62#64 10-22-21:03:38 flags:1 a:1 pid=2203 uid=10331
+ │  │  │        │  └─ Task=27/@686f429#149 10-22-21:17:33 flags:1 a:1 pid=1679 uid=1000
+ │  │  │        │     ├─ ActivityRecord{147415597 u0 com.goog[...].home.HomeActivity t27}/@408e54f#150 10-22-21:17:33 flags:1 a:1 pid=1679 uid=1000
+ │  │  │        │     │  ├─ 576b362 ActivityRecordInputSink com.[...]iles/.home.HomeActivity/@b9dbb09#156 10-22-21:17:33 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │     │  └─ 40b0816 com.google.android.apps.nbu.[...]files.home.HomeActivity/@92ba384#160 10-22-21:17:33 flags:4096 a:1 pid=1679 uid=1000
+ │  │  │        │     ├─ ActivityRecord{149393398 u0 com.goog[...]dvancedBrowsingActivity/@b9398cd#190 10-22-21:17:41 flags:1 a:1 pid=1679 uid=1000
+ │  │  │        │     │  ├─ 6b96ff7 ActivityRecordInputSink com.[...]dvancedBrowsingActivity/@fbe35d7#196 10-22-21:17:41 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │     │  └─ abca7ce com.google.android.apps.nbu.[...]dvancedBrowsingActivity/@48ad5fc#191 10-22-21:17:41 flags:4096 a:1 pid=1679 uid=1000
+ │  │  │        │     └─ ActivityRecord{18819752 u0 com.googl[...]iew.FilePreviewActivity/@968b0a7#198 10-22-21:17:43 flags:1 a:1 pid=1679 uid=1000
+ │  │  │        │        ├─ f3489c1 ActivityRecordInputSink com.[...]iew.FilePreviewActivity/@12cdcfa#204 10-22-21:17:43 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │        └─ be5b043 com.google.android.apps.nbu.[...]iew.FilePreviewActivity/@17faff9#199 10-22-21:17:43 flags:4096 a:1 pid=1679 uid=1000
+ │  │  │        ├─ Leaf:3:12/@155ec7a#11 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │  ├─ WindowToken{46621ce type=2038 android.os.BinderProxy@5f0b031}/@11d58ef#61 10-22-21:03:38 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │  │  └─ 35926d0 ShellDropTarget/@271dffc#62 10-22-21:03:38 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │  └─ WindowToken{dfd8392 type=2038 android.os.BinderProxy@9c5951d}/@7f3b163#74 10-22-21:03:41 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        │     └─ 860e160 FreeformPillView/@9ec46de#75 10-22-21:03:41 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        └─ ImePlaceholder:13:14/@fff0c2b#12 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  ├─ OneHanded:15:15/@9fff221#14 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │  └─ Leaf:15:15/@4465646#15 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     └─ WindowToken{48229d8 type=2000 android.os.BinderProxy@801c94a}/@93bd131#80 10-22-21:03:41 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        └─ Surface(name=51b3016 StatusBar)/@0xd[...]ash of insets_animation/@4bd5d77#388 10-22-21:40:06 flags:0 a:1 pid=1679 uid=1000
+ │  │  │           └─ 51b3016 StatusBar/@dc0b84#81 10-22-21:03:41 flags:0 a:1 pid=1679 uid=1000
+ │  │  │              └─ StatusBar/@a9ae7a7#88 requestedFrameRate: {0.00 Hz FrameRateCompatibility::Default FrameRateCategory::NoPreference} 10-22-21:03:41 flags:8448 a:1 pid=2203 uid=10331
+ │  │  ├─ HideDisplayCutout:16:16/@604007#16 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │  └─ OneHanded:16:16/@8e79534#17 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     └─ AppZoomOut:16:16/@4488f5d#18 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        └─ Leaf:16:16/@d8190d2#19 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │           └─ WindowToken{8a48a7a type=2041 android.os.BinderProxy@eaa46a5}/@49c522b#91 10-22-21:03:44 flags:0 a:1 pid=1679 uid=1000
+ │  │  │              └─ fda4688 OverviewFreeform/@4e0d446#92 10-22-21:03:44 flags:0 a:1 pid=1679 uid=1000
+ │  │  ├─ OneHanded:17:17/@eb6d5a3#20 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │  └─ Leaf:17:17/@802d0a0#21 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     └─ WindowToken{848bc43 type=2040 android.os.BinderProxy@7b02cfd}/@f26c2c0#78 10-22-21:03:41 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        └─ 3579bf9 NotificationShade/@c30d99f#79 10-22-21:03:41 flags:0 a:1 pid=1679 uid=1000
+ │  │  │           └─ NotificationShade/@692bf52#386 requestedFrameRate: {0.00 Hz FrameRateCompatibility::Default FrameRateCategory::NoPreference} 10-22-21:40:06 flags:8448 a:1 pid=2203 uid=10331
+ │  │  ├─ HideDisplayCutout:18:23/@83c459#22 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │  └─ OneHanded:18:23/@3c3e81e#23 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     ├─ AppZoomOut:18:18/@5728ff#24 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     │  └─ Leaf:18:18/@7d456cc#25 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     ├─ Leaf:19:19/@5a34d15#26 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     ├─ AppZoomOut:20:21/@b42682a#27 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     │  └─ Leaf:20:21/@17f561b#28 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     ├─ Leaf:22:22/@35613b8#29 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     └─ AppZoomOut:23:23/@df8a591#30 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │        └─ Leaf:23:23/@476dcf6#31 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  ├─ Leaf:24:25/@a3338f7#32 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │  └─ WindowToken{e06ee20 type=2019 android.os.BinderProxy@e2a1252}/@24153d9#76 10-22-21:03:41 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     └─ Surface(name=33019e NavigationBar0)/[...]ash of insets_animation/@218329b#387 10-22-21:40:06 flags:1 a:1 pid=1679 uid=1000
+ │  │  │        └─ 33019e NavigationBar0/@9bccc4c#77 10-22-21:03:41 flags:0 a:1 pid=1679 uid=1000
+ │  │  │           └─ NavigationBar0/@f49ccca#84 requestedFrameRate: {0.00 Hz FrameRateCompatibility::Default FrameRateCategory::NoPreference} 10-22-21:03:41 flags:8448 a:1 pid=2203 uid=10331
+ │  │  └─ HideDisplayCutout:26:31/@934b364#33 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │     └─ OneHanded:26:31/@d7109cd#34 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │        └─ AppZoomOut:26:31/@babd282#35 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │           └─ Leaf:26:31/@4d86d93#36 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  ├─ HideDisplayCutout:32:35/@43ba1d0#37 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  ├─ OneHanded:32:32/@f9175c9#38 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │  └─ AppZoomOut:32:32/@54894ce#39 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │     └─ Leaf:32:32/@2924fef#40 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  ├─ AppZoomOut:33:33/@e810afc#41 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  │  └─ Leaf:33:33/@932a585#42 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │  └─ OneHanded:34:35/@2dd2fda#43 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │     └─ AppZoomOut:34:35/@95dfc0b#44 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  │        └─ Leaf:34:35/@b51dae8#45 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  ├─ Leaf:36:36/@9fd1501#46 10-22-21:03:34 flags:0 a:1 pid=1679 uid=1000
+ │  ├─ Accessibility Overlays/@d81e032#50 10-22-21:03:34 flags:2 a:1 pid=1679 uid=1000
+ │  ├─ Input Overlays/@9a5003d#49 10-22-21:03:34 flags:2 a:1 pid=1679 uid=1000
+ │  └─ Display Overlays/@3ddbd94#48 10-22-21:03:34 flags:2 a:1 pid=1679 uid=1000
+ ├─ Input Consumer recents_animation_input_consumer/@dba3c3c#95 10-22-21:03:45 flags:1 a:1 pid=1679 uid=1000
+ ├─ ColorFade/@88fe9b1#407 10-23-00:31:09 flags:0 a:1 pid=1679 uid=1000
+ │  └─ ColorFade BLAST/@e609e96#408 10-23-00:31:09 flags:268435712 a:1 pid=1679 uid=1000
+ ├─ WindowToken{85dff8 type=2024 android.os.BinderProxy@19ab5b}/@50e1cd1#69 10-22-21:03:40 flags:0 a:1 pid=1679 uid=1000
+ │  └─ e702336 ScreenDecorOverlay/@93503a4#70 10-22-21:03:40 flags:0 a:1 pid=1679 uid=1000
+ └─ WindowToken{4933cc2 type=2024 android.os.BinderProxy@786b50d}/@f402ad3#71 10-22-21:03:40 flags:0 a:1 pid=1679 uid=1000
+    └─ d90b610 ScreenDecorOverlayBottom/@7dc630e#72 10-22-21:03:40 flags:0 a:1 pid=1679 uid=1000
+Offscreen Hierarchy
+ ROOT
+
+Display 4627039422300187648 (active) HWC layers:
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Layer name
+           Z |  Window Type |  Comp Type |  Transform |   Disp Frame (LTRB) |          Source Crop (LTRB) |     Frame Rate (Explicit) (Seamlessness) [Focused]
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Window Infos:
+  max send vsync id: -1
+  max send delay (ns): 0 ns
+  unsent messages: 0
+
+Last Focus Window Info:
+End Last Focus Window Info
+
+
+SfPq Request:  enabled: 0, client(gpu) pq only: 1
+
+Displays (1 entries)
+Display 4627039422300187648
+    port=0
+    connectionType=Internal
+    colorModes=
+        ColorMode::NATIVE
+        ColorMode::SRGB
+        ColorMode::DISPLAY_P3
+    deviceProductInfo={name="MTKDEV", manufacturerPnpId=MTK, productId=35638, manufactureWeek=42, manufactureYear=2021, relativeAddress=[]}
+    name="MTKDEV"
+    powerMode=Off
+    optimizationPolicy=optimizeForPerformance
+    renderRate=120.00 Hz
+    activeMode={id=0, hwcId=0, resolution=1080x2352, vsyncRate=120.00 Hz, dpi=381.70x381.44, group=0x0, vrrConfig=N/A, supportedHdrTypes=INVALID}
+    displayModes=
+        {id=0, hwcId=0, resolution=1080x2352, vsyncRate=120.00 Hz, dpi=381.70x381.44, group=0x0, vrrConfig=N/A, supportedHdrTypes=INVALID}
+        {id=1, hwcId=1, resolution=1080x2352, vsyncRate=90.00 Hz, dpi=381.70x381.44, group=0x0, vrrConfig=N/A, supportedHdrTypes=INVALID}
+        {id=2, hwcId=2, resolution=1080x2352, vsyncRate=60.00 Hz, dpi=381.70x381.44, group=0x0, vrrConfig=N/A, supportedHdrTypes=INVALID}
+    mHasMultiRRGroup=false
+    mSpecialIdleDisplayModes=
+    displayManagerPolicy={defaultModeId=1, allowGroupSwitching=false, primaryRanges={physical=[90.00 Hz, 90.00 Hz], render=[60.00 Hz, 90.00 Hz]}, appRequestRanges={physical=[0.00 Hz, 120.00 Hz], render=[0.00 Hz, 120.00 Hz]} idleScreenConfig=nullptr}
+      mStrPrimaryRefreshrates={fps=90.00 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}} 
+      mStrAppRefreshrates={fps=20.00 Hz, modePtr={id=2, vsyncRate=60.00 Hz, peakRefreshRate=60.00 Hz}} {fps=22.50 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}} {fps=24.00 Hz, modePtr={id=0, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}} {fps=30.00 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}} {fps=40.00 Hz, modePtr={id=0, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}} {fps=45.00 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}} {fps=60.00 Hz, modePtr={id=2, vsyncRate=60.00 Hz, peakRefreshRate=60.00 Hz}} {fps=90.00 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}} {fps=120.00 Hz, modePtr={id=0, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}} 
+    frameRateOverrideConfig=Enabled
+    idleTimer=
+        interval=500.000 ms
+        controller=Platform
+    BoostRefreshrates=
+        scrollBoostRefreshRate=120
+        touchBoostRefreshRate=90
+        touchBoostRefreshRate=90
+        mTouchBoostFrameRateModeOpt={fps=90.00 Hz, modePtr={id=1, vsyncRate=90.00 Hz, peakRefreshRate=90.00 Hz}}
+        mActual120HzModeOpt={fps=120.00 Hz, modePtr={id=0, vsyncRate=120.00 Hz, peakRefreshRate=120.00 Hz}}
+    SpecialIdleRefreshrates=
+          mStrSpecialIdleRefreshrates=
+          mSpecialIdleFlag=1
+          mAllowSwitchingGroupFlag=0
+          mAppPreferredGroupFlag=0
+
+Display 4627039422300187648 (physical, "MTKDEV")
+   Composition Display State:
+   isEnabled=false isSecure=true usesDeviceComposition=true 
+   usesClientComposition=true flipClientTarget=false reusedClientComposition=false 
+   layerFilter={layerStack=4294967295 toInternalDisplay=true }
+   transform (ROT_0) (IDENTITY)
+   layerStackSpace=ProjectionSpace{bounds=Rect(0, 0, 1080, 2352), content=Rect(0, 0, 1080, 2352), orientation=ROTATION_0} 
+   framebufferSpace=ProjectionSpace{bounds=Rect(0, 0, 1080, 2352), content=Rect(0, 0, 1080, 2352), orientation=ROTATION_0} 
+   orientedDisplaySpace=ProjectionSpace{bounds=Rect(0, 0, 1080, 2352), content=Rect(0, 0, 1080, 2352), orientation=ROTATION_0} 
+   displaySpace=ProjectionSpace{bounds=Rect(0, 0, 1080, 2352), content=Rect(0, 0, 1080, 2352), orientation=ROTATION_0} 
+   needsFiltering=false 
+   colorMode=NATIVE (0) renderIntent=COLORIMETRIC (0) dataspace=UNKNOWN (0) 
+   colorTransformMatrix=[[1.000,0.000,0.000,0.000][0.000,1.000,0.000,0.000][0.000,0.000,1.000,0.000][0.000,0.000,0.000,1.000]] 
+   displayBrightnessNits=3.000000 sdrWhitePointNits=3.000000 clientTargetBrightness=1.000000 displayBrightness=nullopt 
+   compositionStrategyPredictionState=DISABLED 
+   
+   treat170mAsSrgb=true 
+
+   Composition Display Color State:
+   HWC Support: wideColorGamut=true hdr10plus=false hdr10=false hlg=false dv=false metadata=0 
+   Hdr Luminance Info:desiredMinLuminance=0.000000 desiredMaxLuminance=500.000000 desiredMaxAverageLuminance=500.000000 
+color profile map:
+    modeKey(0x 9c6000000000003) [ds(BT2020 SMPTE 2084 Full range-163971072) ri(RenderIntent::TONE_MAP_ENHANCE-3)] = [(ds(DCI-P3 sRGB Full range-143261696) cm(ColorMode::DISPLAY_P3-9) ri(RenderIntent::COLORIMETRIC-0)]
+    modeKey(0x a06000000000002) [ds(BT2020 STD-B67 Full range-168165376) ri(RenderIntent::TONE_MAP_COLORIMETRIC-2)] = [(ds(DCI-P3 sRGB Full range-143261696) cm(ColorMode::DISPLAY_P3-9) ri(RenderIntent::COLORIMETRIC-0)]
+    modeKey(0x 9c6000000000002) [ds(BT2020 SMPTE 2084 Full range-163971072) ri(RenderIntent::TONE_MAP_COLORIMETRIC-2)] = [(ds(DCI-P3 sRGB Full range-143261696) cm(ColorMode::DISPLAY_P3-9) ri(RenderIntent::COLORIMETRIC-0)]
+    modeKey(0x 881000000000001) [ds(BT709 sRGB Full range-142671872) ri(RenderIntent::ENHANCE-1)] = [(ds(BT709 sRGB Full range-142671872) cm(ColorMode::SRGB-7) ri(RenderIntent::COLORIMETRIC-0)]
+    modeKey(0x 886000000000001) [ds(BT2020 sRGB Full range-142999552) ri(RenderIntent::ENHANCE-1)] = [(ds(DCI-P3 sRGB Full range-143261696) cm(ColorMode::DISPLAY_P3-9) ri(RenderIntent::COLORIMETRIC-0)]
+    modeKey(0x 88a000000000000) [ds(DCI-P3 sRGB Full range-143261696) ri(RenderIntent::COLORIMETRIC-0)] = [(ds(DCI-P3 sRGB Full range-143261696) cm(ColorMode::DISPLAY_P3-9) ri(RenderIntent::COLORIMETRIC-0)]
+    modeKey(0x 88a000000000001) [ds(DCI-P3 sRGB Full range-143261696) ri(RenderIntent::ENHANCE-1)] = [(ds(DCI-P3 sRGB Full range-143261696) cm(ColorMode::DISPLAY_P3-9) ri(RenderIntent::COLORIMETRIC-0)]
+    modeKey(0x 881000000000000) [ds(BT709 sRGB Full range-142671872) ri(RenderIntent::COLORIMETRIC-0)] = [(ds(BT709 sRGB Full range-142671872) cm(ColorMode::SRGB-7) ri(RenderIntent::COLORIMETRIC-0)]
+    modeKey(0x a06000000000003) [ds(BT2020 STD-B67 Full range-168165376) ri(RenderIntent::TONE_MAP_ENHANCE-3)] = [(ds(DCI-P3 sRGB Full range-143261696) cm(ColorMode::DISPLAY_P3-9) ri(RenderIntent::COLORIMETRIC-0)]
+    modeKey(0x 886000000000000) [ds(BT2020 sRGB Full range-142999552) ri(RenderIntent::COLORIMETRIC-0)] = [(ds(DCI-P3 sRGB Full range-143261696) cm(ColorMode::DISPLAY_P3-9) ri(RenderIntent::COLORIMETRIC-0)]
+
+
+   Composition RenderSurface State:
+   size=[1080 2352] ANativeWindow=0xb4000079fd839b10 (format 1) 
+   FramebufferSurface
+      mDataspace=Default (0)
+      mAbandoned=0
+      - BufferQueue mMaxAcquiredBufferCount=3 mMaxDequeuedBufferCount=1
+        mDequeueBufferCannotBlock=0 mAsyncMode=0
+        mQueueBufferCanDrop=0 mLegacyBufferDrop=1
+        default-size=[1080x2352] default-format=1         transform-hint=00 frame-counter=1563
+        mTransformHintInUse=00 mAutoPrerotation=0
+      FIFO(0):
+      (mConsumerName=FramebufferSurface, mConnectedApi=1, mConsumerUsageBits=6656, mId=44e00000000, producer=[1102:/system/bin/surfaceflinger], consumer=[1102:/system/bin/surfaceflinger])
+      Slots:
+       >[01:0xb4000079fd894600] state=ACQUIRED 0xb4000079fd846400 frame=1563 [1080x2352:1088,  1]
+        [00:0xb4000079fd893800] state=FREE     0xb4000079fd846180 frame=1560 [1080x2352:1088,  1]
+        [03:0xb4000079fd896200] state=FREE     0xb4000079fd846680 frame=1561 [1080x2352:1088,  1]
+        [02:0xb4000079fd895400] state=FREE     0xb4000079fd846540 frame=1562 [1080x2352:1088,  1]
+   *BufferQueueDump mIsBackupBufInited=0, mAcquiredBufs(size=1)
+    [00] handle=0xb4000079fd846400, fence=0xb4000079d254bab0, time=0x40a117d8994, xform=0x00
+    FPS ring buffer:
+    (0) 00:30:58.827 fps=46.78 dur=1432.36       max=495.58        min=6.62 
+    (1) 00:31:00.52  fps=1.63  dur=1225.58       max=1217.58       min=8.00 
+    (2) 00:31:01.57  fps=34.84 dur=1004.60       max=493.28        min=7.62 
+    (3) 00:31:03.496 fps=13.12 dur=2438.87       max=1526.48       min=6.16 
+    (4) 00:31:04.749 fps=46.27 dur=1253.43       max=424.43        min=8.55 
+    (5) 00:31:07.83  fps=0.43  dur=2333.42       max=2333.42       min=2333.42
+    (6) 00:31:09.448 fps=23.68 dur=2365.01       max=1621.75       min=9.14 
+    (7) 23:56:13.708 fps=4.39  dur=3418.91       max=2792.89       min=6.29 
+    (8) 23:56:15.297 fps=1.26  dur=1588.52       max=1558.58       min=29.93
+    (9) 00:30:57.394 fps=0.03  dur=2082097.43    max=2081613.77    min=5.89 
+
+   4 Layers
+  - Output Layer 0xb4000079d25ef000(Wallpaper BBQ wrapper/@c2c66c0#341)
+        Region visibleRegion (this=0xb4000079d25ef080, count=1)
+    [-537,   0, 1618, 2352]
+        Region visibleNonTransparentRegion (this=0xb4000079d25ef0e8, count=1)
+    [-537,   0, 1618, 2352]
+        Region coveredRegion (this=0xb4000079d25ef150, count=1)
+    [  0,   0, 1080, 2352]
+        Region output visibleRegion (this=0xb4000079d25ef228, count=1)
+    [  0,   0, 1080, 2352]
+        Region shadowRegion (this=0xb4000079d25ef290, count=1)
+    [  0,   0,   0,   0]
+        Region outputSpaceBlockingRegionHint (this=0xb4000079d25ef328, count=1)
+    [  0,   0,   0,   0]
+      forceClientComposition=false clearClientTarget=false displayFrame=[0 0 1080 2352] sourceCrop=[538.000000 0.000000 1621.000000 2357.000000] bufferTransform=0 (0) dataspace=UNKNOWN (0) whitePointNits=3.000000 dimmingRatio=1.000000 override buffer=0x0 override acquire fence=0x0 override display frame=[0 0 -1 -1] override dataspace=UNKNOWN (0) override display space=ProjectionSpace{bounds=Rect(0, 0, -1, -1), content=Rect(0, 0, -1, -1), orientation=ROTATION_0} override damage region=  Region  (this=0xb4000079d25ef3e8, count=1)
+    [  0,   0,  -1,  -1]
+ override visible region=  Region  (this=0xb4000079d25ef450, count=1)
+    [  0,   0,   0,   0]
+ override peekThroughLayer=0x0 override disableBackgroundBlur=false 
+      hwc: layer=0x0845 composition=CLIENT (1) 
+  - Output Layer 0xb4000079d24fda00(StatusBar/@a9ae7a7#88)
+        Region visibleRegion (this=0xb4000079d24fda80, count=1)
+    [  0,   0, 1080, 120]
+        Region visibleNonTransparentRegion (this=0xb4000079d24fdae8, count=1)
+    [  0,   0, 1080, 120]
+        Region coveredRegion (this=0xb4000079d24fdb50, count=1)
+    [  0,   0, 1080, 120]
+        Region output visibleRegion (this=0xb4000079d24fdc28, count=1)
+    [  0,   0, 1080, 120]
+        Region shadowRegion (this=0xb4000079d24fdc90, count=1)
+    [  0,   0,   0,   0]
+        Region outputSpaceBlockingRegionHint (this=0xb4000079d24fdd28, count=1)
+    [  0,   0,   0,   0]
+      forceClientComposition=false clearClientTarget=false displayFrame=[0 0 1080 120] sourceCrop=[0.000000 0.000000 1080.000000 120.000000] bufferTransform=0 (0) dataspace=UNKNOWN (0) whitePointNits=3.000000 dimmingRatio=1.000000 override buffer=0x0 override acquire fence=0x0 override display frame=[0 0 -1 -1] override dataspace=UNKNOWN (0) override display space=ProjectionSpace{bounds=Rect(0, 0, -1, -1), content=Rect(0, 0, -1, -1), orientation=ROTATION_0} override damage region=  Region  (this=0xb4000079d24fdde8, count=1)
+    [  0,   0,  -1,  -1]
+ override visible region=  Region  (this=0xb4000079d24fde50, count=1)
+    [  0,   0,   0,   0]
+ override peekThroughLayer=0x0 override disableBackgroundBlur=false 
+      hwc: layer=0x0844 composition=DEVICE (2) 
+  - Output Layer 0xb4000079d24fce00(NotificationShade/@692bf52#386)
+        Region visibleRegion (this=0xb4000079d24fce80, count=1)
+    [  0,   0, 1080, 2352]
+        Region visibleNonTransparentRegion (this=0xb4000079d24fcee8, count=1)
+    [  0,   0, 1080, 2352]
+        Region coveredRegion (this=0xb4000079d24fcf50, count=1)
+    [  0,   0, 1080, 2352]
+        Region output visibleRegion (this=0xb4000079d24fd028, count=1)
+    [  0,   0, 1080, 2352]
+        Region shadowRegion (this=0xb4000079d24fd090, count=1)
+    [  0,   0,   0,   0]
+        Region outputSpaceBlockingRegionHint (this=0xb4000079d24fd128, count=1)
+    [  0,   0,   0,   0]
+      forceClientComposition=false clearClientTarget=false displayFrame=[0 0 1080 2352] sourceCrop=[0.000000 0.000000 1080.000000 2352.000000] bufferTransform=0 (0) dataspace=UNKNOWN (0) whitePointNits=3.000000 dimmingRatio=1.000000 override buffer=0x0 override acquire fence=0x0 override display frame=[0 0 -1 -1] override dataspace=UNKNOWN (0) override display space=ProjectionSpace{bounds=Rect(0, 0, -1, -1), content=Rect(0, 0, -1, -1), orientation=ROTATION_0} override damage region=  Region  (this=0xb4000079d24fd1e8, count=1)
+    [  0,   0,  -1,  -1]
+ override visible region=  Region  (this=0xb4000079d24fd250, count=1)
+    [  0,   0,   0,   0]
+ override peekThroughLayer=0x0 override disableBackgroundBlur=false 
+      hwc: layer=0x0843 composition=DEVICE (2) 
+  - Output Layer 0xb4000079d39fe800(ColorFade BLAST/@e609e96#408)
+        Region visibleRegion (this=0xb4000079d39fe880, count=1)
+    [  0,   0, 1080, 2352]
+        Region visibleNonTransparentRegion (this=0xb4000079d39fe8e8, count=1)
+    [  0,   0, 1080, 2352]
+        Region coveredRegion (this=0xb4000079d39fe950, count=1)
+    [  0,   0,   0,   0]
+        Region output visibleRegion (this=0xb4000079d39fea28, count=1)
+    [  0,   0, 1080, 2352]
+        Region shadowRegion (this=0xb4000079d39fea90, count=1)
+    [  0,   0,   0,   0]
+        Region outputSpaceBlockingRegionHint (this=0xb4000079d39feb28, count=1)
+    [  0,   0,   0,   0]
+      forceClientComposition=false clearClientTarget=false displayFrame=[0 0 1080 2352] sourceCrop=[0.000000 0.000000 1080.000000 2352.000000] bufferTransform=0 (0) dataspace=UNKNOWN (0) whitePointNits=3.000000 dimmingRatio=1.000000 override buffer=0x0 override acquire fence=0x0 override display frame=[0 0 -1 -1] override dataspace=UNKNOWN (0) override display space=ProjectionSpace{bounds=Rect(0, 0, -1, -1), content=Rect(0, 0, -1, -1), orientation=ROTATION_0} override damage region=  Region  (this=0xb4000079d39febe8, count=1)
+    [  0,   0,  -1,  -1]
+ override visible region=  Region  (this=0xb4000079d39fec50, count=1)
+    [  0,   0,   0,   0]
+ override peekThroughLayer=0x0 override disableBackgroundBlur=false 
+      hwc: layer=0x0848 composition=DEVICE (2) 
+   Output::mBypassProtectedContent=0
+
+
+SurfaceFlinger global state:
+
+ ------------RE GLES (Ganesh)------------
+EGL implementation : 1.4 Android META-EGL
+EGL_ANDROID_front_buffer_auto_refresh EGL_ANDROID_get_native_client_buffer EGL_ANDROID_presentation_time EGL_EXT_surface_CTA861_3_metadata EGL_EXT_surface_SMPTE2086_metadata EGL_KHR_get_all_proc_addresses EGL_KHR_swap_buffers_with_damage EGL_ANDROID_get_frame_timestamps EGL_EXT_gl_colorspace_scrgb EGL_EXT_gl_colorspace_scrgb_linear EGL_EXT_gl_colorspace_display_p3_linear EGL_EXT_gl_colorspace_display_p3 EGL_EXT_gl_colorspace_display_p3_passthrough EGL_ANDROID_image_native_buffer EGL_ANDROID_native_fence_sync EGL_ANDROID_recordable EGL_EXT_create_context_robustness EGL_EXT_image_gl_colorspace EGL_EXT_pixel_format_float EGL_EXT_protected_content EGL_EXT_yuv_surface EGL_IMG_context_priority EGL_KHR_config_attribs EGL_KHR_create_context EGL_KHR_fence_sync EGL_KHR_gl_colorspace EGL_KHR_gl_renderbuffer_image EGL_KHR_gl_texture_2D_image EGL_KHR_gl_texture_cubemap_image EGL_KHR_image EGL_KHR_image_base EGL_KHR_mutable_render_buffer EGL_KHR_no_config_context EGL_KHR_partial_update EGL_KHR_surfaceless_context EGL_KHR_wait_sync EGL_NV_context_priority_realtime 
+GLES: ARM, Mali-G57 MC2, OpenGL ES 3.2 v1.r38p1
+GL_EXT_debug_marker GL_ARM_rgba8 GL_ARM_mali_shader_binary GL_OES_depth24 GL_OES_depth_texture GL_OES_depth_texture_cube_map GL_OES_packed_depth_stencil GL_OES_rgb8_rgba8 GL_EXT_read_format_bgra GL_OES_compressed_paletted_texture GL_OES_compressed_ETC1_RGB8_texture GL_OES_standard_derivatives GL_OES_EGL_image GL_OES_EGL_image_external GL_OES_EGL_image_external_essl3 GL_OES_EGL_sync GL_OES_texture_npot GL_OES_vertex_half_float GL_OES_required_internalformat GL_OES_vertex_array_object GL_OES_mapbuffer GL_EXT_texture_format_BGRA8888 GL_EXT_texture_rg GL_EXT_texture_type_2_10_10_10_REV GL_OES_fbo_render_mipmap GL_OES_element_index_uint GL_EXT_shadow_samplers GL_OES_texture_compression_astc GL_KHR_texture_compression_astc_ldr GL_KHR_texture_compression_astc_hdr GL_KHR_texture_compression_astc_sliced_3d GL_EXT_texture_compression_astc_decode_mode GL_EXT_texture_compression_astc_decode_mode_rgb9e5 GL_KHR_debug GL_EXT_occlusion_query_boolean GL_EXT_disjoint_timer_query GL_EXT_blend_minmax GL_EXT_discard_framebuffer GL_OES_get_program_binary GL_OES_texture_3D GL_EXT_texture_storage GL_EXT_multisampled_render_to_texture GL_EXT_multisampled_render_to_texture2 GL_OES_surfaceless_context GL_OES_texture_stencil8 GL_EXT_shader_pixel_local_storage GL_ARM_shader_framebuffer_fetch GL_ARM_shader_framebuffer_fetch_depth_stencil GL_ARM_mali_program_binary GL_EXT_sRGB GL_EXT_sRGB_write_control GL_EXT_texture_sRGB_decode GL_EXT_texture_sRGB_R8 GL_EXT_texture_sRGB_RG8 GL_KHR_blend_equation_advanced GL_KHR_blend_equation_advanced_coherent GL_OES_texture_storage_multisample_2d_array GL_OES_shader_image_atomic GL_EXT_robustness GL_EXT_draw_buffers_indexed GL_OES_draw_buffers_indexed GL_EXT_texture_border_clamp GL_OES_texture_border_clamp GL_EXT_texture_cube_map_array GL_OES_texture_cube_map_array GL_OES_sample_variables GL_OES_sample_shading GL_OES_shader_multisample_interpolation GL_EXT_shader_io_blocks GL_OES_shader_io_blocks GL_EXT_tessellation_shader GL_OES_tessellation_shader GL_EXT_primitive_bounding_box GL_OES_primitive_bounding_box GL_EXT_geometry_shader GL_OES_geometry_shader GL_ANDROID_extension_pack_es31a GL_EXT_gpu_shader5 GL_OES_gpu_shader5 GL_EXT_texture_buffer GL_OES_texture_buffer GL_EXT_copy_image GL_OES_copy_image GL_EXT_shader_non_constant_global_initializers GL_EXT_color_buffer_half_float GL_EXT_unpack_subimage GL_EXT_color_buffer_float GL_EXT_float_blend GL_EXT_YUV_target GL_OVR_multiview GL_OVR_multiview2 GL_OVR_multiview_multisampled_render_to_texture GL_KHR_robustness GL_KHR_robust_buffer_access_behavior GL_EXT_draw_elements_base_vertex GL_OES_draw_elements_base_vertex GL_EXT_protected_textures GL_EXT_buffer_storage GL_EXT_external_buffer GL_EXT_EGL_image_array GL_EXT_texture_filter_anisotropic GL_OES_texture_float_linear GL_ARM_texture_unnormalized_coordinates GL_EXT_shader_framebuffer_fetch GL_EXT_clip_control 
+RenderEngine supports protected context: 1
+RenderEngine is in protected context: 0
+RenderEngine shaders cached since last dump/primeCache: 0
+Skia CPU Caches:  0 bytes, 0.00 bytes (0.00 bytes is purgeable)
+Skia's GPU Caches:  707268 bytes, 690.69 KB (130.57 KB is purgeable)
+  Texture/RenderBuffer: 128.00 KB (1 entry)
+    skia/gpu_resources/resource_146/texture_renderbuffer: size[128.00 KB] type[RenderTarget] category[Scratch] label[TextureRenderTarget_FullyLazyProxy] purgeable_size[128.00 KB]
+  Texture: 192.00 bytes (2 entries)
+    skia/gpu_resources/resource_29/texture: size[64.00 bytes] type[Texture] category[Image] label[ProxyProvider_CreateNonMippedProxyFromBitmap] purgeable_size[64.00 bytes]
+    skia/gpu_resources/resource_8/texture: size[128.00 bytes] type[Texture] category[Scratch] label[ProxyProvider_CreateNonMippedProxyFromBitmap]
+  Other: 562.50 KB (6 entries)
+    skia/gpu_resources/resource_149: size[512.00 KB] type[StencilAttachment] category[Other] label[GLAttachmentMakeStencil]
+    skia/gpu_resources/resource_2: size[180.00 bytes] type[Buffer Object] category[Other] label[MakeGlBuffer] purgeable_size[180.00 bytes]
+    skia/gpu_resources/resource_147: size[272.00 bytes] type[Buffer Object] category[Other] label[MakeGlBuffer] purgeable_size[272.00 bytes]
+    skia/gpu_resources/resource_148: size[192.00 bytes] type[Buffer Object] category[Other] label[MakeGlBuffer] purgeable_size[192.00 bytes]
+    skia/gpu_resources/resource_489: size[48.00 KB] type[Buffer Object] category[Scratch] label[MakeGlBuffer]
+    skia/gpu_resources/resource_3: size[1.88 KB] type[Buffer Object] category[Other] label[MakeGlBuffer] purgeable_size[1.88 KB]
+Skia's Wrapped Objects:
+  Texture/RenderBuffer: 38.76 MB (4 entries)
+    skia/gpu_resources/resource_247/texture_renderbuffer: size[9.69 MB]
+    skia/gpu_resources/resource_245/texture_renderbuffer: size[9.69 MB]
+    skia/gpu_resources/resource_249/texture_renderbuffer: size[9.69 MB]
+    skia/gpu_resources/resource_243/texture_renderbuffer: size[9.69 MB]
+RenderEngine tracked buffers: 22
+Dumping buffer ids...
+- 0x68f0000002c - 1 refs 
+- 0x68f00000028 - 1 refs 
+- 0x89b00000046 - 1 refs 
+- 0x89b00000047 - 1 refs 
+- 0x89b00000048 - 1 refs 
+- 0x89b00000049 - 1 refs 
+- 0x89b0000004a - 1 refs 
+- 0x44e00000000 - 1 refs 
+- 0x44e00000001 - 1 refs 
+- 0x44e00000002 - 1 refs 
+- 0x44e00000003 - 1 refs 
+- 0x89b00000014 - 1 refs 
+- 0x89b00000015 - 1 refs 
+- 0x89b00000001 - 1 refs 
+- 0x89b00000002 - 1 refs 
+- 0x89b00000012 - 1 refs 
+- 0x89b00000013 - 1 refs 
+- 0x89b00000003 - 1 refs 
+- 0x89b00000004 - 1 refs 
+- 0x89b00000011 - 1 refs 
+- 0x89b00000005 - 1 refs 
+- 0x89b0000002f - 1 refs 
+RenderEngine AHB/BackendTexture cache size: 22
+Dumping buffer ids...
+- 0x68f0000002c
+- 0x68f00000028
+- 0x89b00000046
+- 0x89b00000047
+- 0x89b00000048
+- 0x89b00000049
+- 0x89b0000004a
+- 0x44e00000000
+- 0x44e00000001
+- 0x44e00000002
+- 0x44e00000003
+- 0x89b00000014
+- 0x89b00000015
+- 0x89b00000001
+- 0x89b00000002
+- 0x89b00000012
+- 0x89b00000013
+- 0x89b00000003
+- 0x89b00000004
+- 0x89b00000011
+- 0x89b00000005
+- 0x89b0000002f
+
+Skia's GPU Protected Caches:  0 bytes, 0.00 bytes (0.00 bytes is purgeable)
+Skia's Protected Wrapped Objects:
+
+RenderEngine runtime effects: 5
+- inputDataspace: (deprecated) sRGB sRGB Full range
+- outputDataspace: DCI-P3 sRGB Full range
+undoPremultipliedAlpha: true
+- inputDataspace: (deprecated) sRGB sRGB Full range
+- outputDataspace: (deprecated) sRGB sRGB Full range
+undoPremultipliedAlpha: true
+- inputDataspace: (deprecated) sRGB sRGB Full range
+- outputDataspace: (deprecated) sRGB sRGB Full range
+undoPremultipliedAlpha: false
+- inputDataspace: (deprecated) sRGB sRGB Full range
+- outputDataspace: DCI-P3 sRGB Full range
+undoPremultipliedAlpha: false
+- inputDataspace: Default
+- outputDataspace: (deprecated) sRGB sRGB Full range
+undoPremultipliedAlpha: false
+
+ClientCache state:
+ Cache owner: 0xb4000079cf5e53a0
+ Cache owner: 0xb4000079d25b2900
+ Cache owner: 0xb4000079d25b29a0
+ Cache owner: 0xb4000079d25b5240
+ Cache owner: 0xb4000079d25b5420
+	ID: 7211250090024, size: 1080x2352
+ Cache owner: 0xb4000079d261a520
+	ID: 9461812953158, size: 1080x2352
+	ID: 9461812953135, size: 2160x2357
+	ID: 9461812953089, size: 1080x117
+	ID: 9461812953159, size: 1080x2352
+	ID: 9461812953090, size: 1080x117
+	ID: 9461812953106, size: 1080x120
+	ID: 9461812953107, size: 1080x120
+	ID: 9461812953108, size: 1080x120
+	ID: 9461812953160, size: 1080x2352
+	ID: 9461812953091, size: 1080x117
+	ID: 9461812953109, size: 1080x120
+	ID: 9461812953161, size: 1080x2352
+	ID: 9461812953092, size: 1080x117
+	ID: 9461812953105, size: 1080x120
+	ID: 9461812953162, size: 1080x2352
+	ID: 9461812953093, size: 1080x117
+ Cache owner: 0xb4000079d261ba60
+ Cache owner: 0xb4000079d39800c0
+ Cache owner: 0xb4000079d3bc90e0
+  Region undefinedRegion (this=0xb4000079e49f1348, count=1)
+    [  0,   0, 1080, 2352]
+  orientation=ROTATION_0, isPoweredOn=0
+  transaction-flags         : 00000000
+  peak-refresh-rate         : 120.00 Hz
+  x-dpi                     : 381.70
+  y-dpi                     : 381.44
+  transaction time: 0.000000 us
+
+Transaction tracing: disabled
+
+Planner is disabled
+h/w composer state:
+  h/w composer enabled
+android.hardware.graphics.composer3.IComposer version:1 hash:6e0e98f955d0bf3e7502a30fac0465e56cc98e75Display(0), active_config 0
+ visible_layers:4 invisible_layers:0 commit_layers:4 ct_handle:0xb4000077b9a35b40 alloc_id:2 unchanged:0 ct_fbdc:1 hbm:0 mml:0 disp_pq:1 mdp_disp_pq:0 mdp_disp_pq_query_support:0
++----------+-------------------------------+----------+-------+----------------------------------+---+------------+-+-------------------+------------+----------------+--------+-----------+----------+
+| layer id |             handle / alloc_id |      fmt | blend |                             comp | tr|         ds |c|        pq         |      usage | gralloc status |   caps | unchanged | inactive |
++----------+-------------------------------+----------+-------+----------------------------------+---+------------+-+-------------------+------------+----------------+--------+-----------+----------+
+|       69 | 0xb4000077b9a362c0 /      335 |        2 |   PRE | CLI(     INV,DEV, NSET:10456)   0|  0|          0 |1|0,  0,0,0,0,0, 0, 0|         b00|        20000c01|       0|          0|         0|
++----------+-------------------------------+----------+-------+----------------------------------+---+------------+-+-------------------+------------+----------------+--------+-----------+----------+
+|       68 | 0xb4000077b9a35c80 /      101 |        1 |   PRE | DEV(      UI,DEV, HWCL:  455)   0|  0|          0 |1|0,  0,0,0,0,0, 0, 0|         b00|        20000c01|       0|          0|         0|
++----------+-------------------------------+----------+-------+----------------------------------+---+------------+-+-------------------+------------+----------------+--------+-----------+----------+
+|       67 | 0xb4000077b9a35dc0 /      382 |        1 |   PRE | DEV(      UI,DEV, HWCL:  455)   0|  0|          0 |1|0,  0,0,0,0,0, 0, 0|         b00|        20000c01|       0|          0|         0|
++----------+-------------------------------+----------+-------+----------------------------------+---+------------+-+-------------------+------------+----------------+--------+-----------+----------+
+|       72 | 0xb4000077b9a35f00 /      403 |        1 |   PRE | DEV(      UI,DEV, HWCL:  455)   0|  0|          0 |1|0,  0,0,0,0,0, 0, 0|         b00|        20000c01|       0|          0|         0|
++----------+-------------------------------+----------+-------+----------------------------------+---+------------+-+-------------------+------------+----------------+--------+-----------+----------+
+       69: Wallpaper BBQ wrapper/@c2c66c0#341(BLAST Consumer)pid:2203, usage:0x0 flags:0x1 hdr:0x0
+       68: StatusBar/@a9ae7a7#88(BLAST Consumer)pid:2203, usage:0x0 flags:0x0 hdr:0x0
+       67: NotificationShade/@692bf52#386(BLAST Consumer)pid:2203, usage:0x0 flags:0x0 hdr:0x0
+       72: ColorFade BLAST/@e609e96#408(BLAST Consumer)pid:1679, usage:0x0 flags:0x0 hdr:0x0
+m_current_set, isValid:0 stable_cnt:0 cycle_stable_cnt:0 
+Color Mode & Render Intent
+	current state: color_mode[0] render_intent[0] pq_mode_id[0]
+	ColorMode 0: RenderIntent[0](id=0 range=0),
+
+CpuSet & Scenario:
+	cpu_set: 0x0
+	scenario_hint: 0x0
+
+Driver Support:
+	3x4_disp_color_transform:0
+
+Color Matrix
+[ 1.000000 0.000000 0.000000 0.000000 ]
+[ 0.000000 1.000000 0.000000 0.000000 ]
+[ 0.000000 0.000000 1.000000 0.000000 ]
+[ 0.000000 0.000000 0.000000 1.000000 ]
+----------DRMDEV Color Matrix----------
+Result Error No: 0
+ 2048,     0,     0,     0
+    0,  2048,     0,     0
+    0,     0,  2048,     0
+    0,     0,     0,  2048
+---------------------------------------
+dpy 0, fb_cache:
+cache, id: 1, alloc_id 3, fb_id 121, fmt 0x1
+cache, id: 1, alloc_id 2, fb_id 117, fmt 0x1
+cache, id: 1, alloc_id 1, fb_id 120, fmt 0x1
+cache, id: 1, alloc_id 4, fb_id 126, fmt 0x1
+cache, id: 68, alloc_id 101, fb_id 132, fmt 0x1
+cache, id: 67, alloc_id 381, fb_id 123, fmt 0x1
+cache, id: 67, alloc_id 385, fb_id 127, fmt 0x1
+cache, id: 67, alloc_id 384, fb_id 122, fmt 0x1
+cache, id: 67, alloc_id 383, fb_id 130, fmt 0x1
+cache, id: 67, alloc_id 382, fb_id 133, fmt 0x1
+cache, id: 72, alloc_id 403, fb_id 124, fmt 0x1
+cache, id: 72, alloc_id 404, fb_id 128, fmt 0x1
+cache, id: 72, alloc_id 405, fb_id 129, fmt 0x1
+cache, id: 72, alloc_id 406, fb_id 131, fmt 0x1
+cache, id: 72, alloc_id 407, fb_id 134, fmt 0x1
+dpy 1, fb_cache:
+dpy 2, fb_cache:
+dpy 3, fb_cache:
+Current fb in DrmModeResource
+m_dsi_switch_func 0, m_dsi_switch 0
+
+LayerBrightness: cache size=0
+Plane state: state size=8
+    crtc_id=60 layer_index=0 enable=0 blob_id=114
+    crtc_id=60 layer_index=1 enable=0 blob_id=114
+    crtc_id=60 layer_index=2 enable=0 blob_id=114
+    crtc_id=60 layer_index=3 enable=0 blob_id=114
+    crtc_id=60 layer_index=4 enable=0 blob_id=114
+    crtc_id=60 layer_index=5 enable=0 blob_id=122
+    crtc_id=60 layer_index=6 enable=0 blob_id=122
+    crtc_id=60 layer_index=7 enable=0 blob_id=122
+Pending delete blob: blob size=0
+
+LayerColorTransform: cache size=0
+Plane state: state size=8
+    crtc_id=60 layer_index=0 enable=0 blob_id=115
+    crtc_id=60 layer_index=1 enable=0 blob_id=115
+    crtc_id=60 layer_index=2 enable=0 blob_id=115
+    crtc_id=60 layer_index=3 enable=0 blob_id=115
+    crtc_id=60 layer_index=4 enable=0 blob_id=115
+    crtc_id=60 layer_index=5 enable=0 blob_id=123
+    crtc_id=60 layer_index=6 enable=0 blob_id=123
+    crtc_id=60 layer_index=7 enable=0 blob_id=123
+Pending delete blob: blob size=0
+
+     FPS ring buffer:
+     (0) 23:56:15.298 fps=1.26  dur=1588.46       max=1558.90       min=29.56
+     (1) 00:30:57.395 fps=0.03  dur=2082097.06    max=2081607.23    min=5.86 
+     (2) 00:30:58.827 fps=46.77 dur=1432.42       max=495.69        min=6.52 
+     (3) 00:31:00.53  fps=1.63  dur=1225.54       max=1217.70       min=7.85 
+     (4) 00:31:01.57  fps=34.84 dur=1004.56       max=493.28        min=7.62 
+     (5) 00:31:03.496 fps=13.12 dur=2438.99       max=1526.60       min=6.12 
+     (6) 00:31:04.750 fps=46.28 dur=1253.35       max=424.49        min=8.42 
+     (7) 00:31:07.83  fps=0.43  dur=2333.68       max=2333.68       min=2333.68
+     (8) 00:31:09.448 fps=23.68 dur=2364.83       max=1621.85       min=8.96 
+     (9) 23:56:13.709 fps=4.39  dur=3419.17       max=2793.26       min=6.28 
+
+
+
+
+[DSI Switch state 0]
+
+[HWC Compose State (0)]
+  Total size: 0 bytes
+
+[HWC DBG Dump] log threshold:I
+  DBGLBM: 20/99 used
+
+[HWC Statistics]
+  0 - displayFrame over range
+
+[LED state]
+	directory_name: lcd-backlight
+	  drm_id_connector [32], support[1]
+	             brightness[-1.000000] range[4~16383] current[0]
+
+
+[Driver Support]
+  0,1-1608-4096-0,0,0,1,1
+  1,0
+
+[HWC Property]
+  0,0,1,1,0,4 ,1,1,I,1,0 ,0,0.000000,1 ,1,0,0x1,A-0,A-0,0 ,0,0,0,0,1,1,1 ,0.10,0,1,1,1,0 ,1 0 0,1,0,-1,0 ,0,0,1,0,1,1,4000000 ,1,0x2019,0x10,1,0,0,0 ,-1,0,0x0,(0,0) ,0,1000,2000000000,0 ,1
+
+[PQ Support]
+ 1,0,0,2,0
+
+[MM Buffer]
+ 0, 0
+
+[Layer Hint]
+ 0, , 0, NON
+dpy 0, m_packages size 0
+dpy 1, m_packages size 0
+dpy 2, m_packages size 0
+dpy 3, m_packages size 0
+
+[ComposerExt]
+client_list[1]
+	1102_SurfaceFlinger0
+
+ OverlayProperties:
+supportMixedColorSpaces: 0
+SupportedBufferCombinations(0 entries)
+GraphicBufferAllocator buffers:
+            Handle |         Size |     W (Stride) x H | Layers |   Format |      Usage | Requestor
+0xb4000079fd846180 |  9996.00 KiB | 1080 (1088) x 2352 |      1 |        1 | 0x    1b00 | FramebufferSurface
+0xb4000079fd846400 |  9996.00 KiB | 1080 (1088) x 2352 |      1 |        1 | 0x    1b00 | FramebufferSurface
+0xb4000079fd846540 |  9996.00 KiB | 1080 (1088) x 2352 |      1 |        1 | 0x    1b00 | FramebufferSurface
+0xb4000079fd846680 |  9996.00 KiB | 1080 (1088) x 2352 |      1 |        1 | 0x    1b00 | FramebufferSurface
+Total allocated by GraphicBufferAllocator (estimate): 39984.00 KB
+Imported gralloc buffers:
++ name:NotificationShade/@692bf52#386(BLAST Consumer)pid:2203, id:4256312590717, size:10153.00KiB, w/h:1080x2352, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x2352, stride:4352 bytes, size:10396672
++ name:NotificationShade/@692bf52#386(BLAST Consumer)pid:2203, id:4256312590718, size:10153.00KiB, w/h:1080x2352, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x2352, stride:4352 bytes, size:10396672
++ name:NotificationShade/@692bf52#386(BLAST Consumer)pid:2203, id:4256312590719, size:10153.00KiB, w/h:1080x2352, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x2352, stride:4352 bytes, size:10396672
++ name:NotificationShade/@692bf52#386(BLAST Consumer)pid:2203, id:4256312590720, size:10153.00KiB, w/h:1080x2352, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x2352, stride:4352 bytes, size:10396672
++ name:NotificationShade/@692bf52#386(BLAST Consumer)pid:2203, id:4256312590721, size:10153.00KiB, w/h:1080x2352, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x2352, stride:4352 bytes, size:10396672
++ name:ColorFade BLAST/@e609e96#408(BLAST Consumer)pid:1679, id:4256312590739, size:10153.00KiB, w/h:1080x2352, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x2352, stride:4352 bytes, size:10396672
++ name:Wallpaper BBQ wrapper/@c2c66c0#341(BLAST Consumer)pid:2203, id:4256312590671, size:20443.00KiB, w/h:2160x2357, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:2176x2368, stride:8704 bytes, size:20933632
++ name:ColorFade BLAST/@e609e96#408(BLAST Consumer)pid:1679, id:4256312590743, size:10153.00KiB, w/h:1080x2352, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x2352, stride:4352 bytes, size:10396672
++ name:NavigationBar0/@f49ccca#84(BLAST Consumer)pid:2203, id:4256312590419, size:553.00KiB, w/h:1080x117, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x128, stride:4352 bytes, size:566272
++ name:NavigationBar0/@f49ccca#84(BLAST Consumer)pid:2203, id:4256312590420, size:553.00KiB, w/h:1080x117, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x128, stride:4352 bytes, size:566272
++ name:StatusBar/@a9ae7a7#88(BLAST Consumer)pid:2203, id:4256312590436, size:553.00KiB, w/h:1080x120, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x128, stride:4352 bytes, size:566272
++ name:StatusBar/@a9ae7a7#88(BLAST Consumer)pid:2203, id:4256312590437, size:553.00KiB, w/h:1080x120, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x128, stride:4352 bytes, size:566272
++ name:NavigationBar0/@f49ccca#84(BLAST Consumer)pid:2203, id:4256312590421, size:553.00KiB, w/h:1080x117, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x128, stride:4352 bytes, size:566272
++ name:StatusBar/@a9ae7a7#88(BLAST Consumer)pid:2203, id:4256312590438, size:553.00KiB, w/h:1080x120, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x128, stride:4352 bytes, size:566272
++ name:NavigationBar0/@f49ccca#84(BLAST Consumer)pid:2203, id:4256312590422, size:553.00KiB, w/h:1080x117, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x128, stride:4352 bytes, size:566272
++ name:StatusBar/@a9ae7a7#88(BLAST Consumer)pid:2203, id:4256312590435, size:553.00KiB, w/h:1080x120, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x128, stride:4352 bytes, size:566272
++ name:NavigationBar0/@f49ccca#84(BLAST Consumer)pid:2203, id:4256312590423, size:553.00KiB, w/h:1080x117, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x128, stride:4352 bytes, size:566272
++ name:StatusBar/@a9ae7a7#88(BLAST Consumer)pid:2203, id:4256312590439, size:553.00KiB, w/h:1080x120, usage: 0x40000000000b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x128, stride:4352 bytes, size:566272
++ name:FramebufferSurface, id:4256312590337, size:10153.00KiB, w/h:1080x2352, usage: 0x1b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x2352, stride:4352 bytes, size:10396672
++ name:FramebufferSurface, id:4256312590340, size:10153.00KiB, w/h:1080x2352, usage: 0x1b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x2352, stride:4352 bytes, size:10396672
++ name:FramebufferSurface, id:4256312590339, size:10153.00KiB, w/h:1080x2352, usage: 0x1b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x2352, stride:4352 bytes, size:10396672
++ name:FramebufferSurface, id:4256312590338, size:10153.00KiB, w/h:1080x2352, usage: 0x1b00, req fmt:1, fourcc/mod:875708993/576460752303423602, dataspace: 0x0, compressed: true
+	planes: R/G/B/A:	 w/h:1088x2352, stride:4352 bytes, size:10396672
+Total imported by gralloc: 137656.00KiB
+
+Surfaces: 2
+BufferQueues: 1
+SurfaceControls: 0
+FlagManager values: 
+debug.sf.disable_sched_fifo_sf: false
+debug.sf.disable_sched_fifo_sf_binder: false
+debug.sf.disable_sched_fifo_sf_sched: false
+debug.sf.disable_sched_fifo_re: false
+debug.sf.disable_sched_fifo_composer: false
+debug.sf.disable_sched_fifo_composer_callback: false
+use_adpf_cpu_hint: false
+use_skia_tracing: false
+adpf_gpu_sf: true
+adpf_native_session_manager: true
+adpf_use_fmq_channel: true
+correct_virtual_display_power_state: true
+graphite_renderengine_preview_rollout: false
+increase_missed_frame_jank_threshold: false
+monitor_buffer_fences: false
+refresh_rate_overlay_on_external_display: false
+vsync_predictor_recovery: false
+add_sf_skipped_frames_to_trace: true
+adpf_fmq_sf: true
+allow_n_vsyncs_in_targeter: true
+arr_setframerate_gte_enum: true
+begone_bright_hlg: true
+cache_when_source_crop_layer_only_moved: false
+commit_not_composited: true
+connected_display_hdr: true
+correct_dpi_with_display_size: true
+deprecate_frame_tracker: false
+deprecate_vsync_sf: false
+detached_mirror: true
+disable_synthetic_vsync_for_performance: true
+display_config_error_hal: true
+display_protected: true
+dont_skip_on_early_ro: true
+enable_fro_dependent_features: true
+enable_layer_command_batching: true
+enable_small_area_detection: true
+filter_frames_before_trace_starts: true
+flush_buffer_slots_to_uncache: true
+force_compile_graphite_renderengine: false
+fp16_client_target: false
+frame_rate_category_mrr: false
+game_default_frame_rate: true
+graphite_renderengine: false
+hdcp_level_hal: true
+hdcp_negotiation: false
+idle_screen_refresh_rate_timeout: true
+latch_unsignaled_with_auto_refresh_changed: true
+local_tonemap_screenshots: true
+misc1: true
+no_vsyncs_on_screen_off: false
+override_trusted_overlay: true
+protected_if_client: true
+reject_dupe_layerstacks: true
+renderable_buffer_usage: false
+restore_blur_step: true
+skip_invisible_windows_in_input: false
+stable_edid_ids: false
+synced_resolution_switch: false
+trace_frame_rate_override: true
+true_hdr_screenshots: true
+use_known_refresh_rate_for_fps_consistency: false
+vrr_bugfix_24q4: true
+vrr_bugfix_dropped_frame: true
+vrr_config: true
+vulkan_renderengine: false
+window_blur_kawase2: false
+TimeStats miniDump:
+Number of layers currently being tracked is 0
+Number of layers in the stats pool is 0
+
+Window Infos:
+  max send vsync id: -1
+  max send delay (ns): 0 ns
+  unsent messages: 0
+
+Moto Extened:
+  mUseDesiredPresentTimeAsCandidate=0
+  mBoostRRDuringBrightnessDimming=0
+  mCurXtsLayerCnt=0
+  mLowFramerateLimit=0 fps
+  mAllowTouchScrollBoost=1
+  mDozeIdleTimerInterval=0
+  mSupportPolicyCorrection=1
+  mExtendedLogMask=0
+  mAllowPRR=0
+  mAodEnabled: 0
+

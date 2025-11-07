@@ -1,0 +1,1 @@
+Linux version 5.15.180-android13-8-00021-g46a5565a0982-ab13743836 (build-user@build-host) (Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6), LLD 14.0.7) #1 SMP PREEMPT Mon Jul 7 16:28:30 UTC 2025
