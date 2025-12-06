@@ -11,7 +11,7 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
-set OUT_DIR=%SCRIPT_DIR%OUT\bugreport
+set OUT_DIR=%SCRIPT_DIR%OUT\mtklog
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
 
 cd %SCRIPT_DIR%
@@ -82,20 +82,21 @@ echo Logs cleared
 exit /b
 
 :pull_log
+for /f "delims= " %%a in ('adb shell getprop ro.product.board') do set model=%%a
 echo Stopping and pulling log files...
 echo Step 1: Stop logging
 adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name stop --ei cmd_target -1 -n com.debug.loggerui/.framework.LogReceiver
 echo Step 2: Create archive
 adb shell "rm -rf /data/debuglogger/debuglog.tar.gz"
-adb shell "cd /data/debuglogger/ && tar -cvzf debuglog.tar.gz *"
+adb shell "cd /data/debuglogger/ && tar -cvzf %model%_debuglog.tar.gz *"
 echo Step 3: Pull to local
-adb pull /data/debuglogger/debuglog.tar.gz .
 if not exist %OUT_DIR% (
-	mkdir  %OUT_DIR%\mtklog_%ftime%
+	mkdir  %OUT_DIR%
 )
-adb pull /data/debuglogger/ %OUT_DIR%\mtklog_%ftime%
+
+adb pull /data/debuglogger/ %OUT_DIR%\%model%_mtklog_%ftime%
 echo Step 4: Open directory
-start "" %OUT_DIR%\mtklog_%ftime%
+start "" %OUT_DIR%\%model%_mtklog_%ftime%
 echo Log files pulled to current directory
 exit /b
 
@@ -108,6 +109,7 @@ adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name clear_all_logs 
 adb shell "logcat -b all -c; dmesg -C"
 timeout /t 3 /nobreak >nul
 echo Step 3: Start new logging
-adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name start --ei cmd_target -1 -n com.debug.loggerui/.framework.LogReceiver
+::cmd_target的1/2/4/16，分别代表MobileLog/ModemLog/NetworkLog/GPSLog，如果要所有就改成它们的和23
+adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name start --ei cmd_target 1 -n com.debug.loggerui/.framework.LogReceiver
 echo New log recording started
 exit /b

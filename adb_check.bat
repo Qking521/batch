@@ -23,12 +23,12 @@ for /f "tokens=*" %%a in ('adb devices ^| findstr /r /v "List"') do (
 )
 
 if "!device_found!"=="0" (
-    echo 错误: 未连接 Android 设备或设备未授权。
+    echo 错误: ADB检测失败，设备未连接或设备未授权。
     set ERR=2
     goto end
 )
 
-echo ADB 检测成功：环境正常且设备已连接。
+echo ADB检测成功：环境正常且设备已连接。
 
 :: 检查设备是否有root权限
 adb shell "id" 2>nul | findstr "uid=0" >nul 2>&1

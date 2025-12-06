@@ -1,6 +1,0 @@
-2016/07/11
-Notice:
-If you want to use WhatsTemp on Android N0, please make sure you have a root permission and disable selinux permission check before using it.
-
-Disable selinux permission check:
-$ adb shell setenforce 0
