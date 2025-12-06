@@ -14,13 +14,13 @@ if %ERRORLEVEL% neq 0 (
 if "%1"=="" goto show_help
 if /i "%1"=="-h" goto show_help
 if /i "%1"=="help" goto show_help
-if /i "%1"=="cmd" goto cmd
 if /i "%1"=="base" goto base
 if /i "%1"=="more" goto more
 if /i "%1"=="io" goto input_output
 if /i "%1"=="screen" goto screen
 if /i "%1"=="full" goto full
 if /i "%1"=="cmd" goto command
+if /i "%1"=="cfg" goto config
 if /i "%1"=="online" goto online
 if /i "%1"=="origin" goto origin
 if /i "%1"=="reset" goto reset
@@ -57,8 +57,12 @@ echo   perf base 5
 echo  =======================
 exit /b
 
-:cmd
+:command
 call perf_cmd.bat %1 %2
+exit /b
+
+:config
+call perf_config.bat %1 %2
 exit /b
 
 :base

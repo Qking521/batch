@@ -1,0 +1,30 @@
+[apps]
+Assistant=com.google.android.apps.googleassistant
+Calendar=com.google.android.calendar
+Chrome=com.android.chrome
+Digital wellbeing=com.google.android.apps.wellbeing
+Drive=com.google.android.apps.docs
+Duo=com.google.android.apps.tachyon
+Gboard=com.google.android.inputmethod.latin
+Gmail=com.google.android.gm
+Google=com.google.android.googlequicksearchbox
+Google Play Movies& TV=com.google.android.videos
+Google Play services=com.google.android.gms
+Google Play Store=com.android.vending
+Maps=com.google.android.apps.maps
+Photos=com.google.android.apps.photos
+YouTube=com.google.android.youtube
+YouTube Music=com.google.android.apps.youtube.music
+Google One=com.google.android.apps.subscriptions.red
+Kids Space=com.google.android.apps.kids.home
+Google contacts=com.google.android.contacts
+Google Play Book=com.google.android.apps.books
+Android Auto=com.google.android.projection.gearhead
+Keep=com.google.android.keep
+Google Voice=com.google.android.tts
+Google Pay=com.google.android.apps.walletnfcrel
+Google Partner Setup=com.google.android.partnersetup
+[system]
+Carrier Services=com.google.android.ims
+[debug]
+test=com.roger.test
