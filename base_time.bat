@@ -14,4 +14,4 @@ for /f "tokens=1-2 delims=: " %%a in ("%time%") do (
 if "%HH:~0,1%"==" " set HH=0%HH%
 
 endlocal & set ftime=%MM%%DD%-%HH%%MN%
-echo ftime 1 = %ftime%
+echo formated time = %ftime%

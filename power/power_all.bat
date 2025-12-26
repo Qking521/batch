@@ -22,7 +22,8 @@ if /i "%1"=="decrypt" goto decrypt
 if /i "%1"=="whatstemp" goto whatstempeture
 if /i "%1"=="key" goto keyword
 if /i "%1"=="wakelock" goto wakelock
-if /i "%1"=="default" goto defalut_value
+if /i "%1"=="rr" goto refresh_rate
+if /i "%1"=="cpu" goto cpu_info
 
 echo Unknown command: %1
 goto show_help
@@ -60,7 +61,7 @@ call "%SCRIPT_DIR%power_ntc_info.bat"
 exit /b
 
 :wallpaper
-call "%SCRIPT_DIR%power_wallpaper.bat" %~2
+call "%SCRIPT_DIR%power_wallpaper.bat" %~2 %~3
 exit /b
 
 :power_profile
@@ -102,9 +103,32 @@ adb shell dumpsys power | grep -A 20 "Wake Locks"
 adb shell dumpsys batterystats | grep -A 10 "Wake lock"
 exit /b
 
-:defalut_value
-adb shell settings get system screen_brightness
+:refresh_rate
+if "%2"=="" (
+	echo please input on or off
+	exit /b
+)
+if %2==on adb shell service call SurfaceFlinger 1034 i32 1 > nul
+if %2==off adb shell service call SurfaceFlinger 1034 i32 0 > nul
 exit /b
+
+:cpu_info
+adb shell ls /sys/devices/system/cpu/cpufreq/
+for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/cpufreq/') do (
+	echo %%a频率:
+	adb shell cat /sys/devices/system/cpu/cpufreq/%%a/scaling_available_frequencies
+)
+for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/') do (
+	echo %%a | findstr /r "cpu[0-9]" > nul
+	if not errorlevel == 1 (
+		for /f "delims=" %%b in ('adb shell cat /sys/devices/system/cpu/%%a/online') do (
+			if "%%b"=="0" echo "cpu%%a offline"
+		)
+	)
+)
+
+exit /b
+
 
 :keyword
 echo "查看唤醒锁和唤醒原因"
@@ -117,6 +141,6 @@ echo "查看NTC温度"
 echo adb shell "i=0 ; while [[ $i -lt 50 ]] ; do (type=`cat /sys/class/thermal/thermal_zone$i/type` ; temp=`cat /sys/class/thermal/thermal_zone$i/temp` ; echo "$i $type : $temp"); i=$((i+1));done"
 echo "温升分析"
 echo "DexOptimizer|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:"
-echo "others"
-echo "screen_toggled"
+echo "其它未分类"
+echo "screen_toggled|sys.powerctl|AlarmManager: Adjust deliver|sensorservice"
 exit /b

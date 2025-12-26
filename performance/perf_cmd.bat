@@ -3,7 +3,7 @@
 call %SCRIPT_DIR%base_time.bat
 setlocal enabledelayedexpansion
 @REM **************************set record time*********************************
-set record_time=%2
+set record_time=%1
 adb shell perfetto -o /data/misc/perfetto-traces/trace_file.perfetto-trace -t %record_time%s sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory thermal
 
 for /f "delims= " %%a in ('adb shell getprop ro.product.board') do set model=%%a
@@ -14,7 +14,7 @@ set "scriptDir=%~dp0"
 set "currentDir=%scriptDir:~0,-1%"
 :: 获取上一级目录路径
 for %%i in ("%currentDir%") do set "parentDir=%%~dpi"
-set OUT_DIR=%parentDir%OUT\performance\%~1
+set OUT_DIR=%userprofile%\batScript\OUT\performance
 if not exist %OUT_DIR% (
 	mkdir %OUT_DIR%
 )
