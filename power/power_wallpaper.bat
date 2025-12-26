@@ -2,7 +2,14 @@
 setlocal enabledelayedexpansion
 chcp 65001 >nul
 
-if %1=="" (
+set "color=%1"
+if "%~2"=="" (
+	set action=set
+)else (
+	set action=%~2
+)
+
+if %color%=="" (
 	echo 请指定壁纸颜色
 	exit /b
 )
@@ -22,7 +29,7 @@ set /a WIDTH=%WIDTH% * 2
 echo width=%WIDTH%
 for /f "tokens=2 delims=x" %%h in ("%SCREEN_SIZE%") do set HEIGHT=%%h
 
-set "color=%1"
+
 set wallpaper=%color%_wallpaper.png
 
 :: 针对固定资源壁纸特别处理
@@ -42,7 +49,6 @@ if exist %wallpaper% (
     goto :push_and_set
 )
 echo 错误: 无法创建指定颜色壁纸文件
-pause
 exit /b 1
 
 
@@ -52,13 +58,16 @@ echo 正在推送壁纸到设备...
 adb push %wallpaper% /sdcard/%wallpaper% >nul 2>&1
 if %errorlevel% neq 0 (
     echo 错误: 无法推送文件到设备
-    pause
     exit /b 1
 )
 
 echo 壁纸已生成,路径：/sdcard/%wallpaper%
 echo 请在设备上手动设置壁纸
-::adb shell am start -a android.intent.action.VIEW -d file:///sdcard/%wallpaper% -t image/*
-adb shell am start -a android.intent.action.ATTACH_DATA -d file:///sdcard/%wallpaper% -t image/* --ez set-wallpaper true
-pause
+if %action%==set (
+	adb shell am start -a android.intent.action.ATTACH_DATA -d file:///sdcard/%wallpaper% -t image/* --ez set-wallpaper true
+)
+if %action%==view (
+	adb shell am start -a android.intent.action.VIEW -d file:///sdcard/%wallpaper% -t image/*
+)
+
 endlocal

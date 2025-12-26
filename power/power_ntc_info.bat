@@ -19,9 +19,6 @@ for %%f in (!thermal_files_output!) do (
 )
 echo 文件数量: !thermal_file_count!
 
-rem get thermal zone name and temp
-adb root >nul 2>&1
-
 rem adb shell "i=0 ; while [[ $i -lt !thermal_file_count! ]] ; do (type=`cat /sys/class/thermal/thermal_zone$i/type` ; temp=`cat /sys/class/thermal/thermal_zone$i/temp` ; echo "$i $type : $temp"); i=$((i+1));done"
 adb shell ^
 "i=0 ; while [[ $i -lt !thermal_file_count! ]] ; do ^
@@ -30,5 +27,5 @@ temp=`cat /sys/class/thermal/thermal_zone$i/temp` ; ^
 policy=`cat /sys/class/thermal/thermal_zone$i/policy` ; ^
 echo "$i	$type	$temp	$policy"); ^
 i=$((i+1)); done  | column -t"
-pause
+
 endlocal

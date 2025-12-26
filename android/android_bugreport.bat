@@ -16,7 +16,7 @@ if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
 :: === 3. 生成 bugreport zip 文件 ===
 set ZIPFILE=%OUT_DIR%\%model%_bugreport%EXT_INFO%_%ftime%.zip
 echo Generating bugreport: %ZIPFILE%
-adb bugreport "%ZIPFILE%" > nul
+adb bugreport "%ZIPFILE%"
 
 :: === 4. 解压 zip 文件（使用 PowerShell） ===
 set UNZIPDIR=%OUT_DIR%\%model%_bugreport%EXT_INFO%_%ftime%
@@ -24,7 +24,7 @@ echo Eracting bugreport...
 :: 优先用 7z 解压
 where 7z >nul 2>&1
 if %errorlevel%==0 (
-    7z x "%ZIPFILE%" -o"%UNZIPDIR%" -y
+    7z x "%ZIPFILE%" -o"%UNZIPDIR%" -y > nul 2>&1
 ) else (
     :: 尝试用 unzip（cmder 自带的 msys 通常有）
     unzip -o "%ZIPFILE%" -d "%UNZIPDIR%"
@@ -42,4 +42,6 @@ for %%f in ("%UNZIPDIR%\dumpstate*.txt") do (
 	echo starting bugreport...
     goto :done
 )
+echo  bugreport log文件异常，请确认
 :done
+echo 文件路径: %ZIPFILE%

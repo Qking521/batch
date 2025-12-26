@@ -14,11 +14,7 @@ if %ERRORLEVEL% neq 0 (
 if "%1"=="" goto show_help
 if /i "%1"=="-h" goto show_help
 if /i "%1"=="help" goto show_help
-if /i "%1"=="base" goto base
-if /i "%1"=="more" goto more
-if /i "%1"=="io" goto input_output
-if /i "%1"=="screen" goto screen
-if /i "%1"=="full" goto full
+if /i "%1"=="sf" goto surface_flinger
 if /i "%1"=="cmd" goto command
 if /i "%1"=="cfg" goto config
 if /i "%1"=="online" goto online
@@ -57,77 +53,22 @@ echo   perf base 5
 echo  =======================
 exit /b
 
+:surface_flinger
+call surface_flinger.bat %2
+exit /b
+
 :command
-call perf_cmd.bat %1 %2
+call perf_cmd.bat %2
 exit /b
 
 :config
-call perf_config.bat %1 %2
-exit /b
-
-:base
-call perf_base.bat %1 %2
-exit /b
-
-:more
-call perf_more.bat %1 %2
-exit /b
-
-:full
-call perf_full.bat %1 %2
-exit /b
-
-:screen
-call perf_screen.bat %1 %2
-exit /b
-
-:input_output
-call perf_io.bat %1 %2
-exit /b
-
-:online_ready
-set targetFile=%SCRIPT_DIR%record_android_trace
-echo record_android_trace path = %targetFile%
-set "maxDays=30"
-if not exist "%targetFile%" (
-	curl -O https://raw.githubusercontent.com/google/perfetto/master/tools/record_android_trace
-)
-:: 获取当前日期
-for /f %%A in ('powershell -command "Get-Date -Format yyyy-MM-dd"') do set "today=%%A"
-echo today=%today%
-:: 获取文件最后修改日期
-for /f %%A in ('powershell -command "(Get-Item '%targetFile%').LastWriteTime.ToString('yyyy-MM-dd')"') do set "fileDate=%%A"
-echo fileDate = %fileDate%
-:: 计算时间差(单位：天)
-for /f %%A in ('powershell -command "(New-TimeSpan -Start '%fileDate%' -End '%today%').Days"') do set "diffDays=%%A"
-if %diffDays% GEQ %maxDays% (
-    echo 文件已过期，准备删除并重新下载...
-    del "%targetFile%"
-    :: 在这里添加你的下载命令，例如：
-    curl -O https://raw.githubusercontent.com/google/perfetto/master/tools/record_android_trace
-)
-echo 工具已下载，请重新执行抓trace命令
+call perf_config.bat %2
 exit /b
 
 :online
-set targetFile=%SCRIPT_DIR%record_android_trace
-if not exist "%targetFile%" (
-	goto online_ready
-)
-set "hasPython=0"
-:: 检查是否安装了 python
-where python >nul 2>nul && set "hasPython=1"
-if %hasPython%=="0" (
-	echo 未检测到 Python，请先安装 Python 环境
-	exit /b
-)
-set "duration=%~2"
-if "%~2"=="" (
-    set "duration=10"
-)
-:: 查看支持的TAG, adb shell atrace --list_categories
-python3 record_android_trace -o trace_file.perfetto-trace -t %duration%s -b 64mb sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory thermal 
+call perf_online.bat %2
 exit /b
+
 
 :origin
 rem "" 是窗口标题

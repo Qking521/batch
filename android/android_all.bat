@@ -25,6 +25,7 @@ if /i "%1"=="di" goto device_info
 if /i "%1"=="search" goto android_search
 if /i "%1"=="monkey" goto monkey
 if /i "%1"=="google" goto google
+if /i "%1"=="dump" goto dump
 
 echo Unknown command: %1
 goto show_help
@@ -82,8 +83,9 @@ start %out_dir%\%record_file%
 exit /b
 
 :developer
-if %2==on (
+if "%2"=="" (
 	echo please input on or off
+	exit /b
 )
 if %2==on (
 	adb shell settings put system show_touches 1
@@ -106,19 +108,40 @@ call "android_search.bat" %2
 exit /b
 
 :monkey
-if %1=="" (
+if "%2"=="" (
 	adb shell monkey --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
-) else (
-	adb shell monkey -p %1 --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
+) 
+set pkg_prefix=%2
+if "%pkg_prefix:~0,3%"=="com" (
+	adb shell monkey -p %2 --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
+)
+if "%2"=="kill" (
+	for /f "delims=" %%p in ('adb shell pidof com.android.commands.monkey') do (
+		adb shell kill -9 %%p
+	)
 )
 exit /b
 
 :google
+rem disable or enable
 set pkgs=%~dp0google_packages.txt
 set cmd=%2
 for /f "tokens=2 delims==" %%i in ('findstr "=" %pkgs%') do (
 	adb shell pm %cmd% %%i > nul 2>&1
 )
+exit /b
+
+:dump
+set "out_dir=%userprofile%\batScript\OUT\android"
+if not exist %out_dir% mkdir %out_dir%
+set service=%2
+set service_param=%3
+if not %service%=="" (
+	adb shell dumpsys %service% > %out_dir%\%service%.txt
+) else (
+	adb shell dumpsys %service% %service_param% > %out_dir%\%service%.txt
+)
+start  %out_dir%\%service%.txt
 exit /b
 
 :end
