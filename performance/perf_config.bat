@@ -1,6 +1,4 @@
 @echo off
-:: 获取格式化的时间ftime
-call %SCRIPT_DIR%base_time.bat
 setlocal enabledelayedexpansion
 @REM **************************set record time*********************************
 set record_time=%1
@@ -47,7 +45,7 @@ set "currentDir=%scriptDir:~0,-1%"
 :: 获取上一级目录路径
 for %%i in ("%currentDir%") do set "parentDir=%%~dpi"
 set OUT_DIR=%parentDir%OUT\performance\
-set trace_file=%model%_%ftime%.perfetto
+set trace_file=%model%_%format_time%.perfetto
 set configPath=/data/misc/perfetto-configs
 
 if not exist %OUT_DIR% (

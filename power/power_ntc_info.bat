@@ -3,9 +3,6 @@ chcp 65001 >nul
 setlocal enabledelayedexpansion
 echo "adb shell ls /sys/class/thermal/"
 
-:: 获取当前脚本所在目录
-set "SCRIPT_DIR=%~dp0"
-
 set "thermal_files_output="
 for /f "delims=" %%i in ('adb shell ls /sys/class/thermal/') do (
     set "thermal_files_output=!thermal_files_output! %%i"
