@@ -25,25 +25,27 @@ if "%SCREEN_SIZE%"=="" (
 
 :: 解析宽度和高度
 for /f "tokens=1 delims=x" %%w in ("%SCREEN_SIZE%") do set WIDTH=%%w
-set /a WIDTH=%WIDTH% * 2
-echo width=%WIDTH%
 for /f "tokens=2 delims=x" %%h in ("%SCREEN_SIZE%") do set HEIGHT=%%h
 
-
 set wallpaper=%color%_wallpaper.png
+set FIXED_COLOR_LIST=fruit
 
-:: 针对固定资源壁纸特别处理
-if exist %wallpaper% (
-    goto :push_and_set
+for %%f in (%FIXED_COLOR_LIST%) do (
+	if %%f==%color% (
+		:: 针对固定资源壁纸特别处理
+		set wallpaper=%%f_wallpaper.png
+		echo fixed_wallpaper=%wallpaper%
+		if exist %wallpaper% (
+			goto :push_and_set
+		)
+	)
 )
-
+if exist "%wallpaper%" del "%wallpaper%"
 :: 调用 PowerShell 处理首字母大写
 for /f "delims=" %%A in ('powershell -nologo -command "$str='%color%'; $str.Substring(0,1).ToUpper() + $str.Substring(1)"') do (
     set "color=%%A"
 )
-
 :: 使用PowerShell创建指定颜色图片
-if exist %wallpaper% del %wallpaper%
 powershell -Command "Add-Type -AssemblyName System.Drawing; $bmp = New-Object System.Drawing.Bitmap(%WIDTH%, %HEIGHT%); $g = [System.Drawing.Graphics]::FromImage($bmp); $g.Clear([System.Drawing.Color]::%color%); $bmp.Save('%wallpaper%', [System.Drawing.Imaging.ImageFormat]::Png); $g.Dispose(); $bmp.Dispose()" >nul 2>&1
 if exist %wallpaper% (
     goto :push_and_set

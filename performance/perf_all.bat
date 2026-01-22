@@ -19,6 +19,7 @@ if /i "%1"=="cmd" goto command
 if /i "%1"=="cfg" goto config
 if /i "%1"=="online" goto online
 if /i "%1"=="origin" goto origin
+if /i "%1"=="fire" goto fire
 if /i "%1"=="reset" goto reset
 
 
@@ -74,6 +75,11 @@ exit /b
 rem "" 是窗口标题
 start "" %USERPROFILE%\"batScript\performance\perfettoCaptureTools_original"
 exit /b
+
+:fire
+call perf_simpleperf.bat %2
+exit /b
+
 
 :reset
 REM 自动查找并终止 trace_processor_shell.exe 进程
