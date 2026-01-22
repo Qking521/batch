@@ -24,6 +24,7 @@ if /i "%1"=="key" goto keyword
 if /i "%1"=="wakelock" goto wakelock
 if /i "%1"=="rr" goto refresh_rate
 if /i "%1"=="cpu" goto cpu_info
+if /i "%1"=="regu" goto regulator
 
 echo Unknown command: %1
 goto show_help
@@ -127,6 +128,11 @@ for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/') do (
 	)
 )
 
+exit /b
+
+::列出当前系统所有已注册的电源供电单元
+:regulator
+call "%SCRIPT_DIR%power_regulator_info.bat"
 exit /b
 
 
