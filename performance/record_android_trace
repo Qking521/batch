@@ -553,7 +553,7 @@ def start_trace(args, print_log=True):
       # available.
       adb('root').wait()
 
-  tstamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
+  tstamp = datetime.datetime.now().strformat_time('%Y-%m-%d_%H-%M')
   fname = '%s-%s.pftrace' % (tstamp, os.urandom(3).hex())
   device_file = device_dir + fname
 

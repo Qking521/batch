@@ -1,11 +1,10 @@
 @echo off
 chcp 65001 >nul
 setlocal enabledelayedexpansion
-:: 获取当前脚本所在目录--结尾有反斜杠
-set "SCRIPT_DIR=%~dp0"
-cd %SCRIPT_DIR%
+
+call %INIT_BAT% %~dp0
 :: 调用基础脚本检查ADB和设备（使用完整路径）
-call "..\adb_check.bat"
+call "%ABD_CHECK_BAT%"
 if %ERRORLEVEL% neq 0 (
     echo [错误]: 基础检测失败，退出操作。
     exit /b %ERRORLEVEL%
@@ -55,19 +54,19 @@ echo  =======================
 exit /b
 
 :surface_flinger
-call surface_flinger.bat %2
+call %SCRIPT_DIR%surface_flinger.bat %2
 exit /b
 
 :command
-call perf_cmd.bat %2
+call %SCRIPT_DIR%perf_cmd.bat %2
 exit /b
 
 :config
-call perf_config.bat %2
+call %SCRIPT_DIR%perf_config.bat %2
 exit /b
 
 :online
-call perf_online.bat %2
+call %SCRIPT_DIR%perf_online.bat %2
 exit /b
 
 
@@ -77,7 +76,7 @@ start "" %USERPROFILE%\"batScript\performance\perfettoCaptureTools_original"
 exit /b
 
 :fire
-call perf_simpleperf.bat %2
+call %SCRIPT_DIR%perf_simpleperf.bat %2
 exit /b
 
 

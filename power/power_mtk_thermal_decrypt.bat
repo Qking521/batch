@@ -19,9 +19,9 @@ if not exist "%DECRYPT_DIR%" (
     pause
     exit /b 1
 )
-:: 获取格式化的时间ftime
-call %userprofile%\batScript\base_time.bat
-set "OUT_DIR=%userprofile%\batScript\OUT\power\thermal_decrypt\%ftime%"
+:: 获取格式化的时间format_time
+call %userprofile%\batScript\init.bat
+set "OUT_DIR=%userprofile%\batScript\OUT\power\thermal_decrypt\%format_time%"
 :: 检查日期文件夹是否存在，存在则删除
 if exist "%OUT_DIR%" (
     rd /s /q "%OUT_DIR%"

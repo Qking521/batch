@@ -1,8 +1,4 @@
 @echo off
-:: 获取格式化的时间ftime
-echo SCRIPT_DIR=%SCRIPT_DIR%
-call %SCRIPT_DIR%base_time.bat
-
 setlocal enabledelayedexpansion
 
 set app=%1
@@ -14,8 +10,6 @@ set record_time=%2
 if "%record_time%"=="" (
 	set record_time=5
 )
-set OUT_DIR=%userprofile%\batScript\OUT\performance
-if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
 
 set SIMPLEPERF_DIR=E:\Android\AndroidSDK\ndk\27.0.12077973\simpleperf
 set SIMPLEPERF_PATH=%SIMPLEPERF_DIR%\bin\android\arm64\simpleperf

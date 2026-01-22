@@ -1,16 +1,14 @@
 @echo off
 chcp 65001 >nul
 setlocal enabledelayedexpansion
-:: 获取当前脚本所在目录
-set "SCRIPT_DIR=%~dp0"
-cd %SCRIPT_DIR%
-:: 先调用基础脚本检查ADB和设备（使用完整路径）
-call "..\adb_check.bat"
+
+call %INIT_BAT% %~dp0
+:: 调用基础脚本检查ADB和设备（使用完整路径）
+call "%ABD_CHECK_BAT%"
 if %ERRORLEVEL% neq 0 (
-    exit /b
+    echo [错误]: 基础检测失败，退出操作。
+    exit /b %ERRORLEVEL%
 )
-:: 获取格式化的时间,返回全局变量ftime，格式：1113-1751
-call "..\base_time.bat"
 
 if "%1"=="" goto show_help
 if /i "%1"=="-h" goto show_help
@@ -51,7 +49,7 @@ adb shell dumpsys window | grep mCurrentFocus
 exit /b
 
 :bugreport
-call android_bugreport.bat %~2
+call %SCRIPT_DIR%android_bugreport.bat %~2
 exit /b
 
 :clear
@@ -63,7 +61,7 @@ exit /b
 :screen_shot
 set "out_dir=%userprofile%\batScript\OUT\android"
 if not exist %out_dir% mkdir %out_dir%
-set "shot_file=screenshot_%ftime%.png"
+set "shot_file=screenshot_%format_time%.png"
 adb shell screencap -p /sdcard/%shot_file%
 adb pull sdcard/%shot_file% %out_dir%
 adb shell "rm -rf /sdcard/%shot_file%"
@@ -73,7 +71,7 @@ exit /b
 :screen_record
 set "out_dir=%userprofile%\batScript\OUT\android"
 if not exist %out_dir% mkdir %out_dir%
-set "record_file=record_%ftime%.mp4"
+set "record_file=record_%format_time%.mp4"
 echo record_file=%record_file%
 adb shell screenrecord  --bugreport /sdcard/%record_file%
 adb pull /sdcard/%record_file% %out_dir%
@@ -100,11 +98,11 @@ if %2==off (
 exit /b
 
 :device_info
-call android_device_info.bat
+call %SCRIPT_DIR%android_device_info.bat
 exit /b
 
 :android_search
-call "android_search.bat" %2
+call %SCRIPT_DIR%android_search.bat %2
 exit /b
 
 :monkey
@@ -124,7 +122,7 @@ exit /b
 
 :google
 rem disable or enable
-set pkgs=%~dp0google_packages.txt
+set pkgs=%SCRIPT_DIR%google_packages.txt
 set cmd=%2
 for /f "tokens=2 delims==" %%i in ('findstr "=" %pkgs%') do (
 	adb shell pm %cmd% %%i > nul 2>&1
@@ -132,16 +130,14 @@ for /f "tokens=2 delims==" %%i in ('findstr "=" %pkgs%') do (
 exit /b
 
 :dump
-set "out_dir=%userprofile%\batScript\OUT\android"
-if not exist %out_dir% mkdir %out_dir%
 set service=%2
 set service_param=%3
 if not %service%=="" (
-	adb shell dumpsys %service% > %out_dir%\%service%.txt
+	adb shell dumpsys %service% > %OUT_DIR%\%service%.txt
 ) else (
-	adb shell dumpsys %service% %service_param% > %out_dir%\%service%.txt
+	adb shell dumpsys %service% %service_param% > %OUT_DIR%\%service%.txt
 )
-start  %out_dir%\%service%.txt
+start  %OUT_DIR%\%service%.txt
 exit /b
 
 :end
