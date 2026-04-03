@@ -3,8 +3,8 @@ call batScript\init.bat
 @REM open microsoft apps
 doskey msapp=explorer.exe shell:AppsFolder
 
-@REM  $* 表示这个命令可能会有参数
-@REM  @doskey表示执行这个命令时,不显示这条命令本身
+@REM  $* 表示这个命令坯能会有坂数
+@REM  @doskey表示执行这个命令时,丝显示这条命令本身
 @REM | nedd to transfer to  ^|
 @REM the $T instead of &&
 @REM $1 is first param, $* represent all params

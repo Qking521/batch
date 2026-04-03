@@ -14,7 +14,8 @@ if "%1"=="" goto show_help
 if /i "%1"=="-h" goto show_help
 if /i "%1"=="help" goto show_help
 if /i "%1"=="standby" goto standby
-if /i "%1"=="ntc" goto ntc
+if /i "%1"=="tz" goto thermal_zones
+if /i "%1"=="cd" goto cooling_devices
 if /i "%1"=="wallpaper" goto wallpaper
 if /i "%1"=="profile" goto power_profile
 if /i "%1"=="reset" goto reset
@@ -39,7 +40,8 @@ echo Usage: power [command]
 echo.
 echo Available commands:
 echo   standby		- power base current settings
-echo   ntc			- show ntc infomation
+echo   tz			- show thermal zones info
+echo   cd			- show cooling devices info
 echo   wallpaper	- create wallpaper for any color
 echo   wt			- install whatstempeture apk
 echo   profile		- display power profile data on terminal
@@ -57,8 +59,12 @@ exit /b
 call "%SCRIPT_DIR%power_standby.bat"
 exit /b
 
-:ntc
-call "%SCRIPT_DIR%power_ntc_info.bat"
+:thermal_zones
+call "%SCRIPT_DIR%power_thermal_zones.bat"
+exit /b
+
+:cooling_devices
+call "%SCRIPT_DIR%power_cooling_devices.bat"
 exit /b
 
 :wallpaper
@@ -130,7 +136,6 @@ for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/') do (
 
 exit /b
 
-::列出当前系统所有已注册的电源供电单元
 :regulator
 call "%SCRIPT_DIR%power_regulator_info.bat"
 exit /b
