@@ -1,30 +1,19 @@
 @echo off
 chcp 65001 >nul
 setlocal enabledelayedexpansion
-echo "adb shell ls /sys/class/regulator/"
 
-:: 获取当前脚本所在目录
-set "SCRIPT_DIR=%~dp0"
+echo 正在获取供电单元信息 (Regulators)...
 
-set "regulator_files_output="
-for /f "delims=" %%i in ('adb shell ls /sys/class/regulator/') do (
-    set "regulator_files_output=!regulator_files_output! %%i"
-)
-::echo 原始文件列表: "!regulator_files_output!"
-set "regulator_file_count=0"
-for %%f in (!regulator_files_output!) do (
-     echo %%f | findstr /i "regulator" >nul && (
-        set /a "regulator_file_count+=1"
-    )
-)
-echo 文件数量: !regulator_file_count!
+:: 构造获取 Regulator 信息的 Shell 脚本字符串
+set "SH_REGULATOR=printf '%%-3s %%-15s %%-30s %%-10s\n' 'ID' 'TYPE' 'NAME' 'USERS'; "
+set "SH_REGULATOR=!SH_REGULATOR!for d in /sys/class/regulator/regulator.[0-9]*; do "
+set "SH_REGULATOR=!SH_REGULATOR!  id=${d##*regulator.}; "
+set "SH_REGULATOR=!SH_REGULATOR!  type=$(cat $d/type 2>/dev/null || echo 'N/A'); "
+set "SH_REGULATOR=!SH_REGULATOR!  name=$(cat $d/name 2>/dev/null || echo 'N/A'); "
+set "SH_REGULATOR=!SH_REGULATOR!  num_users=$(cat $d/num_users 2>/dev/null || echo 'N/A'); "
+set "SH_REGULATOR=!SH_REGULATOR!  printf '%%-3s %%-15s %%-30s %%-10s\n' \"$id\" \"$type\" \"$name\" \"$num_users\"; "
+set "SH_REGULATOR=!SH_REGULATOR!done | sort -n"
 
-adb shell ^
-"i=0 ; while [[ $i -lt !regulator_file_count! ]] ; do ^
-(type=`cat /sys/class/regulator/regulator.$i/type` ; ^
-name=`cat /sys/class/regulator/regulator.$i/name` ; ^
-num_users=`cat /sys/class/regulator/regulator.$i/num_users` ; ^
-echo "$i	$type	$name	$num_users"); ^
-i=$((i+1)); done  | column -t"
+adb shell "!SH_REGULATOR!"
 
 endlocal
