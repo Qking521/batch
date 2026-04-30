@@ -70,3 +70,6 @@ doskey power=%USERPROFILE%\batScript\power\power_all.bat $*
 
 @REM performance
 doskey perf=%USERPROFILE%\batScript\performance\perf_all.bat $*
+
+@REM windows for wsl
+doskey win=%USERPROFILE%\batScript\windows\windows_all.bat $*
