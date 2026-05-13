@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-setlocal enabledelayedexpansion
+setlocal
 
 call %INIT_BAT% %~dp0
 :: 调用基础脚本检查ADB和设备（使用完整路径）
@@ -15,6 +15,8 @@ if /i "%1"=="-h" goto show_help
 if /i "%1"=="help" goto show_help
 if /i "%1"=="standby" goto standby
 if /i "%1"=="tz" goto thermal_zones
+if /i "%1"=="tz-en" goto thermal_zones
+if /i "%1"=="tz-dis" goto thermal_zones
 if /i "%1"=="cd" goto cooling_devices
 if /i "%1"=="wallpaper" goto wallpaper
 if /i "%1"=="profile" goto power_profile
@@ -41,6 +43,8 @@ echo.
 echo Available commands:
 echo   standby		- power base current settings
 echo   tz			- show thermal zones info
+echo   tz-en		- enable all thermal zones
+echo   tz-dis		- disable all thermal zones
 echo   cd			- show cooling devices info
 echo   wallpaper	- create wallpaper for any color
 echo   wt			- install whatstempeture apk
@@ -60,7 +64,7 @@ call "%SCRIPT_DIR%power_standby.bat"
 exit /b
 
 :thermal_zones
-call "%SCRIPT_DIR%power_thermal_zones.bat"
+call "%SCRIPT_DIR%power_thermal_zones.bat" %1
 exit /b
 
 :cooling_devices

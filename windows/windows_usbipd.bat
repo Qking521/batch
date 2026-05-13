@@ -18,10 +18,10 @@ REM ================================
 :attach
 set BUS=%2
 echo [ATTACH] busid=%BUS%
-usbipd list
 usbipd bind --busid %BUS%
 usbipd attach --wsl --busid %BUS%
-echo.
+echo %BUS% detached
+usbipd list
 exit /b
 
 REM ================================
@@ -30,10 +30,10 @@ REM ================================
 :auto_attach
 set BUS=%2
 echo [AUTO-ATTACH] busid=%BUS%
-usbipd list
 usbipd bind --busid %BUS%
 usbipd attach --wsl --busid %BUS% --auto-attach
-echo.
+echo %BUS% detached
+usbipd list
 exit /b
 
 REM ================================
@@ -43,7 +43,8 @@ REM ================================
 set BUS=%2
 echo [DETACH] busid=%BUS%
 usbipd detach --busid %BUS%
-echo.
+echo %BUS% detached
+usbipd list
 exit /b
 
 
