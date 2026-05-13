@@ -1,0 +1,9 @@
+# Windows 批处理脚本必须 CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Linux shell 脚本必须 LF
+*.sh text eol=lf
+
+# 其它文本文件保持自动（不强制）
+# git add --renormalize . //重新扫描所有文件,按 .gitattributes 规则修复换行符
