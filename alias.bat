@@ -1,5 +1,5 @@
 @echo off
-call batScript\init.bat
+call "%~dp0init.bat"
 @REM open microsoft apps
 doskey msapp=explorer.exe shell:AppsFolder
 
