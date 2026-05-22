@@ -27,3 +27,8 @@
 - 在修改 Perfetto 配置时，确保输出保持为有效的 `.pbtxt` 结构，如同 `generate_config` 例程中所用。
 - 保持 `alias.bat` 中现有的别名命名约定（例如，`gsys` 用于全局设置，`gses` 用于安全设置）。
 - 除非明确要求，否则避免使用 PowerShell；坚持使用 CMD 兼容的批处理逻辑。
+
+## Windows 批处理规范 (重要)
+- **编码格式：** 必须使用 `UTF-8` 编码，并在脚本头部添加 `chcp 65001 >nul`。
+- **变量安全：** 在进行 `set /a` 计算或 `if` 比较前，必须初始化变量为 `0` 或使用引号包裹（如 `if "!var!"=="val"`），防止因 ADB 返回空值导致的 `: was unexpected at this time` 错误。
+- **性能优化：** 严禁在循环内频繁调用 `adb shell`，必须合并查询指令。
