@@ -28,6 +28,7 @@ if /i "%1"=="wakelock" goto wakelock
 if /i "%1"=="rr" goto refresh_rate
 if /i "%1"=="cpu" goto cpu_info
 if /i "%1"=="regu" goto regulator
+if /i "%1"=="info" goto power_info
 if /i "%1"=="tc" goto thermal_config
 
 echo Unknown command: %1
@@ -46,6 +47,7 @@ echo   standby		- power base current settings
 echo   tz			- show thermal zones info
 echo   tz-en		- enable all thermal zones
 echo   tz-dis		- disable all thermal zones
+echo   info			- show detailed device and power info
 echo   tc			- push thermal config depend on platform
 echo   cd			- show cooling devices info
 echo   wallpaper	- create wallpaper for any color
@@ -71,6 +73,10 @@ exit /b
 
 :thermal_config
 call "%SCRIPT_DIR%power_config_push.bat" %1
+exit /b
+
+:power_info
+call "%SCRIPT_DIR%power_info.bat"
 exit /b
 
 :cooling_devices
