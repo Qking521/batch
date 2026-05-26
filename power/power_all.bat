@@ -22,7 +22,7 @@ if /i "%1"=="wallpaper" goto wallpaper
 if /i "%1"=="profile" goto power_profile
 if /i "%1"=="reset" goto reset
 if /i "%1"=="decrypt" goto decrypt
-if /i "%1"=="whatstemp" goto whatstempeture
+if /i "%1"=="tool" goto tools
 if /i "%1"=="key" goto keyword
 if /i "%1"=="wakelock" goto wakelock
 if /i "%1"=="rr" goto refresh_rate
@@ -51,7 +51,7 @@ echo   info			- show detailed device and power info
 echo   tc			- push thermal config depend on platform
 echo   cd			- show cooling devices info
 echo   wallpaper	- create wallpaper for any color
-echo   wt			- install whatstempeture apk
+echo   tool [name]	- call external power tools (e.g., tool wt)
 echo   profile		- display power profile data on terminal
 echo   reset		- reset batterystats
 echo   decrypt		- decrypt thermal config file
@@ -107,17 +107,8 @@ if %ERRORLEVEL% neq 0 (
 )
 exit /b
 
-:whatstempeture
-cd %SCRIPT_DIR%WhatsTemp_exe_v1.9_2419
-echo %SCRIPT_DIR%WhatsTemp_exe_v1.9_2419
-call install_LogTool.bat
-if %ERRORLEVEL% neq 0 (
-    echo [错误]: 基础检测失败，退出操作。
-    exit /b %ERRORLEVEL%
-)
-adb shell pm grant com.example.mtk10263.whatsTemp android.permission.POST_NOTIFICATIONS
-adb shell pm grant com.example.mtk10263.whatsTemp android.permission.WRITE_EXTERNAL_STORAGE
-adb shell dumpsys deviceidle whitelist +com.example.mtk10263.whatsTemp
+:tools
+call "%SCRIPT_DIR%power_tools.bat" %2
 exit /b
 
 :wakelock
