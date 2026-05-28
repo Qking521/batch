@@ -1,5 +1,5 @@
 @echo off
-:: power_tools.bat - 外部功耗辅助工具集
+:: power_installs.bat - 安装功耗辅助工具apk
 setlocal
 
 if /i "%1"=="wt" goto whatstempeture

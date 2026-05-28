@@ -22,14 +22,14 @@ if /i "%1"=="wallpaper" goto wallpaper
 if /i "%1"=="profile" goto power_profile
 if /i "%1"=="reset" goto reset
 if /i "%1"=="decrypt" goto decrypt
-if /i "%1"=="tool" goto tools
+if /i "%1"=="install" goto install_apk
 if /i "%1"=="key" goto keyword
 if /i "%1"=="wakelock" goto wakelock
 if /i "%1"=="rr" goto refresh_rate
 if /i "%1"=="cpu" goto cpu_info
 if /i "%1"=="regu" goto regulator
 if /i "%1"=="info" goto power_info
-if /i "%1"=="tc" goto thermal_config
+if /i "%1"=="config" goto thermal_config
 
 echo Unknown command: %1
 goto show_help
@@ -43,20 +43,19 @@ echo.
 echo Usage: power [command]
 echo.
 echo Available commands:
-echo   standby		- power base current settings
-echo   tz			- show thermal zones info
-echo   tz-en		- enable all thermal zones
-echo   tz-dis		- disable all thermal zones
-echo   info			- show detailed device and power info
-echo   tc			- push thermal config depend on platform
-echo   cd			- show cooling devices info
-echo   wallpaper	- create wallpaper for any color
-echo   tool [name]	- call external power tools (e.g., tool wt)
-echo   profile		- display power profile data on terminal
-echo   reset		- reset batterystats
-echo   decrypt		- decrypt thermal config file
-echo   key			- list log keyword
-echo   -h			- Show help (alias: help^)
+echo   standby				- power base current settings
+echo   tz					- show thermal zones info
+echo   tz-en				- enable all thermal zones
+echo   tz-dis				- disable all thermal zones
+echo   info					- show detailed device and power info
+echo   config [push/pull]	- thermal config operations
+echo   cd					- show cooling devices info
+echo   wallpaper			- create wallpaper for any color
+echo   install [name]		- install power tools (e.g. wt, wmp, etc)
+echo   profile				- display power profile data on terminal
+echo   reset				- reset batterystats
+echo   key					- list log keyword
+echo   -h					- Show help (alias: help^)
 echo.
 echo Examples:
 echo   power standby
@@ -72,7 +71,7 @@ call "%SCRIPT_DIR%power_thermal_zones.bat" %1
 exit /b
 
 :thermal_config
-call "%SCRIPT_DIR%power_config_push.bat" %1
+call "%SCRIPT_DIR%power_config.bat" %*
 exit /b
 
 :power_info
@@ -99,16 +98,8 @@ adb shell dumpsys batterystats --enable full-wake-history
 adb shell dumpsys alarm log on > nul
 exit /b
 
-:decrypt
-call "%SCRIPT_DIR%power_mtk_thermal_decrypt.bat"
-if %ERRORLEVEL% neq 0 (
-    echo [错误]: 基础检测失败，退出操作。
-    exit /b %ERRORLEVEL%
-)
-exit /b
-
-:tools
-call "%SCRIPT_DIR%power_tools.bat" %2
+:install_apk
+call "%SCRIPT_DIR%power_installs.bat" %2
 exit /b
 
 :wakelock
