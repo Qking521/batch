@@ -17,6 +17,7 @@ if /i "%1"=="standby" goto standby
 if /i "%1"=="tz" goto thermal_zones
 if /i "%1"=="tz-en" goto thermal_zones
 if /i "%1"=="tz-dis" goto thermal_zones
+if /i "%1"=="hm" goto hwmon
 if /i "%1"=="cd" goto cooling_devices
 if /i "%1"=="wallpaper" goto wallpaper
 if /i "%1"=="profile" goto power_profile
@@ -47,6 +48,7 @@ echo   standby				- power base current settings
 echo   tz					- show thermal zones info
 echo   tz-en				- enable all thermal zones
 echo   tz-dis				- disable all thermal zones
+echo   hwmon                - show hardware monitor info
 echo   info					- show detailed device and power info
 echo   config [push/pull]	- thermal config operations
 echo   cd					- show cooling devices info
@@ -80,6 +82,10 @@ exit /b
 
 :cooling_devices
 call "%SCRIPT_DIR%power_cooling_devices.bat"
+exit /b
+
+:hwmon
+call "%SCRIPT_DIR%power_hwmon.bat"
 exit /b
 
 :wallpaper
