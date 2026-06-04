@@ -3,33 +3,57 @@
 chcp 65001 >nul
 setlocal
 
+set "REMOTE_SH=/data/local/tmp/psy_query.sh"
+set "LOCAL_SH=%TEMP%\psy_query.sh"
+
+:: 提取脚本
+set "SKIP="
+for /f "tokens=1 delims=:" %%n in ('findstr /n "^:BEGIN_SHELL_SCRIPT" "%~f0"') do set /a SKIP=%%n
+:: 修正：more +%SKIP% 会从标签行的下一行开始提取内容
+more +%SKIP% "%~f0" > "%LOCAL_SH%"
+
 echo 正在获取电源供应信息 (Power Supply)...
-
-:: 检查基础路径是否存在
-adb shell "ls -d /sys/class/power_supply/* >/dev/null 2>&1"
-if %ERRORLEVEL% neq 0 (
-    echo [错误] 未在设备上找到 /sys/class/power_supply 接口。
-    exit /b 1
-)
-echo power supply path : /sys/class/power_supply/*
-
-:: 构建 Shell 命令：遍历 power_supply 节点，列出详细属性
-set "SH=for d in $(ls -d /sys/class/power_supply/* | sort -V); do "
-set "SH=%SH%  type=$(cat $d/type 2>/dev/null || echo 'unknown'); "
-set "SH=%SH%  printf '%%-15s [ Type: %%s ]\n' \"$(basename $d)\" \"$type\"; "
-set "SH=%SH%  for f in $d/*; do "
-set "SH=%SH%    [ -f \"$f\" ] || continue; "
-set "SH=%SH%    prop=$(basename $f); "
-set "SH=%SH%    case \"$prop\" in uevent|type|name|device|subsystem|power|wakeup|waiting_for_supplier) continue ;; esac; "
-set "SH=%SH%    val=$(cat $f 2>/dev/null); "
-set "SH=%SH%    [ -z \"$val\" ] && continue; "
-set "SH=%SH%    d_val=\"$val\"; "
-:: 单位转换逻辑：针对数值较大的电压/电流/容量项除以 1000，针对温度根据位数除以 10 或 1000
-set "SH=%SH%    case \"$prop\" in voltage_*|current_*|charge_*|energy_*|capacity_now|capacity_full*) [ \"$val\" -ge 1000 -o \"$val\" -le -1000 ] 2>/dev/null && d_val=\"$((val / 1000)) (m)\" ;; "
-set "SH=%SH%    temp*) [ \"$val\" -ge 1000 ] 2>/dev/null && d_val=$((val / 1000)) || { [ \"$val\" -ge 100 ] 2>/dev/null && d_val=$((val / 10)); } ;; esac; "
-set "SH=%SH%    printf '  %%-25s : %%s\n' \"$prop\" \"$d_val\"; "
-set "SH=%SH%  done; "
-set "SH=%SH%done"
-
-adb shell "%SH%"
+adb push "%LOCAL_SH%" %REMOTE_SH% >nul 2>&1
+:: 清除 Windows 换行符导致的 \r 异常
+adb shell "sed -i 's/\r//' %REMOTE_SH%"
+adb shell "sh %REMOTE_SH%"
+adb shell "rm %REMOTE_SH%"
+del "%LOCAL_SH%"
 exit /b
+
+:BEGIN_SHELL_SCRIPT
+#!/system/bin/sh
+for d in /sys/class/power_supply/*; do
+  [ -d "$d" ] || continue
+  name=$(basename "$d")
+  type=$(cat "$d/type" 2>/dev/null || echo 'unknown')
+  printf '%-15s [ Type: %s ]\n' "$name" "$type"
+  
+  for f in "$d"/*; do
+    [ -f "$f" ] || continue
+    prop=$(basename "$f")
+    
+    # 过滤掉非数据节点
+    case "$prop" in 
+      uevent|type|name|device|subsystem|power|wakeup|waiting_for_supplier) continue ;; 
+    esac
+    
+    val=$(cat "$f" 2>/dev/null)
+    [ -z "$val" ] && continue
+    
+    d_val="$val"
+    case "$prop" in
+      voltage_*|current_*|charge_*|energy_*|capacity_now|capacity_full*)
+        # 处理微单位到毫单位的转换
+        if [ "$val" -ge 1000 ] || [ "$val" -le -1000 ] 2>/dev/null; then
+          d_val="$((val / 1000)) (m)"
+        fi
+        ;;
+      temp*)
+        # 处理摄氏度转换 (毫度或 0.1 度)
+        [ "$val" -ge 1000 ] 2>/dev/null && d_val=$((val / 1000)) || { [ "$val" -ge 100 ] 2>/dev/null && d_val=$((val / 10)); }
+        ;;
+    esac
+    printf '  %-25s : %s\n' "$prop" "$d_val"
+  done
+done
