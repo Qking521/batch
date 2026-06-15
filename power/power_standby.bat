@@ -29,13 +29,16 @@ call :execute_adb "adb shell settings put system accelerometer_rotation 0"
 :: Disable Auto-Brightness
 call :execute_adb "adb shell settings put system screen_brightness_mode 0"
 
+:: set defalut Brightness
+call :execute_adb "adb shell settings put system screen_brightness 92"
+
 :: screen time to 30 minutes
 call :execute_adb "adb shell settings put system screen_off_timeout 1800000"
 
 for /f "delims=" %%a in ('adb shell getprop ro.product.brand') do set brand=%%a
 if %brand%==motorola (
 	echo extra operate for %brand%
-	adb shell pm disable-user com.motorola.bug2go
+	call :execute_adb  "adb shell pm disable-user com.motorola.bug2go"
 )
 
 echo All commands executed.

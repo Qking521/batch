@@ -25,6 +25,7 @@ if /i "%1"=="profile" goto power_profile
 if /i "%1"=="reset" goto reset
 if /i "%1"=="decrypt" goto decrypt
 if /i "%1"=="install" goto install_apk
+if /i "%1"=="wt" goto whatsTemp
 if /i "%1"=="key" goto keyword
 if /i "%1"=="wakelock" goto wakelock
 if /i "%1"=="rr" goto refresh_rate
@@ -112,6 +113,10 @@ exit /b
 
 :install_apk
 call "%SCRIPT_DIR%power_installs.bat" %2
+exit /b
+
+:whatsTemp
+call "%SCRIPT_DIR%power_tools_whatsTemp.bat" %~2
 exit /b
 
 :wakelock
