@@ -11,6 +11,18 @@ set "CONFIG_FILE=%~3"
 :: ~：扩展修饰符。它的核心作用是自动去掉参数两侧的引号（如果有的话）。这是一个非常安全的操作，建议在处理路径时始终加上。,n (name)：提取文件名部分（不含后缀）。x (extension)：提取扩展名部分（含点号）。
 set "CONFIG_NAME=%~nx3"
 
+if  /i "!ACTION!"=="" (
+    echo 当前thermal policy信息:
+    for /f "delims=" %%i in ('adb shell cat /data/vendor/thermal/.current_tp') do set "current_tp=%%i"
+    if "!current_tp!"=="" ( echo current_tp:UNKNOW ) else ( echo current_tp:!current_tp! )
+
+    for /f "delims=" %%i in ('adb shell cat /data/vendor/thermal/.permanent_tp') do set "permanent_tp=%%i"
+    if "!permanent_tp!"=="" ( echo permanent_tp:UNKNOW ) else ( echo permanent_tp:!permanent_tp! )
+
+    echo 更多操作，请添加push,pull,decrypt参数。
+    exit /b 1
+)
+
 :: 预先提取 thermal service Owner信息，供全局共用
 set "thermalHalOwner="
 for /f "tokens=4 delims=." %%i in ('adb shell "ps -A | grep -oE \"android\.hardware\.thermal-service\.[a-z0-9]+\""') do (
