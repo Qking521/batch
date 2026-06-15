@@ -29,14 +29,14 @@ echo WhatsTemp 控制工具
 echo =======================
 echo 用法: power wt [command]
 echo 可用命令: 
-echo   install - 安装 WhatsTemp 并配置权限 
-echo   start   - 启动 WhatsTemp 服务并开启采集 
-echo   stop    - 停止 WhatsTemp 采集服务 
-echo   pull    - 停止服务并从设备拉取温度日志 
-echo   config  - 从设备拉取 tool.config 配置文件 
-echo   show    - 使用 Excel 查看最近拉取的 CSV 日志 
-echo   guide   - 打开 WhatsTemp 用户使用指南 (PDF)
-echo   help    - 显示此帮助信息
+echo   install  - 安装 WhatsTemp 并配置权限.
+echo   start    - 启动 WhatsTemp 服务并开启采集.
+echo   stop     - 停止 WhatsTemp 采集服务.
+echo   pull     - 停止服务并从设备拉取温度日志.
+echo   config   - 从设备拉取 tool.config 配置文件.
+echo   show     - 使用 Excel 查看最近拉取的 CSV 日志.
+echo   guide    - 打开 WhatsTemp 用户使用指南 (PDF).
+echo   help     - 显示此帮助信息.
 echo.
 exit /b
 

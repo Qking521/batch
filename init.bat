@@ -19,6 +19,8 @@ set FORMAT_TIME=%MM%%DD%-%HH%%MN%
 :: *******************获取当前脚本所在目录**********************
 :: --结尾有反斜杠
 set "SCRIPT_DIR=%~dp0"
+:: %1为空时代表时初始化脚本init.bat调用
+:: %1不为空时代表子脚本调用，用来重新设置当前脚本和输出目录
 if "%1"=="" (
 	set INIT_BAT=!SCRIPT_DIR!init.bat
 	set ABD_CHECK_BAT=!SCRIPT_DIR!adb_check.bat
@@ -28,6 +30,7 @@ if "%1"=="" (
 	for %%a in ("!SCRIPT_DIR:~0,-1!") do set "LAST_DIR=%%~nxa"
 	set OUT_DIR=!BASE_OUT_DIR!!LAST_DIR!
 )
+:: *******************获取当前脚本所在目录**********************
 if "%DEBUG%"=="1" (
 	echo FORMAT_TIME=%FORMAT_TIME%
 	echo SCRIPT_DIR=%SCRIPT_DIR%

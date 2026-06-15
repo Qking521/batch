@@ -1,37 +1,19 @@
 @echo off
-
-rem mtk thermal config decrypt
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
+：：此脚本由thermal_config.bat在平台为mediatek时调用
 :: 检查thermal策略
+set thermalVersion=-1
 for /f %%a in ('adb shell getprop ro.vendor.mtk_thermal_2_0') do set thermalVersion=%%a
-if not %thermalVersion%=="" (
-	echo ro.vendor.mtk_thermal_2_0 = %thermalVersion%
-)
+echo MTK_THERMAL_VERSION = %thermalVersion%
 
 :: 设置主目录路径
-set "DECRYPT_DIR=%userprofile%\batScript\power\thermal_decrypt"
+set "DECRYPT_DIR=%SCRIPT_DIR%\thermal_decrypt"
+set "OUT_DIR=%OUT_DIR%\thermal_decrypt\%FORMAT_TIME%"
 
-:: 检查主目录是否存在
-if not exist "%DECRYPT_DIR%" (
-    echo 错误: 主目录不存在: %DECRYPT_DIR%
-    pause
-    exit /b 1
-)
-:: 获取格式化的时间format_time
-call %userprofile%\batScript\init.bat
-set "OUT_DIR=%userprofile%\batScript\OUT\power\thermal_decrypt\%format_time%"
-:: 检查日期文件夹是否存在，存在则删除
-if exist "%OUT_DIR%" (
-    rd /s /q "%OUT_DIR%"
-)
-mkdir "%OUT_DIR%"
-if !errorlevel! neq 0 (
-	echo 错误: 无法创建目录 %OUT_DIR%
-	pause
-	exit /b 1
-)
+if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
+
 echo thermal文件目录创建成功: %OUT_DIR%
 
 :: 执行adb pull命令
@@ -41,16 +23,6 @@ if %thermalVersion%==0 (
 )else (
 	adb pull /vendor/etc/thermal/. "%OUT_DIR%"
 )
-if %errorlevel% neq 0 (
-    echo 错误: adb pull命令执行失败
-    echo 请确保:
-    echo 1. adb已正确安装并在PATH中
-    echo 2. 设备已连接并启用USB调试
-    echo 3. 设备上存在该文件路径
-    pause
-    exit /b 1
-)
-echo adb pull命令执行成功
 
 :: 重命名文件后缀为.mtc
 cd "%OUT_DIR%"

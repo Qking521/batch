@@ -21,10 +21,10 @@ echo =======================
 echo 用法: power tz [en/dis/help]
 echo.
 echo 可用命令:
-echo   (空)    - 查看当前所有温度传感器信息 (默认动作)
-echo   en      - 恢复先前禁用的传感器 (根据记录文件)
-echo   dis     - 记录并禁用当前开启的传感器
-echo   help    - 显示此帮助信息
+echo   (空)     - 查看当前所有温度传感器信息 (默认动作).
+echo   en       - 恢复先前禁用的传感器 (根据记录文件).
+echo   dis      - 记录并禁用当前开启的传感器.
+echo   help     - 显示此帮助信息.
 echo.
 exit /b
 

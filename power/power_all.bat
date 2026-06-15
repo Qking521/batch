@@ -38,25 +38,27 @@ exit /b
 
 :show_help
 echo.
-echo Android Power Commands
-echo =======================
-echo.
 echo Usage: power [command]
 echo.
 echo Available commands:
-echo   standby              - power base current settings
-echo   tz [en/dis]          - thermal zones info/enable/disable
-echo   hwmon                - show hardware monitor info
-echo   psy                  - show power supply info
-echo   info                 - display device information related to power consumption
-echo   config [push/pull]   - thermal config operations
-echo   cd                   - show cooling devices info
-echo   wallpaper            - create wallpaper for any color
-echo   install [name]       - install power tools (e.g. wt, wmp, etc)
-echo   profile              - display power profile data on terminal
-echo   reset                - reset batterystats
-echo   key                  - list log keyword
-echo   -h                   - Show help (alias: help^)
+echo   standby              - Power base current settings.
+echo   tz [en/dis]          - Thermal zones info/enable/disable.
+echo   hm                   - Show hardware monitor info.
+echo   ps                   - Show power supply info.
+echo   cd                   - Show cooling devices info.
+echo   wallpaper [color]    - Create/Set wallpaper for specific color.
+echo   profile              - Display power profile data on terminal.
+echo   reset                - Reset battery stats and clear logs.
+echo   install [name]       - Install power tools (wt, wmp).
+echo   wt [cmd]             - WhatsTemp control tools.
+echo   key                  - List common power log keywords.
+echo   wakelock             - Show system wake lock status.
+echo   rr [on/off]          - Set refresh rate (SurfaceFlinger).
+echo   cpu                  - Show CPU frequency and online status.
+echo   regu                 - Show regulator information.
+echo   info                 - Display device information related to power consumption
+echo   config [push/pull]   - Thermal config operations.
+echo   -h                   - Show help (alias: help).
 echo.
 echo Examples:
 echo   power standby
