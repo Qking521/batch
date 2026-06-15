@@ -15,8 +15,6 @@ if /i "%1"=="-h" goto show_help
 if /i "%1"=="help" goto show_help
 if /i "%1"=="standby" goto standby
 if /i "%1"=="tz" goto thermal_zones
-if /i "%1"=="tz-en" goto thermal_zones
-if /i "%1"=="tz-dis" goto thermal_zones
 if /i "%1"=="hm" goto hwmon
 if /i "%1"=="ps" goto power_supply
 if /i "%1"=="cd" goto cooling_devices
@@ -46,21 +44,19 @@ echo.
 echo Usage: power [command]
 echo.
 echo Available commands:
-echo   standby				- power base current settings
-echo   tz					- show thermal zones info
-echo   tz-en				- enable all thermal zones
-echo   tz-dis				- disable all thermal zones
+echo   standby              - power base current settings
+echo   tz [en/dis]          - thermal zones info/enable/disable
 echo   hwmon                - show hardware monitor info
 echo   psy                  - show power supply info
-echo   info					- show detailed device and power info
-echo   config [push/pull]	- thermal config operations
-echo   cd					- show cooling devices info
-echo   wallpaper			- create wallpaper for any color
-echo   install [name]		- install power tools (e.g. wt, wmp, etc)
-echo   profile				- display power profile data on terminal
-echo   reset				- reset batterystats
-echo   key					- list log keyword
-echo   -h					- Show help (alias: help^)
+echo   info                 - display device information related to power consumption
+echo   config [push/pull]   - thermal config operations
+echo   cd                   - show cooling devices info
+echo   wallpaper            - create wallpaper for any color
+echo   install [name]       - install power tools (e.g. wt, wmp, etc)
+echo   profile              - display power profile data on terminal
+echo   reset                - reset batterystats
+echo   key                  - list log keyword
+echo   -h                   - Show help (alias: help^)
 echo.
 echo Examples:
 echo   power standby
@@ -72,7 +68,7 @@ call "%SCRIPT_DIR%power_standby.bat"
 exit /b
 
 :thermal_zones
-call "%SCRIPT_DIR%power_thermal_zones.bat" %1
+call "%SCRIPT_DIR%power_thermal_zones.bat" %~2
 exit /b
 
 :thermal_config
