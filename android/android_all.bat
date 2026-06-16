@@ -24,6 +24,7 @@ if /i "%1"=="search" goto android_search
 if /i "%1"=="monkey" goto monkey
 if /i "%1"=="google" goto google
 if /i "%1"=="dump" goto dump
+if /i "%1"=="adbd" goto adb_helper
 
 echo Unknown command: %1
 goto show_help
@@ -50,6 +51,10 @@ exit /b
 
 :bugreport
 call %SCRIPT_DIR%android_bugreport.bat %~2
+exit /b
+
+:adb_helper
+call %SCRIPT_DIR%android_adb_helper.bat %~2
 exit /b
 
 :clear
