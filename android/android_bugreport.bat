@@ -5,7 +5,7 @@ set "EXT_INFO="
 if not "%param%"=="" (
 	set "EXT_INFO=_%param%"
 )
-for /f "delims= " %%a in ('adb shell getprop ro.product.board') do set model=%%a
+for /f "delims= " %%a in ('adb shell getprop ro.product.device') do set model=%%a
 
 :: === 2. 创建 bugreport 文件夹 ===
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"

@@ -3,6 +3,12 @@ chcp 65001 >nul
 setlocal enabledelayedexpansion
 
 set "PACKAGE_NAME=com.example.mtk10263.whatsTemp"
+set "WT_PATH=/sdcard/WhatsTemp/"
+for /f %%a in ('adb shell getprop ro.product.device') do set product=%%a
+echo product: %product%
+if  "%product%"=="mica" (
+    set "WT_PATH=/mnt/user/10/emulated/10/WhatsTemp/"
+)
 adb shell pm list packages %PACKAGE_NAME% | findstr "%PACKAGE_NAME%" >nul
 if !errorlevel! equ 0 goto :check_args
 echo [提示]: 未检测到 WhatsTemp 应用，正在为您执行安装程序... 
@@ -62,18 +68,18 @@ echo [信息]: 正在停止whatstemp进程并拉取 WhatsTemp 日志...
 adb shell am stopservice -n %PACKAGE_NAME%/.GetInfo_Service
 echo OUT_DIR = %OUT_DIR%
 :: 先清理本地已存在的目录，防止 adb pull 产生嵌套
-if exist "%OUT_DIR%\whatsTemp" rd /s /q "%OUT_DIR%\whatsTemp"
+:: if exist "%OUT_DIR%\whatsTemp" rd /s /q "%OUT_DIR%\whatsTemp"
 :: 确保父目录存在
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
 :: 直接拉取文件夹。因为本地 whatsTemp 不存在，ADB 会将远程 log 文件夹的内容直接放入新建的 whatsTemp 中
-adb pull /sdcard/WhatsTemp/log "%OUT_DIR%\whatsTemp"
-adb shell rm /sdcard/WhatsTemp/log/*
+adb pull %WT_PATH%log/ "%OUT_DIR%\whatsTemp"
+adb shell rm  %WT_PATH%log/*
 if exist "%OUT_DIR%\whatsTemp" start "" "%OUT_DIR%\whatsTemp"
 exit /b
 
 :do_config
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
-adb pull /sdcard/WhatsTemp/tool.config %OUT_DIR%\whatsTemp\tool.config
+adb pull  %WT_PATH%/tool.config %OUT_DIR%\whatsTemp\tool.config
 start "" "%OUT_DIR%\whatsTemp"
 exit /b
 

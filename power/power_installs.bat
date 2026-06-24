@@ -29,26 +29,39 @@ exit /b 1
 
 :whatstempeture
 set "PACKAGE_NAME=com.example.mtk10263.whatsTemp"
+set "WT_PATH=/sdcard/WhatsTemp/"
+set "CFG_PATH=tool.config"
+
+for /f %%a in ('adb shell getprop ro.product.device') do set product=%%a
+echo product: %product%
+if  "%product%"=="mica" (
+    set "WT_PATH=/mnt/user/10/emulated/10/WhatsTemp/"
+    set "CFG_PATH=tool_mica.config"
+)
+echo WT_PATH=%WT_PATH%
+echo CFG_PATH=%CFG_PATH%
+
 echo [信息]: 准备安装并配置 whatstempeture V1.9
 cd /d "%SCRIPT_DIR%WhatsTemp"
 adb install -r whatsTemp.apk
 
-adb shell "mkdir -p /sdcard/WhatsTemp/"
-adb push tool.config /sdcard/WhatsTemp/
+adb shell "mkdir -p %WT_PATH%"
+adb push %CFG_PATH% %WT_PATH%
+
 
 adb shell setenforce 0
 
-adb shell chmod 664 /sys/devices/system/cpu/cpu0/online
-adb shell chmod 664 /sys/devices/system/cpu/cpu1/online
-adb shell chmod 664 /sys/devices/system/cpu/cpu2/online
-adb shell chmod 664 /sys/devices/system/cpu/cpu3/online
-adb shell chmod 664 /sys/devices/system/cpu/cpu4/online
-adb shell chmod 664 /sys/devices/system/cpu/cpu5/online
-adb shell chmod 664 /sys/devices/system/cpu/cpu6/online
-adb shell chmod 664 /sys/devices/system/cpu/cpu7/online
+for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/') do (
+	echo %%a | findstr /r "cpu[0-9]" > nul
+	if not errorlevel == 1 (
+        adb shell chmod 664 /sys/devices/system/cpu/%%a/online
+	)
+)
 
-adb shell pm grant %PACKAGE_NAME% android.permission.POST_NOTIFICATIONS
-adb shell pm grant %PACKAGE_NAME% android.permission.WRITE_EXTERNAL_STORAGE
+for /f %%i in ('adb shell am get-current-user') do set "user=%%i"
+echo user: %user%
+adb shell pm grant --user %user% %PACKAGE_NAME% android.permission.POST_NOTIFICATIONS
+adb shell pm grant --user %user% %PACKAGE_NAME% android.permission.WRITE_EXTERNAL_STORAGE
 adb shell dumpsys deviceidle whitelist +%PACKAGE_NAME%
 exit /b
 
