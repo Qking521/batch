@@ -20,6 +20,7 @@ if /i "%1"=="online" goto online
 if /i "%1"=="origin" goto origin
 if /i "%1"=="fire" goto fire
 if /i "%1"=="reset" goto reset
+if /i "%1"=="install" goto install_apk
 
 
 echo Unknown command: %1
@@ -89,6 +90,10 @@ REM tokens=2 提取 PID (第二列)
 for /f "tokens=2" %%i in ('tasklist /nh /fi "imagename eq trace_processor_shell.exe"') do (
     taskkill /F /PID %%i
 )
+exit /b
+
+:install_apk
+call %SCRIPT_DIR%perf_installs.bat %2
 exit /b
 
 endlocal
