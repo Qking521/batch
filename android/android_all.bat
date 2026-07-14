@@ -23,6 +23,8 @@ if /i "%1"=="di" goto device_info
 if /i "%1"=="search" goto android_search
 if /i "%1"=="monkey" goto monkey
 if /i "%1"=="google" goto google
+if /i "%1"=="enable" goto package_toggle
+if /i "%1"=="disable" goto package_toggle
 if /i "%1"=="dump" goto dump
 if /i "%1"=="adbd" goto adb_helper
 
@@ -132,6 +134,10 @@ set cmd=%2
 for /f "tokens=2 delims==" %%i in ('findstr "=" %pkgs%') do (
 	adb shell pm %cmd% %%i > nul 2>&1
 )
+exit /b
+
+:package_toggle
+call %SCRIPT_DIR%android_package_toggle.bat %1 %2
 exit /b
 
 :dump

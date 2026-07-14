@@ -5,18 +5,14 @@ setlocal enabledelayedexpansion
 call %INIT_BAT% %~dp0
 
 if "%1"=="" goto show_help
-if /i "%1"=="attach" goto usbip
-if /i "%1"=="aattach" goto usbip
-if /i "%1"=="detach" goto usbip
+if /i "%1"=="usbip" goto usbip
 
 :show_help
 echo Available commands:
-echo   attach busid
-echo   aattach busid
-echo   detach busid
+echo   usbip
 echo.
 exit /b
 
 :usbip
-call %SCRIPT_DIR%windows_usbipd.bat %1 %2
+call %SCRIPT_DIR%windows_usbipd.bat %2 %3
 exit /b
