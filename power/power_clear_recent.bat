@@ -1,5 +1,11 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for power_clear_recent.bat
+:: ============================================================
 chcp 65001 >nul
+setlocal
 
 REM 创建临时目录
 if not exist temp mkdir temp

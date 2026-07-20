@@ -1,4 +1,10 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for windows_block_screen_lock.bat
+:: ============================================================
+chcp 65001 >nul
 setlocal enabledelayedexpansion
 
 :: 这个BAT脚本会创建一个VBS文件，用于模拟按键以防止Windows自动锁屏。

@@ -1,4 +1,6 @@
 @echo off
+chcp 65001 >nul
+setlocal
 echo **************************************************************
 echo *                    Perfetto capture Batch Script
 echo *
@@ -38,7 +40,7 @@ adb shell "rm -rf /data/local/tmp/*"
 adb shell "logcat -b all -c; dmesg -C"
 
 
-REM µ÷ÓÃ generate_config º¯Êý
+REM è°ƒç”¨ generate_config å‡½æ•°
 call :generate_config
 adb push %cd%\%config_name% /data/local/tmp/config.pbtxt
 move %cd%\%config_name% %infodir%\config.pbtxt > NUL

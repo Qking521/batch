@@ -1,4 +1,9 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for android_search.bat
+:: ============================================================
 setlocal EnableDelayedExpansion
 
 :: Set code page to GBK for Chinese support

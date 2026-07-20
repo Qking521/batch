@@ -1,4 +1,10 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for perf_cmd.bat
+:: ============================================================
+chcp 65001 >nul
 setlocal enabledelayedexpansion
 @REM **************************set record time*********************************
 set record_time=%1
@@ -8,5 +14,5 @@ for /f "delims= " %%a in ('adb shell getprop ro.product.board') do set model=%%a
 set trace_file=%model%_%format_time%.perfetto
 
 adb pull /data/misc/perfetto-traces/trace_file.perfetto-trace %OUT_DIR%\%trace_file% > nul 2>&1
-REM 调用浏览器自动加载trace文件
+REM 璋冪敤娴忚鍣ㄨ嚜鍔ㄥ姞杞絫race鏂囦欢
 call %SCRIPT_DIR%perf_open.bat %OUT_DIR%\%trace_file%

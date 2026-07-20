@@ -1,4 +1,9 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for power_all.bat
+:: ============================================================
 chcp 65001 >nul
 setlocal
 
@@ -70,11 +75,11 @@ call "%SCRIPT_DIR%power_standby.bat"
 exit /b
 
 :thermal_zones
-call "%SCRIPT_DIR%power_thermal_zones.bat" %~2
+call "%SCRIPT_DIR%..\thermal\thermal_thermal_zones.bat" %~2
 exit /b
 
 :thermal_config
-call "%SCRIPT_DIR%power_config.bat" %*
+call "%SCRIPT_DIR%..\thermal\thermal_config.bat" %*
 exit /b
 
 :power_info
@@ -82,11 +87,11 @@ call "%SCRIPT_DIR%power_info.bat"
 exit /b
 
 :cooling_devices
-call "%SCRIPT_DIR%power_cooling_devices.bat"
+call "%SCRIPT_DIR%..\thermal\thermal_cooling_devices.bat"
 exit /b
 
 :hwmon
-call "%SCRIPT_DIR%power_hwmon.bat"
+call "%SCRIPT_DIR%..\thermal\thermal_hwmon.bat"
 exit /b
 
 :power_supply
@@ -114,7 +119,7 @@ call "%SCRIPT_DIR%power_installs.bat" %2
 exit /b
 
 :whatsTemp
-call "%SCRIPT_DIR%power_whats_temp.bat" %~2
+call "%SCRIPT_DIR%..\thermal\thermal_whats_temp.bat" %~2
 exit /b
 
 :wakelock

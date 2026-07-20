@@ -1,8 +1,16 @@
+@echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for android_device_info.bat
+:: ============================================================
 for /f "delims= " %%a in ('adb shell getprop ro.product.board') do echo 平台型号: %%a
 for /f "tokens=2 delims=:" %%a in ('adb shell cat /proc/meminfo ^| find "MemTotal"') do set meminfo=%%a
 for /f "tokens=1" %%b in ('echo %meminfo%') do set mem_kb=%%b
 set /a mem_gb=(%mem_kb% + 1048576 - 1) / 1048576 
 echo RAM大小: %mem_gb%G
+chcp 65001 >nul
+setlocal
 
 set "line="
 for /f "delims=" %%L in ('adb shell dumpsys diskstats') do (

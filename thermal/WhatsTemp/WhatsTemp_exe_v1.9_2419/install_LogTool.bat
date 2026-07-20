@@ -1,8 +1,16 @@
+@echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for install_LogTool.bat
+:: ============================================================
 adb install -r whatsTemp_v1.9.apk
 adb shell "mkdir -p /sdcard/WhatsTemp/"
 adb push tool.config /sdcard/WhatsTemp/
 
 adb root
+chcp 65001 >nul
+setlocal
 adb wait-for-device
 
 adb shell setenforce 0

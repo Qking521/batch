@@ -1,4 +1,9 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for power_supply.bat
+:: ============================================================
 :: 强制 UTF-8 编码
 chcp 65001 >nul
 setlocal

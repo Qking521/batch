@@ -1,4 +1,10 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for init.bat
+:: ============================================================
+chcp 65001 >nul
 setlocal enabledelayedexpansion
 set "DEBUG=0"
 :: *******************获取当前日期和时间，格式：MMDD-HHMM**********************

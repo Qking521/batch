@@ -1,5 +1,11 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for android_settings_and_properities_download.bat
+:: ============================================================
 chcp 65001 >nul
+setlocal
 
 :: 获取当前脚本所在目录
 set "SCRIPT_DIR=%~dp0"

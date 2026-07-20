@@ -1,4 +1,10 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for perf_online.bat
+:: ============================================================
+chcp 65001 >nul
 setlocal enabledelayedexpansion
 set "SCRIPT_DIR=%~dp0"
 set record_trace_file=%SCRIPT_DIR%record_android_trace

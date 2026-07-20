@@ -1,4 +1,6 @@
 @echo off
+chcp 65001 >nul
+setlocal
 echo **************************************************************
 echo *                    Perfetto capture Batch Script
 echo *
@@ -35,7 +37,7 @@ adb root
 echo,
 echo\
 echo Make sure the screen is active !!! Then go on...
-echo ע�⣺Ҫȷ����������Ȼ...
+echo 注意：要确保亮屏，不然...
 echo.
 echo]
 pause
@@ -55,7 +57,7 @@ set infodir=%cd%\%devinfo%\
 adb shell "rm -rf /data/local/tmp/*"
 adb shell "logcat -b all -c; dmesg -C"
 
-REM ���� generate_config ����
+REM 调用 generate_config 函数
 call :generate_config
 adb push %cd%\%config_name% /data/local/tmp/config.pbtxt
 move %cd%\%config_name% %infodir%\config.pbtxt > NUL
@@ -77,7 +79,7 @@ adb shell "logcat -b all -d" > %devinfo%\logcat.d
 adb shell "dmesg" > %devinfo%\dmesg
 adb pull /data/local/tmp/record.mp4 %devinfo%\performance.%screenRecordtime%s.mp4
 rem adb shell rm -fr /data/local/tmp/record.mp4
-rem kill �� ֮ǰ trace_processor_shell �� perfetto�ļ���
+rem kill 掉 之前 trace_processor_shell 对 perfetto的加载
 set process_name=trace_processor_shell.exe
 tasklist | findstr /i "%process_name%" >nul && (
     echo Process is running, killing...
@@ -86,7 +88,7 @@ tasklist | findstr /i "%process_name%" >nul && (
     echo Process is not running
 )
 
-rem kill �� ֮ǰ ץȡperfetto�Ĵ��ڣ��������Ҫ�ֶ��ر�
+rem kill 掉 之前 抓取perfetto的窗口，避免后续要手动关闭
 for /f "tokens=5" %%A in ('wmic process where "CommandLine like '%%startperfetto.bat%%'" get ProcessId^,Caption^,CommandLine ^| findstr "cmd.exe" ^| findstr /v "wmic"') do taskkill /PID %%A"
 
 start "" /B %cd%\envs\trace_processor_shell.exe -D   %devinfo%\%traceFile%  &
@@ -225,6 +227,6 @@ goto :END
     color 0F
     ping 127.0.1.1 -n 2 >nul
     color 4E
-    echo "ִ�нű������������濴��ʾ�ĺ�ϰ�ߣ�ע�⿴��ʾ �I�I�I����ʾ��ʣ�� 88888888^888 �� LoL~!"
+    echo "执行脚本，请养成认真看提示的好习惯，注意看提示 ↖↖↖；提示还剩下 88888888^888 遍 LoL~!"
     call :justretry
 )

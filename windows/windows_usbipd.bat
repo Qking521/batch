@@ -1,4 +1,10 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for windows_usbipd.bat
+:: ============================================================
+chcp 65001 >nul
 setlocal enabledelayedexpansion
 set "action=%1"
 set "portid=%2"

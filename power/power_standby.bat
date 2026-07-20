@@ -1,4 +1,9 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for power_standby.bat
+:: ============================================================
 setlocal EnableDelayedExpansion
 
 :: Set code page to GBK for Chinese support
@@ -36,7 +41,7 @@ call :execute_adb "adb shell settings put system screen_brightness 92"
 call :execute_adb "adb shell settings put system screen_off_timeout 1800000"
 
 for /f "delims=" %%a in ('adb shell getprop ro.product.brand') do set brand=%%a
-if %brand%==motorola (
+if "!brand!"=="motorola" (
 	echo extra operate for %brand%
 	call :execute_adb  "adb shell pm disable-user com.motorola.bug2go"
 )

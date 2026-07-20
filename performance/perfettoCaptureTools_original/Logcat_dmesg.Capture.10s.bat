@@ -1,4 +1,6 @@
 @echo off
+chcp 65001 >nul
+setlocal
 echo **************************************************************
 echo *                    Perfetto capture Batch Script
 echo *
@@ -36,7 +38,7 @@ set infodir=%cd%\%devinfo%\
 adb shell "rm -rf /data/local/tmp/*"
 adb shell "logcat -b all -c; dmesg -C"
 
-REM µ÷ÓÃ generate_config º¯Êı
+REM è°ƒç”¨ generate_config å‡½æ•°
 call :generate_config
 adb push %cd%\%config_name% /data/local/tmp/config.pbtxt
 move %cd%\%config_name% %infodir%\config.pbtxt > NUL
@@ -55,7 +57,7 @@ echo saving perfetto file to %devinfo%\%traceFile%
 echo/
 adb shell "logcat -b all -d" > %devinfo%\logcat.d
 adb shell "dmesg" > %devinfo%\dmesg
-rem kill µô Ö®Ç° trace_processor_shell ¶Ô perfettoµÄ¼ÓÔØ
+rem kill æ‰ ä¹‹å‰ trace_processor_shell å¯¹ perfettoçš„åŠ è½½
 set process_name=trace_processor_shell.exe
 tasklist | findstr /i "%process_name%" >nul && (
     echo Process is running, killing...
@@ -64,7 +66,7 @@ tasklist | findstr /i "%process_name%" >nul && (
     echo Process is not running
 )
 
-rem kill µô Ö®Ç° ×¥È¡perfettoµÄ´°¿Ú£¬±ÜÃâºóĞøÒªÊÖ¶¯¹Ø±Õ
+rem kill æ‰ ä¹‹å‰ æŠ“å–perfettoçš„çª—å£ï¼Œé¿å…åç»­è¦æ‰‹åŠ¨å…³é—­
 for /f "tokens=5" %%A in ('wmic process where "CommandLine like '%%startperfetto.bat%%'" get ProcessId^,Caption^,CommandLine ^| findstr "cmd.exe" ^| findstr /v "wmic"') do taskkill /PID %%A"
 
 start "" /B %cd%\envs\trace_processor_shell.exe -D   %devinfo%\%traceFile%  &

@@ -1,4 +1,9 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for power_installs.bat
+:: ============================================================
 :: power_installs.bat - 安装功耗辅助工具apk
 chcp 65001 >nul
 setlocal

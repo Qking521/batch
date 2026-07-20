@@ -1,4 +1,9 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for thermal_whats_temp.bat
+:: ============================================================
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
@@ -48,7 +53,7 @@ exit /b
 
 :do_install
 :: 调用现有的安装脚本
-call "%SCRIPT_DIR%power_installs.bat" wt
+call "%SCRIPT_DIR%thermal_installs.bat" wt
 exit /b
 
 :do_start

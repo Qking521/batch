@@ -1,8 +1,14 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for perf_config.bat
+:: ============================================================
+chcp 65001 >nul
 setlocal enabledelayedexpansion
 @REM **************************set record time*********************************
 set record_time=%1
-:: ±êÖ¾±äÁ¿£¬³õÊ¼ÎªÎ´ÕÒµ½
+:: æ ‡å¿—å˜é‡ï¼Œåˆå§‹ä¸ºæœªæ‰¾åˆ°
 set "found=0"
 set "timelist=5 10 30"
 
@@ -38,11 +44,11 @@ if "%record_time%"=="30" (
 set config_name=config.pbtxt
 for /f "delims= " %%a in ('adb shell getprop ro.product.board') do @set model=%%a
 
-::»ñÈ¡½Å±¾ËùÔÚÄ¿Â¼£¬×Ô´ø·´Ğ±¸Ü
+::è·å–è„šæœ¬æ‰€åœ¨ç›®å½•ï¼Œè‡ªå¸¦åæ–œæ 
 set "scriptDir=%~dp0"
-:: È¥µô×îºóÒ»¸ö·´Ğ±¸Ü£¨Èç¹ûÓĞ£©
+:: å»æ‰æœ€åä¸€ä¸ªåæ–œæ ï¼ˆå¦‚æœæœ‰ï¼‰
 set "currentDir=%scriptDir:~0,-1%"
-:: »ñÈ¡ÉÏÒ»¼¶Ä¿Â¼Â·¾¶
+:: è·å–ä¸Šä¸€çº§ç›®å½•è·¯å¾„
 for %%i in ("%currentDir%") do set "parentDir=%%~dpi"
 set OUT_DIR=%parentDir%OUT\performance\
 set trace_file=%model%_%format_time%.perfetto
@@ -52,25 +58,25 @@ if not exist %OUT_DIR% (
 	mkdir %OUT_DIR%
 )
 
-REM µ÷ÓÃ generate_config º¯Êı
+REM è°ƒç”¨ generate_config å‡½æ•°
 call :generate_config
 adb shell "rm -rf %configPath%/*"
 adb shell "rm -rf /data/misc/perfetto-traces/*"
-REM ±¾µØÉú³ÉµÄconfigÎÄ¼şpushÊÖ»úÖĞ¹©Éú³ÉtraceÎÄ¼ş
+REM æœ¬åœ°ç”Ÿæˆçš„configæ–‡ä»¶pushæ‰‹æœºä¸­ä¾›ç”Ÿæˆtraceæ–‡ä»¶
 adb push %cd%\%config_name% %configPath%/config.pbtxt > nul 2>&1
-REM ±¾µØÉú³ÉµÄconfigÎÄ¼şpush outÄ¿Â¼ÖĞ¹©ÑéÖ¤
+REM æœ¬åœ°ç”Ÿæˆçš„configæ–‡ä»¶push outç›®å½•ä¸­ä¾›éªŒè¯
 move %cd%\%config_name% %OUT_DIR%\%~n0_%record_time%_config.pbtxt > nul
 
 echo **********************start capturing perfetto****************************
-REM µÚÒ»¸öecho 0 ÊÇÎªÁË±£Ö¤Õı³£×¥È¡
+REM ç¬¬ä¸€ä¸ªecho 0 æ˜¯ä¸ºäº†ä¿è¯æ­£å¸¸æŠ“å–
 adb shell "echo 0 > /sys/kernel/tracing/tracing_on"
 adb shell perfetto --txt -c %configPath%/config.pbtxt -o /data/misc/perfetto-traces/%trace_file% > nul 2>&1
-REM µÚ¶ş¸öecho 0ÊÇÎªÁË±£Ö¤Õı³£½áÊø
+REM ç¬¬äºŒä¸ªecho 0æ˜¯ä¸ºäº†ä¿è¯æ­£å¸¸ç»“æŸ
 adb shell "echo 0 > /sys/kernel/tracing/tracing_on"
 adb pull /data/misc/perfetto-traces/%trace_file%   %OUT_DIR%\%trace_file% > nul 2>&1
 echo trace_file: %OUT_DIR%\%trace_file%
 
-REM µ÷ÓÃä¯ÀÀÆ÷×Ô¶¯¼ÓÔØtraceÎÄ¼ş
+REM è°ƒç”¨æµè§ˆå™¨è‡ªåŠ¨åŠ è½½traceæ–‡ä»¶
 call perf_open.bat %OUT_DIR%\%trace_file%
 endlocal
 goto :END

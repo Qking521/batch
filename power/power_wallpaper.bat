@@ -1,4 +1,9 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for power_wallpaper.bat
+:: ============================================================
 setlocal enabledelayedexpansion
 chcp 65001 >nul
 
@@ -9,7 +14,7 @@ if "%~2"=="" (
 	set action=%~2
 )
 
-if %color%=="" (
+if "!color!"=="" (
 	echo 请指定壁纸颜色
 	exit /b
 )
@@ -65,10 +70,10 @@ if %errorlevel% neq 0 (
 
 echo 壁纸已生成,路径：/sdcard/%wallpaper%
 echo 请在设备上手动设置壁纸
-if %action%==set (
+if "!action!"=="set" (
 	adb shell am start -a android.intent.action.ATTACH_DATA -d file:///sdcard/%wallpaper% -t image/* --ez set-wallpaper true
 )
-if %action%==view (
+if "!action!"=="view" (
 	adb shell am start -a android.intent.action.VIEW -d file:///sdcard/%wallpaper% -t image/*
 )
 

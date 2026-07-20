@@ -1,4 +1,11 @@
 @echo off
+:: ============================================================
+:: Author: Antigravity Pair Program
+:: Date: 2026-07-20
+:: Description: Optimized script for perf_open.bat
+:: ============================================================
+chcp 65001 >nul
+setlocal
 rem kill 掉 之前 抓取perfetto的窗口，避免后续要手动关闭
 for /f "tokens=5" %%A in ('wmic process where "CommandLine like '%%perf_open.bat%%'" get ProcessId^,Caption^,CommandLine ^| findstr "cmd.exe" ^| findstr /v "wmic"') do taskkill /PID %%A"
 ::/b 表示在当前窗口中后台运行，不弹出新窗口,但仍可能阻塞当前窗口
