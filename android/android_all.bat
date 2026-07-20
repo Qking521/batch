@@ -10,12 +10,17 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
+set "cmd=%1"
+set "param1=%2"
+set "param2=%3"
+
 if "%1"=="" goto show_help
 if /i "%1"=="-h" goto show_help
 if /i "%1"=="help" goto show_help
 if /i "%1"=="top" goto current_activity
 if /i "%1"=="shot" goto screen_shot
 if /i "%1"=="record" goto screen_record
+if /i "%1"=="kill" goto kill_process
 if /i "%1"=="bugreport" goto bugreport
 if /i "%1"=="clear" goto clear
 if /i "%1"=="dev" goto developer
@@ -85,6 +90,12 @@ adb pull /sdcard/%record_file% %out_dir%
 adb shell rm /sdcard/%record_file%
 echo 111
 start %out_dir%\%record_file%
+exit /b
+
+:kill_process
+adb shell "ps -A | grep %param1%"
+adb shell "kill -9 $(ps -A | grep %param1% | grep -v grep | awk '{print $2}')"
+adb shell "ps -A | grep %param1%"
 exit /b
 
 :developer

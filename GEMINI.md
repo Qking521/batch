@@ -12,26 +12,20 @@
   - `Notepad++` (用于日志查看)
 
 ## 项目结构
-- `power_all.bat`: 电源管理指令主入口，集成所有子功能。
-- `power_info.bat`: 设备综合信息看板（涵盖 CPU 布局、GPU、存储、电池实时功率等）。
-- `power_thermal_zones.bat`: 热管理区（Thermal Zones）状态监控及开关控制。
-- `power_hwmon.bat`: 硬件监控节点（风扇、PWM、NTC）数据提取。
-- `power_supply.bat`: 电源子系统（Battery/USB）底层属性详细列表。
-- `power_clear_recent.bat`: 基于 UI Automator 的后台应用自动清理脚本。
-- `alias.bat`: 集中管理常用的 ADB 和系统命令别名。
+- `power_all.bat`: 电源管理指令主入口
+- `thermal_all.bat`: 热管理指令主入口
+- `perf_all.bat`: 性能管理指令主入口
+- `android_all.bat`: android通用命令的指令主入口
 - `batch_spec.md`: Windows 批处理编写规范指南。
 
 ## 编码标准与模式
 - **脚本头部：** 每个脚本都应包含作者、日期和描述的说明性头部。
 - **环境：** 始终使用 `@echo off` 和 `setlocal` 来防止变量泄露。
-- **安全性：** 在执行设备相关命令之前，使用 `adb wait-for-device`。
-- **路径：** 使用 `%cd%` 表示相对执行路径，或使用环境变量来指定工具路径。
 - **分发模式：** 对于复杂的 Shell 逻辑，优先采用“混合脚本分发模式”。
 
 ## AI 协助指令
 - 在生成新脚本时，优先考虑健壮的错误处理（例如，检查 `7z.exe` 等依赖是否存在）。
 - 在修改 Perfetto 配置时，确保输出保持为有效的 `.pbtxt` 结构，如同 `generate_config` 例程中所用。
-- 保持 `alias.bat` 中现有的别名命名约定（例如，`gsys` 用于全局设置，`gses` 用于安全设置）。
 - 除非明确要求，否则避免使用 PowerShell；坚持使用 CMD 兼容的批处理逻辑。
 
 ### AI 协助常用提示词 (Prompt Keywords)

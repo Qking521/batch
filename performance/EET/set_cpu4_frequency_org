@@ -1,0 +1,7 @@
+
+call only_open_cpu4.bat
+adb shell "echo performance > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor"
+adb shell "echo $change_v > /sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq"
+adb shell "echo $change_v > /sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq"
+
+pause

@@ -10,43 +10,41 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 
-if "%1"=="" goto show_help
-if /i "%1"=="-h" goto show_help
-if /i "%1"=="help" goto show_help
-if /i "%1"=="sf" goto surface_flinger
-if /i "%1"=="cmd" goto command
-if /i "%1"=="cfg" goto config
-if /i "%1"=="online" goto online
-if /i "%1"=="origin" goto origin
-if /i "%1"=="fire" goto fire
-if /i "%1"=="reset" goto reset
-if /i "%1"=="install" goto install_apk
+set "cmd=%1"
+set "param1=%2"
+set "param2=%3"
 
+if /i "%cmd%"=="" goto show_help
+if /i "%cmd%"=="-h" goto show_help
+if /i "%cmd%"=="help" goto show_help
+if /i "%cmd%"=="sf" goto surface_flinger
+if /i "%cmd%"=="cmd" goto command
+if /i "%cmd%"=="cfg" goto config
+if /i "%cmd%"=="online" goto online
+if /i "%cmd%"=="origin" goto origin
+if /i "%cmd%"=="fire" goto fire
+if /i "%cmd%"=="reset" goto reset
+if /i "%cmd%"=="eet" goto eet
+if /i "%cmd%"=="install" goto install_apk
 
-echo Unknown command: %1
+echo Unknown command: %cmd%
 goto show_help
 exit /b
 
 :show_help
-echo =======================
-echo Android Performance Commands
-echo 根据具体分析需求选择合适的脚本类型：
-echo 研发性能分析： perf_base.bat
-echo 更多性能信息： perf_more.bat
-echo 全量性能抓取： perf_full.bat
-echo 文件系统性能： perf_ioblock.bat
-echo 带日志性能抓取： perf_log.bat
-echo 带录屏性能抓取： perf_screen.bat
-
 echo
 echo Usage: Performance [command]
 echo
 echo Available commands:
-echo   base    		- default trace capture, time for 5s, 10s, 30s, default 5s.
-echo   more			- more info on base
-echo   full			- full info
-echo   io			- focus on IOBlock info
-echo   screen		- focus on screen info
+echo   cpu    		- 显示CPU相关信息
+echo   base    		- 研发性能分析, default 5s.
+echo   more			- 更多性能信息
+echo   full			- 全量性能抓取
+echo   io			- 文件系统性能
+echo   log			- 带日志性能抓取
+echo   screen		- 带录屏性能抓取
+echo   fire         - 火焰图抓取
+echo   install      - 安装性能类apk工具
 echo   -h      		- Show help (alias: help^)
 echo.
 echo Examples:
@@ -94,6 +92,26 @@ exit /b
 
 :install_apk
 call %SCRIPT_DIR%perf_installs.bat %2
+exit /b
+
+:cpu_info
+adb shell ls /sys/devices/system/cpu/cpufreq/
+for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/cpufreq/') do (
+	echo %%a频率:
+	adb shell cat /sys/devices/system/cpu/cpufreq/%%a/scaling_available_frequencies
+)
+for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/') do (
+	echo %%a | findstr /r "cpu[0-9]" > nul
+	if not errorlevel == 1 (
+		for /f "delims=" %%b in ('adb shell cat /sys/devices/system/cpu/%%a/online') do (
+			if "%%b"=="0" echo "cpu%%a offline"
+		)
+	)
+)
+exit /b
+
+:eet
+call %SCRIPT_DIR%perf_eet.bat %2
 exit /b
 
 endlocal

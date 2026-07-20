@@ -3,25 +3,46 @@ chcp 65001 >nul
 setlocal enabledelayedexpansion
 
 :: %1: config
-:: %2: action (push, pull, etc.)
+:: %2: cmd (push, pull, etc.)
 :: %3: file path
 
-set "ACTION=%~2"
+set "CMD=%~2"
+
+:: CONFIG_FILE 是带路径带文件扩展名的config文件，比如C:\Users\king\thermal.conf
+:: ~ 是扩展修饰符。它的核心作用是自动去掉参数两侧的引号（如果有的话）。建议在处理路径时始终加上。
 set "CONFIG_FILE=%~3"
-:: ~：扩展修饰符。它的核心作用是自动去掉参数两侧的引号（如果有的话）。这是一个非常安全的操作，建议在处理路径时始终加上。,n (name)：提取文件名部分（不含后缀）。x (extension)：提取扩展名部分（含点号）。
+
+:: n (name)：提取文件名部分（不含后缀）。x (extension)：提取扩展名部分（含点号）。比如：thermal.conf
 set "CONFIG_NAME=%~nx3"
 
-if  /i "!ACTION!"=="" (
-    echo 当前thermal policy信息:
-    for /f "delims=" %%i in ('adb shell cat /data/vendor/thermal/.current_tp') do set "current_tp=%%i"
-    if "!current_tp!"=="" ( echo current_tp:UNKNOW ) else ( echo current_tp:!current_tp! )
+:: 根据第二个参数跳转标签
+if /i "!CMD!"=="-h" goto show_help
+if /i "!CMD!"=="help" goto show_help
+if /i "!CMD!"=="push" goto :config_push
+if /i "!CMD!"=="pull" goto :config_pull
+if /i "!CMD!"=="decrypt" goto :config_decrypt
 
-    for /f "delims=" %%i in ('adb shell cat /data/vendor/thermal/.permanent_tp') do set "permanent_tp=%%i"
-    if "!permanent_tp!"=="" ( echo permanent_tp:UNKNOW ) else ( echo permanent_tp:!permanent_tp! )
+:: 没有具体的cmd时，默认显示当前的温升策略
+echo Error Unknown CMD: !CMD!
+call :config_info
+goto show_help
+exit /b
 
-    echo 更多操作，请添加push,pull,decrypt参数。
-    exit /b 1
-)
+:show_help
+echo.
+echo Usage: therm config [command] [configFile]
+echo.
+echo Available commands:
+echo   push                 - push config file to device according to different platforms.
+echo   pull                 - push config file to show according to different platforms.
+echo   decrypt              - decrypt config file if need according to different platforms.
+echo   -h                   - Show help (alias: help).
+echo.
+echo Examples:
+echo   therm config push thermal.conf
+echo   therm config pull
+echo.
+exit /b
 
 :: 预先提取 thermal service Owner信息，供全局共用
 set "thermalHalOwner="
@@ -35,16 +56,17 @@ if "!thermalHalOwner!"=="" (
     exit /b 1
 )
 
-:: 根据第二个参数跳转标签
-if  /i "!ACTION!"=="push" goto :config_push
-if  /i "!ACTION!"=="pull" goto :config_pull
-if  /i "!ACTION!"=="decrypt" goto :config_decrypt
+:config_info
+    echo 当前thermal policy信息:
+    for /f "delims=" %%i in ('adb shell cat /data/vendor/thermal/.current_tp') do set "current_tp=%%i"
+    if "!current_tp!"=="" ( echo current_tp:UNKNOW ) else ( echo current_tp:!current_tp! )
 
-echo [错误]: 未知的配置操作: !ACTION!
-exit /b 1
+    for /f "delims=" %%i in ('adb shell cat /data/vendor/thermal/.permanent_tp') do set "permanent_tp=%%i"
+    if "!permanent_tp!"=="" ( echo permanent_tp:UNKNOW ) else ( echo permanent_tp:!permanent_tp! )
+    exit /b
 
 :config_push
-    echo action=!ACTION!, target=!CONFIG_FILE!, config_name=!CONFIG_NAME!
+    echo cmd=!CMD!, target=!CONFIG_FILE!, config_name=!CONFIG_NAME!
     echo [操作]: 正在push^&apply %CONFIG_FILE% ...
 
     if "!thermalHalOwner!"=="mediatek" (
@@ -56,7 +78,7 @@ exit /b 1
             :: 应用策略
             adb shell "thermal_intf apply !CONFIG_NAME!"
             :: 显示应用后的策略
-            adb shell cat /data/vendor/thermal/.current_tp
+            call :config_info
         ) else (
             echo [错误]: MTK 平台推送需要指定文件路径。
         )

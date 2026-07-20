@@ -62,7 +62,7 @@ doskey miota=adb shell rm -rf sdcard/ota/* ^&^& adb push D:\Download\ota.zip /sd
 doskey milogc=adb shell rm -rf Android/data/com.mi.health/files/log/devicelog ^&^& adb shell rm -rf Android/Download/wearablelog
 doskey milog=%USERPROFILE%\batScript\milog.bat
 
-@REM android cmd
+@REM android
 doskey ad=%USERPROFILE%\batScript\android\android_all.bat $*
 
 @REM power
@@ -70,6 +70,9 @@ doskey power=%USERPROFILE%\batScript\power\power_all.bat $*
 
 @REM performance
 doskey perf=%USERPROFILE%\batScript\performance\perf_all.bat $*
+
+@REM thermal
+doskey therm=%USERPROFILE%\batScript\thermal\thermal_all.bat $*
 
 @REM windows
 doskey win=%USERPROFILE%\batScript\windows\windows_all.bat $*

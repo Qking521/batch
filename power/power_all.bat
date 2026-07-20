@@ -114,7 +114,7 @@ call "%SCRIPT_DIR%power_installs.bat" %2
 exit /b
 
 :whatsTemp
-call "%SCRIPT_DIR%power_tools_whatsTemp.bat" %~2
+call "%SCRIPT_DIR%power_whats_temp.bat" %~2
 exit /b
 
 :wakelock
