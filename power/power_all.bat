@@ -36,6 +36,7 @@ if /i "%1"=="cpu" goto cpu_info
 if /i "%1"=="regu" goto regulator
 if /i "%1"=="info" goto power_info
 if /i "%1"=="config" goto thermal_config
+if /i "%1"=="eet" goto eet_test
 
 echo Unknown command: %1
 goto show_help
@@ -151,7 +152,10 @@ for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/') do (
 		)
 	)
 )
+exit /b
 
+:eet_test
+call "%SCRIPT_DIR%power_eet.bat" %*
 exit /b
 
 :regulator

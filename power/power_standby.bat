@@ -44,10 +44,13 @@ for /f "delims=" %%a in ('adb shell getprop ro.product.brand') do set brand=%%a
 if "!brand!"=="motorola" (
 	echo extra operate for %brand%
 	call :execute_adb  "adb shell pm disable-user com.motorola.bug2go"
+    echo "请手动关闭mtklog里的log开关"
+    echo "请手动关闭moto应用里的手势操作开关"
+    echo "请手动关闭moto应用里的息屏显示开关"
+    echo "请手动关闭moto应用里的双击屏幕开关"
 )
 
 echo All commands executed.
-echo 请确认modem log关闭
 endlocal
 goto :eof
 

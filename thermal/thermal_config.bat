@@ -76,6 +76,10 @@ if "!thermalHalOwner!"=="" (
 
     if "!thermalHalOwner!"=="mediatek" (
         if not "!CONFIG_FILE!"=="" (
+            if not exist "!CONFIG_FILE!" (
+                echo [错误]: 配置文件 "!CONFIG_FILE!" 不存在。
+                exit /b 1
+            )
             :: 导入策略
             adb root
             adb remount
@@ -91,6 +95,10 @@ if "!thermalHalOwner!"=="" (
 
     if "!thermalHalOwner!"=="pixel" (
         if not "!CONFIG_FILE!"=="" (
+            if not exist "!CONFIG_FILE!" (
+                echo [错误]: 配置文件 "!CONFIG_FILE!" 不存在。
+                exit /b 1
+            )
             adb root
             adb remount
             adb push "!CONFIG_FILE!" /vendor/etc/
@@ -131,6 +139,11 @@ if "!thermalHalOwner!"=="" (
 :config_decrypt
     echo SCRIPT_DIR=%SCRIPT_DIR%
     if "!thermalHalOwner!"=="mediatek" (
-        call "%SCRIPT_DIR%power_mtk_thermal_decrypt.bat"
+        if exist "%SCRIPT_DIR%..\power\power_mtk_thermal_decrypt.bat" (
+            call "%SCRIPT_DIR%..\power\power_mtk_thermal_decrypt.bat"
+        ) else (
+            echo [错误]: 未找到解密脚本 "%SCRIPT_DIR%..\power\power_mtk_thermal_decrypt.bat"
+            exit /b 1
+        )
     )
     exit /b

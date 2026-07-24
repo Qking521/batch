@@ -1,0 +1,5 @@
+
+
+Commands to pull dhrystone results
+
+adb pull /data/dhrystone_results.txt

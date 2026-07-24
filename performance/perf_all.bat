@@ -29,7 +29,7 @@ if /i "%cmd%"=="online" goto online
 if /i "%cmd%"=="origin" goto origin
 if /i "%cmd%"=="fire" goto fire
 if /i "%cmd%"=="reset" goto reset
-if /i "%cmd%"=="eet" goto eet
+if /i "%cmd%"=="ds" goto dhrystone
 if /i "%cmd%"=="install" goto install_apk
 
 echo Unknown command: %cmd%
@@ -115,8 +115,8 @@ for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/') do (
 )
 exit /b
 
-:eet
-call %SCRIPT_DIR%perf_eet.bat %2
+:dhrystone
+call %SCRIPT_DIR%perf_dhrystone.bat %*
 exit /b
 
 endlocal

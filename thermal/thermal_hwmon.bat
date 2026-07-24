@@ -8,6 +8,23 @@
 chcp 65001 >nul
 setlocal
 
+if /i "%~1"=="help" goto :show_help
+if /i "%~1"=="-h" goto :show_help
+
+goto :process
+
+:show_help
+echo HWMON 硬件监控器信息工具
+echo =======================
+echo 用法: therm hm [help] (或 power hm [help])
+echo.
+echo 可用命令:
+echo   (空)     - 查看当前所有硬件监控器的状态信息 (默认动作).
+echo   help     - 显示此帮助信息.
+echo.
+exit /b
+
+:process
 set "REMOTE_SH=/data/local/tmp/hwmon_query.sh"
 set "LOCAL_SH=%TEMP%\hwmon_query.sh"
 
