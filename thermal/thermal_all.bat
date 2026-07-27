@@ -22,6 +22,7 @@ set "param2=%3"
 if "%1"=="" goto show_help
 if /i "%1"=="-h" goto show_help
 if /i "%1"=="help" goto show_help
+if /i "%1"=="info" goto thermal_infos
 if /i "%1"=="tz" goto thermal_zones
 if /i "%1"=="hm" goto hwmon
 if /i "%1"=="cd" goto cooling_devices
@@ -38,12 +39,13 @@ echo.
 echo Usage: therm [command]
 echo.
 echo Available commands:
-echo   tz [en/dis]          - Thermal zones info/enable/disable.
-echo   hm                   - Show hardware monitor info.
-echo   cd                   - Show cooling devices info.
+echo   tz [en/dis]          - 查看当前所有温度传感器信息 (默认动作).
+echo   hm                   - 查看当前所有硬件监控器的状态信息 (默认动作).
+echo   cd                   - 查看当前所有冷却设备的状态信息 (默认动作).
 echo   wt                   - whatstemp相关的操作
 echo   install              - 安装温升辅助工具apk
 echo   config [push/pull]   - Thermal config operations.
+echo   info [tz/cd/hm]      - 查看温升tz/cd/hm等相关信息
 echo   -h                   - Show help (alias: help).
 echo.
 echo Examples:
@@ -51,20 +53,30 @@ echo   therm tz
 echo.
 exit /b
 
+:thermal_infos
+call "%SCRIPT_DIR%thermal_infos.bat" %*
+exit /b
+
 :thermal_zones
-call "%SCRIPT_DIR%thermal_thermal_zones.bat" %~2
+if /i "%param1%"=="" set "ACTION=info"
+if /i "%param1%"=="dis" set "ACTION=disable"
+if /i "%param1%"=="en" set "ACTION=enable"
+set "SH_SCRIPT=%SCRIPT_DIR%thermal_thermal_zones.sh"
+adb shell "sh -s %ACTION%" < "%SH_SCRIPT%"
+exit /b
+
+:cooling_devices
+set "SH_SCRIPT=%SCRIPT_DIR%thermal_cooling_devices.sh"
+adb shell "sh -s" < "%SH_SCRIPT%"
+exit /b
+
+:hwmon
+set "SH_SCRIPT=%SCRIPT_DIR%thermal_hwmon.sh"
+adb shell "sh -s"  < "%SH_SCRIPT%"
 exit /b
 
 :thermal_config
 call "%SCRIPT_DIR%thermal_config.bat" %*
-exit /b
-
-:cooling_devices
-call "%SCRIPT_DIR%thermal_cooling_devices.bat"
-exit /b
-
-:hwmon
-call "%SCRIPT_DIR%thermal_hwmon.bat"
 exit /b
 
 :install_apk

@@ -137,12 +137,12 @@ if "!thermalHalOwner!"=="" (
     exit /b
 
 :config_decrypt
-    echo SCRIPT_DIR=%SCRIPT_DIR%
+    set MTK_THERMAL_DECRYPT=%SCRIPT_DIR%thermal_decrypt_mtk.bat
     if "!thermalHalOwner!"=="mediatek" (
-        if exist "%SCRIPT_DIR%..\power\power_mtk_thermal_decrypt.bat" (
-            call "%SCRIPT_DIR%..\power\power_mtk_thermal_decrypt.bat"
+        if exist "%MTK_THERMAL_DECRYPT%" (
+            call "%MTK_THERMAL_DECRYPT%"
         ) else (
-            echo [错误]: 未找到解密脚本 "%SCRIPT_DIR%..\power\power_mtk_thermal_decrypt.bat"
+            echo [错误]: 未找到解密脚本 "%MTK_THERMAL_DECRYPT%"
             exit /b 1
         )
     )

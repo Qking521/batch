@@ -1,11 +1,6 @@
 @echo off
-:: ============================================================
-:: Author: Antigravity Pair Program
-:: Date: 2026-07-20
-:: Description: Optimized script for power_wallpaper.bat
-:: ============================================================
-setlocal enabledelayedexpansion
 chcp 65001 >nul
+setlocal enabledelayedexpansion
 
 set "color=%1"
 if "%~2"=="" (

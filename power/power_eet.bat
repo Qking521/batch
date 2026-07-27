@@ -5,12 +5,7 @@ set "cmd=%~1"
 set "param1=%~2"
 set "param2=%~3"
 
-if "%param1%"=="restore" goto :eet_restore
-
-if "%param1%"=="" goto :usage
-if "%param2%"=="" goto :usage
 if "%cmd%"=="eet" goto :eet_test
-
 
 echo Unknown command: %1
 goto usage
@@ -28,6 +23,10 @@ echo.
 exit /b 1
 
 :eet_test
+
+    if "%param1%"=="restore" goto :eet_restore
+    if "%param1%"=="" goto :usage
+    if "%param2%"=="" goto :usage
 
     call :env_check
     if %ERRORLEVEL% neq 0 (
@@ -54,7 +53,7 @@ exit /b 1
     echo.
 
     rem 将本地 shell 脚本通过 stdin 传给设备端 sh 执行，避免额外 push 文件
-    adb shell "sh -s %POLICY% %FREQ%" %DEFAULT_GOVERNOR% < "%SH_SCRIPT%"
+    adb shell "sh -s %POLICY% %FREQ% %DEFAULT_GOVERNOR%" < "%SH_SCRIPT%"
     set "RET=%ERRORLEVEL%"
 
     if "%RET%"=="0" (
@@ -84,8 +83,7 @@ exit /b 1
 :eet_restore
     set "SCRIPT_DIR=%~dp0"
     set "SH_SCRIPT=%SCRIPT_DIR%power_eet.sh"
-    echo SH_SCRIPT=%SH_SCRIPT%
-    adb shell "sh -s restore < "%SH_SCRIPT%"
+    adb shell "sh -s restore" < "%SH_SCRIPT%"
     exit /b
 
 

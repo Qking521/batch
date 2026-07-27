@@ -19,23 +19,17 @@ if "%1"=="" goto show_help
 if /i "%1"=="-h" goto show_help
 if /i "%1"=="help" goto show_help
 if /i "%1"=="standby" goto standby
-if /i "%1"=="tz" goto thermal_zones
-if /i "%1"=="hm" goto hwmon
 if /i "%1"=="ps" goto power_supply
-if /i "%1"=="cd" goto cooling_devices
 if /i "%1"=="wallpaper" goto wallpaper
 if /i "%1"=="profile" goto power_profile
 if /i "%1"=="reset" goto reset
-if /i "%1"=="decrypt" goto decrypt
 if /i "%1"=="install" goto install_apk
-if /i "%1"=="wt" goto whatsTemp
 if /i "%1"=="key" goto keyword
 if /i "%1"=="wakelock" goto wakelock
 if /i "%1"=="rr" goto refresh_rate
 if /i "%1"=="cpu" goto cpu_info
 if /i "%1"=="regu" goto regulator
 if /i "%1"=="info" goto power_info
-if /i "%1"=="config" goto thermal_config
 if /i "%1"=="eet" goto eet_test
 
 echo Unknown command: %1
@@ -72,31 +66,18 @@ echo.
 exit /b
 
 :standby
-call "%SCRIPT_DIR%power_standby.bat"
+set "SH_SCRIPT=%SCRIPT_DIR%power_standby.sh"
+adb shell "sh -s %cmd%"  < "%SH_SCRIPT%"
 exit /b
 
-:thermal_zones
-call "%SCRIPT_DIR%..\thermal\thermal_thermal_zones.bat" %~2
-exit /b
-
-:thermal_config
-call "%SCRIPT_DIR%..\thermal\thermal_config.bat" %*
-exit /b
 
 :power_info
 call "%SCRIPT_DIR%power_info.bat"
 exit /b
 
-:cooling_devices
-call "%SCRIPT_DIR%..\thermal\thermal_cooling_devices.bat"
-exit /b
-
-:hwmon
-call "%SCRIPT_DIR%..\thermal\thermal_hwmon.bat"
-exit /b
-
 :power_supply
-call "%SCRIPT_DIR%power_supply.bat"
+set "SH_SCRIPT=%SCRIPT_DIR%power_supply.sh"
+adb shell "sh -s"  < "%SH_SCRIPT%"
 exit /b
 
 :wallpaper
@@ -117,10 +98,6 @@ exit /b
 
 :install_apk
 call "%SCRIPT_DIR%power_installs.bat" %2
-exit /b
-
-:whatsTemp
-call "%SCRIPT_DIR%..\thermal\thermal_whats_temp.bat" %~2
 exit /b
 
 :wakelock
@@ -159,7 +136,8 @@ call "%SCRIPT_DIR%power_eet.bat" %*
 exit /b
 
 :regulator
-call "%SCRIPT_DIR%power_regulator_info.bat"
+set "SH_SCRIPT=%SCRIPT_DIR%power_regulator.sh"
+adb shell "sh -s"  < "%SH_SCRIPT%"
 exit /b
 
 
