@@ -107,12 +107,8 @@ adb shell dumpsys batterystats | grep -A 10 "Wake lock"
 exit /b
 
 :refresh_rate
-if "%2"=="" (
-	echo please input on or off
-	exit /b
-)
-if %2==on adb shell service call SurfaceFlinger 1034 i32 1 > nul
-if %2==off adb shell service call SurfaceFlinger 1034 i32 0 > nul
+set "SH_SCRIPT=%SCRIPT_DIR%power_refresh_rate.sh" %*
+adb shell "sh -s" %*  < "%SH_SCRIPT%"
 exit /b
 
 :cpu_info

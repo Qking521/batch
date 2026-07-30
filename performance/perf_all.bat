@@ -1,8 +1,7 @@
 @echo off
-:: ============================================================
-:: Author: Antigravity Pair Program
-:: Date: 2026-07-20
-:: Description: Optimized script for perf_all.bat
+:: =========================README===================================
+:: perfetto离线工具下载地址：https://github.com/google/perfetto/releases
+:: google_perfetto_tools当前版本：v52
 :: ============================================================
 chcp 65001 >nul
 setlocal enabledelayedexpansion
@@ -14,6 +13,10 @@ if %ERRORLEVEL% neq 0 (
     echo [错误]: 基础检测失败，退出操作。
     exit /b %ERRORLEVEL%
 )
+:: 创建performance的OUT目录
+if not exist %OUT_DIR% (
+	mkdir %OUT_DIR%
+)
 
 set "cmd=%1"
 set "param1=%2"
@@ -23,12 +26,10 @@ if /i "%cmd%"=="" goto show_help
 if /i "%cmd%"=="-h" goto show_help
 if /i "%cmd%"=="help" goto show_help
 if /i "%cmd%"=="sf" goto surface_flinger
-if /i "%cmd%"=="cmd" goto command
-if /i "%cmd%"=="cfg" goto config
-if /i "%cmd%"=="online" goto online
-if /i "%cmd%"=="origin" goto origin
+if /i "%cmd%"=="trace" goto trace
+if /i "%cmd%"=="cpu" goto cpu
+if /i "%cmd%"=="gpu" goto trace
 if /i "%cmd%"=="fire" goto fire
-if /i "%cmd%"=="reset" goto reset
 if /i "%cmd%"=="ds" goto dhrystone
 if /i "%cmd%"=="install" goto install_apk
 
@@ -61,16 +62,12 @@ exit /b
 call %SCRIPT_DIR%surface_flinger.bat %2
 exit /b
 
-:command
-call %SCRIPT_DIR%perf_cmd.bat %2
+:trace
+call %SCRIPT_DIR%perf_traces.bat %*
 exit /b
 
-:config
-call %SCRIPT_DIR%perf_config.bat %2
-exit /b
-
-:online
-call %SCRIPT_DIR%perf_online.bat %2
+:cpu
+call %SCRIPT_DIR%perf_cpu.bat %*
 exit /b
 
 
@@ -83,40 +80,10 @@ exit /b
 call %SCRIPT_DIR%perf_simpleperf.bat %2
 exit /b
 
-
-:reset
-REM 自动查找并终止 trace_processor_shell.exe 进程
-
-REM 1. 使用 tasklist 查找进程ID (PID)
-REM /nh (无列头) /fi "imagename eq..." (按名称过滤)
-REM tokens=2 提取 PID (第二列)
-for /f "tokens=2" %%i in ('tasklist /nh /fi "imagename eq trace_processor_shell.exe"') do (
-    taskkill /F /PID %%i
-)
-exit /b
-
 :install_apk
 call %SCRIPT_DIR%perf_installs.bat %2
-exit /b
-
-:cpu_info
-adb shell ls /sys/devices/system/cpu/cpufreq/
-for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/cpufreq/') do (
-	echo %%a频率:
-	adb shell cat /sys/devices/system/cpu/cpufreq/%%a/scaling_available_frequencies
-)
-for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/') do (
-	echo %%a | findstr /r "cpu[0-9]" > nul
-	if not errorlevel == 1 (
-		for /f "delims=" %%b in ('adb shell cat /sys/devices/system/cpu/%%a/online') do (
-			if "%%b"=="0" echo "cpu%%a offline"
-		)
-	)
-)
 exit /b
 
 :dhrystone
 call %SCRIPT_DIR%perf_dhrystone.bat %*
 exit /b
-
-endlocal
