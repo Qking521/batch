@@ -142,7 +142,8 @@ call %SCRIPT_DIR%android_device_info.bat
 exit /b
 
 :android_search
-call %SCRIPT_DIR%android_search.bat %2
+set "SH_SCRIPT=%SCRIPT_DIR%android_search.sh"
+adb shell "sh -s %param1%" < "%SH_SCRIPT%"
 exit /b
 
 :monkey
@@ -174,7 +175,7 @@ call %SCRIPT_DIR%android_package_toggle.bat %1 %2
 exit /b
 
 :refresh_rate
-set "SH_SCRIPT=%SCRIPT_DIR%power_refresh_rate.sh" %*
+set "SH_SCRIPT=%SCRIPT_DIR%android_refresh_rate.sh" %*
 adb shell "sh -s" %*  < "%SH_SCRIPT%"
 exit /b
 

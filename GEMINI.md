@@ -186,10 +186,8 @@ if not exist "%SH_SCRIPT%" (
 ### 常用提示词
 
 - **双层重构：**
-  > "参考 GEMINI.md 的双层控制模型，将这个脚本重构为 `.bat`（入口层）+ `.sh`（业务层）的结构。"
-
-- **逻辑克隆：**
-  > "仿照 `power_eet.bat` + `power_eet.sh` 的结构，为 [功能] 编写新脚本，同步添加相关参数。"
+  > "参考 GEMINI.md 的双层控制模型，优先将指定的bat脚本改造成同功能的shel脚本，然后由入口脚本调用，参考android_all.bat调用android_refresh_rate.sh”
+  > "针对涉及本地资源无法直接将bat直接改造成shell脚本的，将这个脚本重构为 `.bat`（入口层）+ `.sh`（业务层）的结构。参考`power_eet.bat` + `power_eet.sh` 的结构"
 
 - **新脚本生成：**
   > "参考 GEMINI.md 的规范，为 [功能] 生成脚本，要求包含帮助信息、ADB 连接检查和错误处理。"
