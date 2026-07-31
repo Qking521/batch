@@ -44,12 +44,12 @@ goto show_help
 
 :show_help
 echo Available commands:
-echo   top 	   		- show current activity
-echo   bugreport 	- pull bugreport
-echo   clear 	   	- clear all android log
-echo   dev 	   		- developer
-echo   search 	   	--search from settings and properities
-echo   monkey 	   	- run monkey
+echo   top 	   					- show current activity
+echo   bugreport 				- pull bugreport
+echo   clear 	   				- clear all android log
+echo   dev 	   					- developer
+echo   search 	   				- search from settings and properities
+echo   monkey 	   				- run monkey
 echo   -h      		- Show help (alias: help^)
 echo.
 echo Examples:
