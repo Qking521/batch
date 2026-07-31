@@ -1,0 +1,390 @@
+#!/system/bin/sh
+# ============================================================
+# Author: Antigravity Pair Program
+# Date:   2026-07-31
+# Desc:   CPU 信息查询与调控工具
+# Usage:  adb shell "sh -s <action> [param1] [param2]" < perf_cpu.sh
+#
+# Actions:
+#   info              - 查看 CPU 大小核、频点、当前频率、online 状态
+#   freq              - 查看各簇可用频率列表
+#   online            - 查看各核 online 状态
+#   set-online   <cpu_id> <0|1>  - 上下线指定核（cpu0 不可下线）
+#   fix-freq     <policy> <freq> - 定频指定 policy（单位 Hz，如 1800000）
+#   unfix-freq   <policy>        - 解除定频（恢复 schedutil/interactive）
+#   fix-freq-all <freq>          - 所有 policy 统一定频
+#   unfix-all                    - 解除所有 policy 定频
+#   boost        <0|1>           - 开关 CPU boost（平台自适应）
+#   affinity     <pid> <mask>    - 设置进程绑核（taskset 十六进制 mask）
+#   gov          <policy> <gov>  - 切换 governor（schedutil/performance/powersave）
+#   gov-all      <gov>           - 所有 policy 统一切换 governor
+#   cap          <policy> <freq> - 限制最大频率（性能限制）
+#   uncap        <policy>        - 解除最大频率限制
+#   platform                     - 检测当前平台（MTK/Qualcomm/UNISOC/Other）
+# ============================================================
+
+ACTION="$1"
+PARAM1="$2"
+PARAM2="$3"
+
+# ---- 工具函数 ----
+
+# 检测芯片平台
+detect_platform() {
+    board=$(getprop ro.product.board 2>/dev/null | tr '[:upper:]' '[:lower:]')
+    soc=$(getprop ro.board.platform 2>/dev/null | tr '[:upper:]' '[:lower:]')
+    hardware=$(getprop ro.hardware 2>/dev/null | tr '[:upper:]' '[:lower:]')
+    combined="$board $soc $hardware"
+
+    case "$combined" in
+        *mt[0-9]*|*mediatek*|*mtk*)
+            echo "MTK" ;;
+        *sm[0-9]*|*msm*|*qcom*|*snapdragon*)
+            echo "Qualcomm" ;;
+        *ums*|*sc[0-9]*|*spreadtrum*|*unisoc*)
+            echo "UNISOC" ;;
+        *)
+            echo "Other" ;;
+    esac
+}
+
+# 列出所有 cpufreq policy 目录
+list_policies() {
+    ls /sys/devices/system/cpu/cpufreq/ 2>/dev/null | grep '^policy'
+}
+
+# 读节点，失败返回 N/A
+read_node() {
+    cat "$1" 2>/dev/null || echo "N/A"
+}
+
+# 写节点，带权限提示
+write_node() {
+    node="$1"
+    val="$2"
+    if [ ! -w "$node" ]; then
+        echo "[ERROR] 无写权限: $node （请确保 adb root 已开启）"
+        return 1
+    fi
+    echo "$val" > "$node" && echo "[OK] $node = $val" || echo "[ERROR] 写入失败: $node"
+}
+
+# ---- MTK 平台特有 boost 节点 ----
+mtk_boost() {
+    val="$1"
+    node="/proc/ppm/enabled"
+    if [ -f "$node" ]; then
+        write_node "$node" "$val"
+    else
+        echo "[WARN] MTK PPM 节点不存在: $node"
+    fi
+}
+
+# ---- 高通平台特有 boost 节点 ----
+qcom_boost() {
+    val="$1"
+    # 高通 schedboost / schedutil boost
+    for node in \
+        /sys/devices/system/cpu/cpu_boost/enabled \
+        /dev/cpu_dma_latency \
+        /sys/module/msm_performance/parameters/cpu_max_freq; do
+        [ -f "$node" ] && write_node "$node" "$val" && return
+    done
+    echo "[WARN] 未找到高通 boost 节点，尝试写 schedutil boost_perf..."
+    for policy in $(list_policies); do
+        node="/sys/devices/system/cpu/cpufreq/$policy/schedutil/boost"
+        [ -f "$node" ] && write_node "$node" "$val"
+    done
+}
+
+# ---- UNISOC 平台特有 boost ----
+unisoc_boost() {
+    val="$1"
+    node="/sys/module/sprd_cpu_debug/parameters/debug_enable"
+    [ -f "$node" ] && write_node "$node" "$val" || echo "[WARN] 未找到 UNISOC boost 节点"
+}
+
+# ============================================================
+# ACTION 分发
+# ============================================================
+
+case "$ACTION" in
+
+# ---- 平台检测 ----
+platform)
+    plat=$(detect_platform)
+    board=$(getprop ro.product.board 2>/dev/null)
+    soc=$(getprop ro.board.platform 2>/dev/null)
+    echo "平台:   $plat"
+    echo "Board:  $board"
+    echo "SoC:    $soc"
+    ;;
+
+# ---- CPU 总览 ----
+info)
+    plat=$(detect_platform)
+    echo "=========================================="
+    echo " CPU 信息总览  [平台: $plat]"
+    echo "=========================================="
+    printf '%-8s %-12s %-14s %-14s %-8s\n' 'POLICY' 'ONLINE-CPUS' 'CUR_FREQ(KHz)' 'MAX_FREQ(KHz)' 'GOV'
+    echo "----------------------------------------------------------"
+    for policy in $(list_policies); do
+        pdir="/sys/devices/system/cpu/cpufreq/$policy"
+        affected=$(read_node "$pdir/affected_cpus")
+        cur=$(read_node "$pdir/scaling_cur_freq")
+        max=$(read_node "$pdir/scaling_max_freq")
+        gov=$(read_node "$pdir/scaling_governor")
+        printf '%-8s %-12s %-14s %-14s %-8s\n' "$policy" "$affected" "$cur" "$max" "$gov"
+    done
+    echo ""
+    echo "--- CPU online 状态 ---"
+    for cpu in /sys/devices/system/cpu/cpu[0-9]*; do
+        id=${cpu##*/}
+        node="$cpu/online"
+        if [ -f "$node" ]; then
+            state=$(read_node "$node")
+            [ "$state" = "1" ] && status="online" || status="offline"
+        else
+            status="online(固定)"   # cpu0 通常无 online 节点
+        fi
+        echo "  $id: $status"
+    done
+    ;;
+
+# ---- 频率列表 ----
+freq)
+    echo "=========================================="
+    echo " 各 Policy 可用频率 (Hz)"
+    echo "=========================================="
+    for policy in $(list_policies); do
+        pdir="/sys/devices/system/cpu/cpufreq/$policy"
+        affected=$(read_node "$pdir/affected_cpus")
+        echo ""
+        echo "[$policy] cpus: $affected"
+        avail=$(read_node "$pdir/scaling_available_frequencies")
+        for f in $avail; do
+            khz=$((f / 1000))
+            echo "    ${f} Hz  (${khz} MHz)"
+        done
+    done
+    ;;
+
+# ---- online 状态查看 ----
+online)
+    echo "CPU online 状态:"
+    for cpu in /sys/devices/system/cpu/cpu[0-9]*; do
+        id=${cpu##*/}
+        node="$cpu/online"
+        if [ -f "$node" ]; then
+            state=$(read_node "$node")
+            [ "$state" = "1" ] && status="[online ]" || status="[offline]"
+        else
+            status="[online ](固定)"
+        fi
+        echo "  $id $status"
+    done
+    ;;
+
+# ---- 上下线指定核 ----
+set-online)
+    cpu_id="$PARAM1"
+    val="$PARAM2"
+    if [ -z "$cpu_id" ] || [ -z "$val" ]; then
+        echo "[ERROR] 用法: set-online <cpu_id> <0|1>  例如: set-online cpu3 0"
+        exit 1
+    fi
+    node="/sys/devices/system/cpu/$cpu_id/online"
+    if [ ! -f "$node" ]; then
+        echo "[ERROR] 节点不存在: $node（cpu0 不支持下线，或 cpu_id 有误）"
+        exit 1
+    fi
+    write_node "$node" "$val"
+    ;;
+
+# ---- 定频指定 policy ----
+fix-freq)
+    policy="$PARAM1"
+    freq="$PARAM2"
+    if [ -z "$policy" ] || [ -z "$freq" ]; then
+        echo "[ERROR] 用法: fix-freq <policy> <freq_hz>  例如: fix-freq policy0 1800000"
+        exit 1
+    fi
+    pdir="/sys/devices/system/cpu/cpufreq/$policy"
+    if [ ! -d "$pdir" ]; then
+        echo "[ERROR] policy 不存在: $pdir"
+        exit 1
+    fi
+    write_node "$pdir/scaling_min_freq" "$freq"
+    write_node "$pdir/scaling_max_freq" "$freq"
+    ;;
+
+# ---- 解除定频 ----
+unfix-freq)
+    policy="$PARAM1"
+    if [ -z "$policy" ]; then
+        echo "[ERROR] 用法: unfix-freq <policy>  例如: unfix-freq policy0"
+        exit 1
+    fi
+    pdir="/sys/devices/system/cpu/cpufreq/$policy"
+    if [ ! -d "$pdir" ]; then
+        echo "[ERROR] policy 不存在: $pdir"
+        exit 1
+    fi
+    min=$(read_node "$pdir/cpuinfo_min_freq")
+    max=$(read_node "$pdir/cpuinfo_max_freq")
+    write_node "$pdir/scaling_min_freq" "$min"
+    write_node "$pdir/scaling_max_freq" "$max"
+    ;;
+
+# ---- 全部 policy 定频 ----
+fix-freq-all)
+    freq="$PARAM1"
+    if [ -z "$freq" ]; then
+        echo "[ERROR] 用法: fix-freq-all <freq_hz>  例如: fix-freq-all 1800000"
+        exit 1
+    fi
+    for policy in $(list_policies); do
+        pdir="/sys/devices/system/cpu/cpufreq/$policy"
+        write_node "$pdir/scaling_min_freq" "$freq"
+        write_node "$pdir/scaling_max_freq" "$freq"
+    done
+    ;;
+
+# ---- 解除所有定频 ----
+unfix-all)
+    for policy in $(list_policies); do
+        pdir="/sys/devices/system/cpu/cpufreq/$policy"
+        min=$(read_node "$pdir/cpuinfo_min_freq")
+        max=$(read_node "$pdir/cpuinfo_max_freq")
+        write_node "$pdir/scaling_min_freq" "$min"
+        write_node "$pdir/scaling_max_freq" "$max"
+    done
+    echo "[OK] 所有 policy 已解除定频"
+    ;;
+
+# ---- CPU boost ----
+boost)
+    val="$PARAM1"
+    if [ "$val" != "0" ] && [ "$val" != "1" ]; then
+        echo "[ERROR] 用法: boost <0|1>"
+        exit 1
+    fi
+    plat=$(detect_platform)
+    echo "平台: $plat  boost -> $val"
+    case "$plat" in
+        MTK)      mtk_boost "$val" ;;
+        Qualcomm) qcom_boost "$val" ;;
+        UNISOC)   unisoc_boost "$val" ;;
+        *)
+            # 通用 schedutil boost 尝试
+            found=0
+            for policy in $(list_policies); do
+                node="/sys/devices/system/cpu/cpufreq/$policy/schedutil/boost"
+                if [ -f "$node" ]; then
+                    write_node "$node" "$val"
+                    found=1
+                fi
+            done
+            [ "$found" = "0" ] && echo "[WARN] 未找到 boost 节点，平台可能不支持"
+            ;;
+    esac
+    ;;
+
+# ---- 绑核（taskset）----
+affinity)
+    pid="$PARAM1"
+    mask="$PARAM2"
+    if [ -z "$pid" ] || [ -z "$mask" ]; then
+        echo "[ERROR] 用法: affinity <pid> <hex_mask>"
+        echo "  例如: affinity 1234 f0   (绑到 cpu4-cpu7)"
+        echo "  mask 计算: cpu0=0x01 cpu1=0x02 cpu2=0x04 ... 叠加"
+        exit 1
+    fi
+    taskset -p "$mask" "$pid" && echo "[OK] pid $pid 已绑核 mask=0x$mask" || echo "[ERROR] taskset 失败，请检查 pid 和权限"
+    ;;
+
+# ---- 切换 governor ----
+gov)
+    policy="$PARAM1"
+    governor="$PARAM2"
+    if [ -z "$policy" ] || [ -z "$governor" ]; then
+        echo "[ERROR] 用法: gov <policy> <governor>"
+        echo "  常用 governor: schedutil performance powersave ondemand conservative"
+        exit 1
+    fi
+    pdir="/sys/devices/system/cpu/cpufreq/$policy"
+    if [ ! -d "$pdir" ]; then
+        echo "[ERROR] policy 不存在: $pdir"
+        exit 1
+    fi
+    avail=$(read_node "$pdir/scaling_available_governors")
+    echo "可用 governor: $avail"
+    write_node "$pdir/scaling_governor" "$governor"
+    ;;
+
+# ---- 全部 policy 切换 governor ----
+gov-all)
+    governor="$PARAM1"
+    if [ -z "$governor" ]; then
+        echo "[ERROR] 用法: gov-all <governor>"
+        exit 1
+    fi
+    for policy in $(list_policies); do
+        pdir="/sys/devices/system/cpu/cpufreq/$policy"
+        write_node "$pdir/scaling_governor" "$governor"
+    done
+    ;;
+
+# ---- 限制最大频率（cap）----
+cap)
+    policy="$PARAM1"
+    freq="$PARAM2"
+    if [ -z "$policy" ] || [ -z "$freq" ]; then
+        echo "[ERROR] 用法: cap <policy> <freq_hz>  例如: cap policy2 1400000"
+        exit 1
+    fi
+    pdir="/sys/devices/system/cpu/cpufreq/$policy"
+    if [ ! -d "$pdir" ]; then
+        echo "[ERROR] policy 不存在: $pdir"
+        exit 1
+    fi
+    write_node "$pdir/scaling_max_freq" "$freq"
+    ;;
+
+# ---- 解除最大频率限制 ----
+uncap)
+    policy="$PARAM1"
+    if [ -z "$policy" ]; then
+        echo "[ERROR] 用法: uncap <policy>"
+        exit 1
+    fi
+    pdir="/sys/devices/system/cpu/cpufreq/$policy"
+    max=$(read_node "$pdir/cpuinfo_max_freq")
+    write_node "$pdir/scaling_max_freq" "$max"
+    ;;
+
+# ---- 未知命令 ----
+*)
+    echo "[ERROR] 未知命令: $ACTION"
+    echo ""
+    echo "可用命令:"
+    echo "  info                          - CPU 总览（大小核、频率、governor）"
+    echo "  freq                          - 各 policy 可用频率列表"
+    echo "  online                        - 各核 online 状态"
+    echo "  platform                      - 检测芯片平台"
+    echo "  set-online  <cpu_id> <0|1>    - 上下线指定核"
+    echo "  fix-freq    <policy> <hz>     - 定频指定 policy"
+    echo "  unfix-freq  <policy>          - 解除定频"
+    echo "  fix-freq-all <hz>             - 所有 policy 定频"
+    echo "  unfix-all                     - 解除所有定频"
+    echo "  boost       <0|1>             - CPU boost 开关（平台自适应）"
+    echo "  affinity    <pid> <mask>      - 绑核（taskset hex mask）"
+    echo "  gov         <policy> <gov>    - 切换 governor"
+    echo "  gov-all     <gov>             - 所有 policy 切换 governor"
+    echo "  cap         <policy> <hz>     - 限制最大频率"
+    echo "  uncap       <policy>          - 解除最大频率限制"
+    exit 1
+    ;;
+esac
+
+exit 0
