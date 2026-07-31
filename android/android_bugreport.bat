@@ -1,9 +1,4 @@
 @echo off
-:: ============================================================
-:: Author: Antigravity Pair Program
-:: Date: 2026-07-20
-:: Description: Optimized script for android_bugreport.bat
-:: ============================================================
 chcp 65001 >nul
 setlocal
 :: === 1. 获取额外参数 ===

@@ -14,6 +14,8 @@ if %ERRORLEVEL% neq 0 (
     echo [错误]: 基础检测失败，退出操作。
     exit /b %ERRORLEVEL%
 )
+:: 创建Android的out目录,子目录不用创建OUT_DIR，除非再细化一层目录
+if not exist %OUT_DIR% mkdir %OUT_DIR%
 
 set "cmd=%1"
 set "param1=%2"
@@ -23,8 +25,8 @@ if "%1"=="" goto show_help
 if /i "%1"=="-h" goto show_help
 if /i "%1"=="help" goto show_help
 if /i "%1"=="top" goto current_activity
-if /i "%1"=="shot" goto screen_shot
-if /i "%1"=="record" goto screen_record
+if /i "%1"=="ss" goto screen_shot
+if /i "%1"=="sr" goto screen_record
 if /i "%1"=="kill" goto kill_process
 if /i "%1"=="bugreport" goto bugreport
 if /i "%1"=="clear" goto clear
@@ -80,22 +82,36 @@ exit /b
 :screen_shot
 set "shot_file=screenshot_%format_time%.png"
 adb shell screencap -p /sdcard/%shot_file%
-if not exist %OUT_DIR% mkdir %OUT_DIR%
 adb pull sdcard/%shot_file% %OUT_DIR%
 adb shell "rm -rf /sdcard/%shot_file%"
 start %OUT_DIR%\%shot_file%
 exit /b
 
 :screen_record
-set "out_dir=%userprofile%\batScript\OUT\android"
-if not exist %out_dir% mkdir %out_dir%
 set "record_file=record_%format_time%.mp4"
-echo record_file=%record_file%
-adb shell screenrecord  --bugreport /sdcard/%record_file%
-adb pull /sdcard/%record_file% %out_dir%
+echo record_file= %OUT_DIR%\%record_file%
+echo 原始命令：adb shell screenrecord  --bugreport /sdcard/%record_file%
+::adb shell screenrecord  --bugreport /sdcard/%record_file%"
+for /f "tokens=1" %%p in ('adb shell pidof screenrecord') do adb shell kill -INT %%p
+echo 正在开始录屏，按任意键停止
+start "adb_rec" /min cmd /c "adb shell screenrecord  --bugreport /sdcard/%record_file%"
+
+timeout /t 1 /nobreak >nul
+for /f "tokens=1" %%p in ('adb shell pidof screenrecord') do set PID=%%p
+if "%PID%"=="" (
+    echo 【错误】录屏启动失败，请检查设备连接
+    exit /b 1
+)
+pause >nul
+
+echo 正在停止录屏
+adb shell kill -INT %PID%
+timeout /t 2 /nobreak >nul
+taskkill /f /fi "WINDOWTITLE eq adb_rec*" >nul 2>&1
+echo 正在拉取录屏
+adb pull /sdcard/%record_file% %OUT_DIR%
 adb shell rm /sdcard/%record_file%
-echo 111
-start %out_dir%\%record_file%
+start %OUT_DIR%\%record_file%
 exit /b
 
 :kill_process
