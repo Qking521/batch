@@ -36,6 +36,7 @@ if /i "%1"=="google" goto google
 if /i "%1"=="enable" goto package_toggle
 if /i "%1"=="disable" goto package_toggle
 if /i "%1"=="dump" goto dump
+if /i "%1"=="rr" goto refresh_rate
 if /i "%1"=="adbd" goto adb_helper
 
 echo Unknown command: %1
@@ -50,6 +51,7 @@ echo   clear 	   				- clear all android log
 echo   dev 	   					- developer
 echo   search 	   				- search from settings and properities
 echo   monkey 	   				- run monkey
+echo   rr [on/off]          - Set refresh rate (SurfaceFlinger).
 echo   -h      		- Show help (alias: help^)
 echo.
 echo Examples:
@@ -76,13 +78,12 @@ echo "系统log清理完成"
 exit /b
 
 :screen_shot
-set "out_dir=%userprofile%\batScript\OUT\android"
-if not exist %out_dir% mkdir %out_dir%
 set "shot_file=screenshot_%format_time%.png"
 adb shell screencap -p /sdcard/%shot_file%
-adb pull sdcard/%shot_file% %out_dir%
+if not exist %OUT_DIR% mkdir %OUT_DIR%
+adb pull sdcard/%shot_file% %OUT_DIR%
 adb shell "rm -rf /sdcard/%shot_file%"
-start %out_dir%\%shot_file%
+start %OUT_DIR%\%shot_file%
 exit /b
 
 :screen_record
@@ -154,6 +155,11 @@ exit /b
 
 :package_toggle
 call %SCRIPT_DIR%android_package_toggle.bat %1 %2
+exit /b
+
+:refresh_rate
+set "SH_SCRIPT=%SCRIPT_DIR%power_refresh_rate.sh" %*
+adb shell "sh -s" %*  < "%SH_SCRIPT%"
 exit /b
 
 :dump

@@ -26,7 +26,6 @@ if /i "%1"=="reset" goto reset
 if /i "%1"=="install" goto install_apk
 if /i "%1"=="key" goto keyword
 if /i "%1"=="wakelock" goto wakelock
-if /i "%1"=="rr" goto refresh_rate
 if /i "%1"=="cpu" goto cpu_info
 if /i "%1"=="regu" goto regulator
 if /i "%1"=="info" goto power_info
@@ -53,7 +52,6 @@ echo   install [name]       - Install power tools (wt, wmp).
 echo   wt [cmd]             - WhatsTemp control tools.
 echo   key                  - List common power log keywords.
 echo   wakelock             - Show system wake lock status.
-echo   rr [on/off]          - Set refresh rate (SurfaceFlinger).
 echo   cpu                  - Show CPU frequency and online status.
 echo   regu                 - Show regulator information.
 echo   info                 - Display device information related to power consumption
@@ -104,11 +102,6 @@ exit /b
 adb shell cat /sys/power/wake_lock
 adb shell dumpsys power | grep -A 20 "Wake Locks"
 adb shell dumpsys batterystats | grep -A 10 "Wake lock"
-exit /b
-
-:refresh_rate
-set "SH_SCRIPT=%SCRIPT_DIR%power_refresh_rate.sh" %*
-adb shell "sh -s" %*  < "%SH_SCRIPT%"
 exit /b
 
 :cpu_info
