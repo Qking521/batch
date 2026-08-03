@@ -21,6 +21,7 @@ if not exist %OUT_DIR% (
 set "cmd=%1"
 set "param1=%2"
 set "param2=%3"
+set "param3=%"
 
 if /i "%cmd%"=="" goto :usage
 if /i "%cmd%"=="-h" goto :usage
@@ -28,7 +29,7 @@ if /i "%cmd%"=="help" goto :usage
 if /i "%cmd%"=="sf" goto surface_flinger
 if /i "%cmd%"=="trace" goto trace
 if /i "%cmd%"=="cpu" goto cpu
-if /i "%cmd%"=="gpu" goto trace
+if /i "%cmd%"=="gpu" goto gpu
 if /i "%cmd%"=="flame" goto flame
 if /i "%cmd%"=="ds" goto dhrystone
 if /i "%cmd%"=="install" goto install_apk
@@ -42,14 +43,14 @@ echo.
 echo 用法: perf ^<命令^> [参数]
 echo.
 echo 命令:
-echo   sf                    - SurfaceFlinger 性能信息
+echo   sf                               - SurfaceFlinger 性能信息
 echo   trace [cmd/online/cfg] [时长(s)] - Perfetto 性能抓取
-echo   cpu [info/freq/online/fix-freq/boost/affinity/...] - CPU 调控
-echo   gpu                   - GPU 性能抓取 (等同 trace)
-echo   ds                    - Dhrystone 跑分测试
-echo   flame                  - 火焰图抓取 (simpleperf)
-echo   install               - 安装性能类 apk 工具
-echo   help / -h             - 显示此帮助信息
+echo   cpu [info/freq/online/...]       - CPU 调控
+echo   gpu                              - GPU 性能抓取 (等同 trace)
+echo   ds                               - Dhrystone 操作
+echo   flame                            - 火焰图抓取 (simpleperf)
+echo   install                          - 安装性能类 apk 工具
+echo   help / -h                        - 显示此帮助信息
 echo.
 echo 示例:
 echo   perf trace cmd 5
@@ -72,7 +73,16 @@ if not exist "%SH_SCRIPT%" (
     echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
     exit /b 1
 )
-adb shell "sh -s %param1% %param2% %3" < "%SH_SCRIPT%"
+adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
+exit /b
+
+:gpu
+set "SH_SCRIPT=%SCRIPT_DIR%perf_gpu.sh"
+if not exist "%SH_SCRIPT%" (
+    echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
+    exit /b 1
+)
+adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
 exit /b
 
 
