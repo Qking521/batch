@@ -29,7 +29,7 @@ if /i "%cmd%"=="sf" goto surface_flinger
 if /i "%cmd%"=="trace" goto trace
 if /i "%cmd%"=="cpu" goto cpu
 if /i "%cmd%"=="gpu" goto trace
-if /i "%cmd%"=="fire" goto fire
+if /i "%cmd%"=="flame" goto flame
 if /i "%cmd%"=="ds" goto dhrystone
 if /i "%cmd%"=="install" goto install_apk
 
@@ -47,7 +47,7 @@ echo   trace [cmd/online/cfg] [时长(s)] - Perfetto 性能抓取
 echo   cpu [info/freq/online/fix-freq/boost/affinity/...] - CPU 调控
 echo   gpu                   - GPU 性能抓取 (等同 trace)
 echo   ds                    - Dhrystone 跑分测试
-echo   fire                  - 火焰图抓取 (simpleperf)
+echo   flame                  - 火焰图抓取 (simpleperf)
 echo   install               - 安装性能类 apk 工具
 echo   help / -h             - 显示此帮助信息
 echo.
@@ -81,7 +81,7 @@ rem "" 是窗口标题
 start "" %USERPROFILE%\"batScript\performance\perfettoCaptureTools_original"
 exit /b
 
-:fire
+:flame
 call %SCRIPT_DIR%perf_simpleperf.bat %2
 exit /b
 
