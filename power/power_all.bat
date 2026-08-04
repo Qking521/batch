@@ -14,24 +14,29 @@ if %ERRORLEVEL% neq 0 (
     echo [错误]: 基础检测失败，退出操作。
     exit /b %ERRORLEVEL%
 )
+if not exist %OUT_DIR% mkdir %OUT_DIR%
 
-if "%1"=="" goto show_help
-if /i "%1"=="-h" goto show_help
-if /i "%1"=="help" goto show_help
-if /i "%1"=="standby" goto standby
-if /i "%1"=="ps" goto power_supply
-if /i "%1"=="wallpaper" goto wallpaper
-if /i "%1"=="profile" goto power_profile
-if /i "%1"=="reset" goto reset
-if /i "%1"=="install" goto install_apk
-if /i "%1"=="key" goto keyword
-if /i "%1"=="wakelock" goto wakelock
-if /i "%1"=="cpu" goto cpu_info
-if /i "%1"=="regu" goto regulator
-if /i "%1"=="info" goto power_info
-if /i "%1"=="eet" goto eet_test
+set "cmd=%1"
+set "param1=%2"
+set "param2=%3"
 
-echo Unknown command: %1
+if "%cmd%"=="" goto show_help
+if /i "%cmd%"=="-h" goto show_help
+if /i "%cmd%"=="help" goto show_help
+if /i "%cmd%"=="standby" goto standby
+if /i "%cmd%"=="ps" goto power_supply
+if /i "%cmd%"=="wallpaper" goto wallpaper
+if /i "%cmd%"=="profile" goto power_profile
+if /i "%cmd%"=="reset" goto reset
+if /i "%cmd%"=="install" goto install_apk
+if /i "%cmd%"=="key" goto keyword
+if /i "%cmd%"=="wakelock" goto wakelock
+if /i "%cmd%"=="regu" goto regulator
+if /i "%cmd%"=="info" goto power_info
+if /i "%cmd%"=="eet" goto eet_test
+if /i "%cmd%"=="spm" goto spm
+
+echo Unknown command: %cmd%
 goto show_help
 exit /b
 
@@ -104,24 +109,23 @@ adb shell dumpsys power | grep -A 20 "Wake Locks"
 adb shell dumpsys batterystats | grep -A 10 "Wake lock"
 exit /b
 
-:cpu_info
-adb shell ls /sys/devices/system/cpu/cpufreq/
-for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/cpufreq/') do (
-	echo %%a频率:
-	adb shell cat /sys/devices/system/cpu/cpufreq/%%a/scaling_available_frequencies
-)
-for /f "delims=" %%a in ('adb shell ls /sys/devices/system/cpu/') do (
-	echo %%a | findstr /r "cpu[0-9]" > nul
-	if not errorlevel == 1 (
-		for /f "delims=" %%b in ('adb shell cat /sys/devices/system/cpu/%%a/online') do (
-			if "%%b"=="0" echo "cpu%%a offline"
-		)
-	)
-)
-exit /b
-
 :eet_test
 call "%SCRIPT_DIR%power_eet.bat" %*
+exit /b
+
+:spm
+for /f "delims= " %%a in ('adb shell getprop ro.product.board') do set model=%%a
+set SPM_CONFIG=%SCRIPT_DIR%\power_spm_config\%model%_spm_config.xlsx
+if not exist %SPM_CONFIG% (
+    echo %SPM_CONFIG%文件不存在，请确认
+    exit /b
+)
+echo param1=%param1%
+if "%param1%"=="" (
+    echo 数据文件不存在，请确认
+    exit /b
+)
+python "%SCRIPT_DIR%power_spm.py" %SPM_CONFIG% %param1%
 exit /b
 
 :regulator
