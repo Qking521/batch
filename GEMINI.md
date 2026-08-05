@@ -1,10 +1,10 @@
 # 项目背景：Android 功耗、温升与性能调试工具
 
 ## 概述
-此仓库包含一套 Windows 批处理脚本，旨在自动化收集、提取和分析 Android 系统的功耗电流、温升状态、硬件监控数据以及性能追踪（Perfetto）。
+此仓库包含一套 Windows 批处理脚本，旨在自动化收集、提取和分析 Android 系统的功耗电流、温升状态、性能追踪（Perfetto）。
 
 ## 技术栈与依赖
-- **语言：** Windows 批处理 (.bat) + Android/Linux Shell (.sh)
+- **语言：** Windows 批处理 (.bat) + Android/Linux Shell (.sh) + Python
 - **主要工具：**
   - `adb` (Android Debug Bridge)
   - `perfetto` (追踪收集工具)
@@ -16,8 +16,7 @@
 - `thermal_all.bat`: 热管理指令主入口
 - `perf_all.bat`: 性能管理指令主入口
 - `android_all.bat`: Android 通用命令指令主入口
-- `batch_spec.md`: Windows 批处理编写规范指南
-
+- `windows_all.bat`: Windows 自动化脚本入口
 ---
 
 ## 核心架构范式：双层控制模型
@@ -68,7 +67,59 @@ esac
 | `thermal/thermal_infos.bat` + `thermal_infos.sh` | 多命令分发范例（tz/cd/hw） |
 | `thermal/thermal_cooling_devices.sh` | 轻量只读查询的 shell 范例 |
 
+### 跨平台 Shebang 兼容规范
+
+- **规范**：Shell 脚本文件首行统一声明为 `#!/system/bin/sh`（Android 默认 Shell 解释器路径）。
+- **跨平台兼容**：在双层模型中，由于我们主要通过 PC 端的 `adb shell "sh -s ... " < script.sh` 管道方式注入执行，该命令直接由 Android 端本机的 `sh` 解析 stdin，不依赖 Shebang 解释器。因此，Windows 批处理入口调用此模式不受 Shebang 限制。
+- **Linux 环境直接执行**：如果在纯 Linux 宿主机下以 `./script.sh` 直接运行，可能会因找不到 `/system/bin/sh` 路径而报错。这属于正常环境差异，在 Linux 下测试时可以通过 `sh script.sh` 手动运行，或在 Linux 系统中建立软链接 `ln -s /bin/sh /system/bin/sh` 来保障完美兼容。代码中应统一保持 `#!/system/bin/sh`。
+
+### Root 权限检查与节点访问安全规范 (防闪退/报错)
+
+- **Root 权限检查**：功耗与性能调试脚本经常读写 `/sys` 或 `/proc` 节点，必须在 Shell 业务层前置进行 root 检查，防止无权限导致逻辑失效：
+  ```sh
+  if [ "$(id -u)" -ne 0 ]; then
+      echo "[ERROR] 此操作需要 root 权限，请在执行前运行 'adb root'" >&2
+      exit 1
+  fi
+  ```
+- **防御性节点写入**：严禁在 Shell 脚本中直接使用裸 `echo val > /sys/...` 的写入形式。为了防范节点不存在或权限受限时脚本崩溃，必须使用统一的封装函数进行写入，对存在性及写入状态进行防御检查：
+  ```sh
+  # write_sysfs <path> <value> <description>
+  write_sysfs() {
+      local path="$1"
+      local value="$2"
+      local desc="$3"
+      if [ ! -e "$path" ]; then
+          echo "[WARN] 节点不存在，跳过写入: $path ($desc)" >&2
+          return 1
+      fi
+      if ! echo "$value" > "$path" 2>/dev/null; then
+          echo "[ERROR] 写入节点失败: $path <- $value ($desc)" >&2
+          return 1
+      fi
+      echo "[INFO] $desc 成功 -> $value ($path)"
+      return 0
+  }
+  ```
+
+### 错误状态回传与拦截机制 (Exit Codes)
+
+- **Shell 退出码规范**：Shell 脚本在检测到严重错误（如参数校验失败、关键节点不可写入）时必须显式以 `exit 1`（或其他非 0 状态码）退出；在执行成功时必须以 `exit 0` 退出。
+- **ADB 退出码继承**：在使用 `adb shell "sh -s" < script.sh` 执行脚本时，若 adb 连接正常，`adb shell` 命令本身的退出状态码将完美继承自 Shell 脚本的 `exit` 退出码。
+- **Bat 入口层阻断**：Bat 入口脚本调用 `adb shell` 后，必须检查 `!ERRORLEVEL!`。如果退出码非 0，必须立即拦截后续操作，避免继续执行不安全的命令或尝试拉取不存在的日志：
+  ```bat
+  adb shell "sh -s %ACTION%" < "%SH_SCRIPT%"
+  if !ERRORLEVEL! neq 0 (
+      echo [ERROR] 脚本执行失败，退出码: !ERRORLEVEL!
+      exit /b !ERRORLEVEL!
+  )
+  ```
+
 ---
+
+> **最终目标：** 可以直接放到linux环境下完美执行
+
+
 
 ## Windows 批处理编码规范
 
@@ -173,6 +224,40 @@ if not exist "%SH_SCRIPT%" (
 )
 ```
 
+### 全局公共变量规范
+
+为了避免在各子脚本中重复初始化基础变量或硬编码路径，项目通过 `init.bat` 统一提取并对外导出以下全局环境变量：
+- `FORMAT_TIME`：格式为 `MMDD-HHMM` 的当前时间，用于日志和 Trace 文件的命名。
+- `SCRIPT_DIR`：当前执行脚本所在的目录绝对路径（以反斜杠 `\` 结尾）。
+- `OUT_DIR`：由当前脚本所在子目录名自动生成的输出日志存放路径（例如 `OUT\android\`）。
+- `ADB_CHECK_BAT`：全局 adb 检测脚本 `adb_check.bat` 的绝对路径。
+
+**注意**：
+- **严禁**拼写为历史遗留错误 `ABD_CHECK_BAT`，在所有子脚本中引用此变量时必须严格拼写为 `%ADB_CHECK_BAT%` 或 `"%ADB_CHECK_BAT%"`。
+- 子脚本必须在首部通过 `call %INIT_BAT% %~dp0` 或类似方式正确初始化环境变量上下文。
+
+### 参数安全与防御
+
+- 在批处理中解析用户传入的参数 `%1`, `%2` 时，极易因为参数为空或带空格导致脚本解析崩溃。
+- 赋值时应先使用 `%~1` 剥离可能存在的双引号，再在 `set` 语句中用双引号包裹进行赋值，例如：
+  ```bat
+  set "cmd=%~1"
+  set "param=%~2"
+  ```
+- 进行 `if` 逻辑比较时，变量两端必须用双引号包裹，防御变量为空的场景：
+  ```bat
+  if "!cmd!"=="" goto :usage
+  if /i "!cmd!"=="help" goto :usage
+  ```
+
+### 统一的日志回显前缀规范
+
+无论是 Bat 脚本还是 Shell 脚本，在回显时都应遵循统一的日志前缀规范，使控制台回显清晰，易于过滤：
+- `[INFO]`：常规提示信息或当前正在执行的步骤。
+- `[WARN]`：节点不存在、配置不完美但无需阻断脚本的警告提示。
+- `[ERROR]`：导致脚本执行中断、返回非 0 值或设备连接失效的错误提示。
+- `[OK]`：某个大型任务或初始化步骤成功完成。
+
 ### 其他规范
 
 - **避免使用 PowerShell**：除非明确要求，坚持使用 CMD 兼容的批处理逻辑
@@ -209,5 +294,13 @@ if not exist "%SH_SCRIPT%" (
 ### 2. 自提取脚本首行出现冒号 `:` 污染
 - **原因**：`more +n` 偏移量计算不准，包含了标签行
 - **解决方案**：确保 `SKIP` 变量准确指向标签所在行号，`more +%SKIP%` 从下一行（Shebang 行）开始读取
+
+### 3. Git 换行符 (CRLF) 自动转换防范
+- **原因**：Windows 系统的 Git 客户端在克隆或检出代码时，默认可能会把 Linux 换行符（LF）自动转换为 Windows 换行符（CRLF），从而破坏 `.sh` 脚本在 Linux/Android 环境下的运行。
+- **预防解法**：项目根目录已配置 `.gitattributes` 强制规定 `*.sh text eol=lf`。
+- **修复命令**：如果本地个别文件已经被污染或编辑时意外引入了 CRLF，可以通过以下命令让 Git 重新扫描并强制规范化所有文件：
+  ```bash
+  git add --renormalize .
+  ```
 
 ---

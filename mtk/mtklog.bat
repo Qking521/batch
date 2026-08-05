@@ -9,7 +9,7 @@ setlocal enabledelayedexpansion
 
 call %INIT_BAT% %~dp0
 :: 调用基础脚本检查ADB和设备（使用完整路径）
-call "%ABD_CHECK_BAT%"
+call "%ADB_CHECK_BAT%"
 if %ERRORLEVEL% neq 0 (
     echo [错误]: 基础检测失败，退出操作。
     exit /b %ERRORLEVEL%
