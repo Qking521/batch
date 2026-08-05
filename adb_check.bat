@@ -33,11 +33,13 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo ADB检测成功：环境正常且设备已连接。
-
 :: 检查设备是否有root权限
+::adb shell "id" 2>nul | findstr "uid=0" >nul 2>&1
 :adb_root
-adb shell "id" 2>nul | findstr "uid=0" >nul 2>&1
+adb root >nul 2>&1
 if %errorlevel% neq 0 (
-    adb root >nul 2>&1
+    echo 设备没有root权限
+    exit /b 1
 )
+
+echo ADB检测成功：设备已连接且root成功。
