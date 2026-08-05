@@ -100,32 +100,8 @@ start "" "%OUT_DIR%\%shot_file%"
 exit /b 0
 
 :screen_record
-set "record_file=record_%FORMAT_TIME%.mp4"
-echo 正在停止已有的录屏进程...
-for /f "tokens=1" %%p in ('adb shell pidof screenrecord') do adb shell kill -INT %%p
-
-echo 正在开始录屏，按任意键停止...
-start "adb_rec" /min cmd /c "adb shell screenrecord --bugreport /sdcard/%record_file%"
-
-timeout /t 1 /nobreak >nul
-set "PID="
-for /f "tokens=1" %%p in ('adb shell pidof screenrecord') do set "PID=%%p"
-if "%PID%"=="" (
-    echo [错误]: 录屏启动失败，请检查设备连接。
-    exit /b 1
-)
-pause >nul
-
-echo 正在停止录屏...
-adb shell kill -INT %PID%
-timeout /t 2 /nobreak >nul
-taskkill /f /fi "WINDOWTITLE eq adb_rec*" >nul 2>&1
-
-echo 正在拉取录屏文件...
-adb pull /sdcard/%record_file% "%OUT_DIR%"
-adb shell rm /sdcard/%record_file%
-start "" "%OUT_DIR%\%record_file%"
-exit /b 0
+call "%SCRIPT_DIR%android_screen_record.bat" %~2
+exit /b %ERRORLEVEL%
 
 :kill_process
 if "%~2"=="" (
