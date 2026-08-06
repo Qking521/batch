@@ -40,6 +40,8 @@ if /i "%cmd%"=="enable" goto package_toggle
 if /i "%cmd%"=="disable" goto package_toggle
 if /i "%cmd%"=="dump" goto dump
 if /i "%cmd%"=="rr" goto refresh_rate
+if /i "%cmd%"=="skip" goto skip_wizard
+if /i "%cmd%"=="install" goto install_apk
 if /i "%cmd%"=="adbd" goto adb_helper
 
 echo Unknown command: %cmd%
@@ -63,6 +65,8 @@ echo   monkey [pkg/kill/num]    - 运行或停止 Monkey 测试.
 echo   enable/disable [pkg]     - 启禁用指定的 Package 应用包.
 echo   dump [service] [params]  - Dump 指定系统服务状态到 OUT 目录.
 echo   rr [on/off]              - 设置/查询屏幕刷新率 (SurfaceFlinger).
+echo   skip              		- 跳过开机向导
+echo   install              		- 安装性能，温升，功耗类apk工具
 echo   adbd [restart/root...]   - ADB 工具/状态配置辅助.
 echo   -h                       - 显示帮助信息 (别名: help).
 echo.
@@ -169,6 +173,17 @@ exit /b %ERRORLEVEL%
 :refresh_rate
 set "SH_SCRIPT=%SCRIPT_DIR%android_refresh_rate.sh"
 adb shell "sh -s %param1% %param2%" < "%SH_SCRIPT%"
+exit /b 0
+
+:skip_wizard
+adb shell settings put global device_provisioned 1
+adb shell settings put secure user_setup_complete 1
+adb reboot
+echo 如果开机向导没有跳过，可从左上角开始顺时针点击屏幕四个角
+exit /b 0
+
+:install_apk
+call "%SCRIPT_DIR%android_install.bat" %param1%
 exit /b 0
 
 :dump

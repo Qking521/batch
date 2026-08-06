@@ -28,7 +28,6 @@ if /i "%cmd%"=="ps" goto power_supply
 if /i "%cmd%"=="wallpaper" goto wallpaper
 if /i "%cmd%"=="profile" goto power_profile
 if /i "%cmd%"=="reset" goto reset
-if /i "%cmd%"=="install" goto install_apk
 if /i "%cmd%"=="key" goto keyword
 if /i "%cmd%"=="wakelock" goto wakelock
 if /i "%cmd%"=="regu" goto regulator
@@ -53,7 +52,6 @@ echo   cd                   - Show cooling devices info.
 echo   wallpaper [color]    - Create/Set wallpaper for specific color.
 echo   profile              - Display power profile data on terminal.
 echo   reset                - Reset battery stats and clear logs.
-echo   install [name]       - Install power tools (wt, wmp).
 echo   wt [cmd]             - WhatsTemp control tools.
 echo   key                  - List common power log keywords.
 echo   wakelock             - Show system wake lock status.
@@ -96,10 +94,6 @@ adb shell "logcat -b all -c; dmesg -C"
 adb shell dumpsys batterystats --reset
 adb shell dumpsys batterystats --enable full-wake-history
 adb shell dumpsys alarm log on > nul
-exit /b
-
-:install_apk
-call "%SCRIPT_DIR%power_installs.bat" %2
 exit /b
 
 :wakelock

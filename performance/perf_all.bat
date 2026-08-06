@@ -32,7 +32,6 @@ if /i "%cmd%"=="cpu" goto cpu
 if /i "%cmd%"=="gpu" goto gpu
 if /i "%cmd%"=="flame" goto flame
 if /i "%cmd%"=="ds" goto dhrystone
-if /i "%cmd%"=="install" goto install_apk
 
 echo [ERROR] 未知命令: %cmd%
 goto :usage
@@ -49,7 +48,6 @@ echo   cpu [info/freq/online/...]       - CPU 调控
 echo   gpu                              - GPU 性能抓取 (等同 trace)
 echo   ds                               - Dhrystone 操作
 echo   flame                            - 火焰图抓取 (simpleperf)
-echo   install                          - 安装性能类 apk 工具
 echo   help / -h                        - 显示此帮助信息
 echo.
 echo 示例:
@@ -93,10 +91,6 @@ exit /b
 
 :flame
 call %SCRIPT_DIR%perf_simpleperf.bat %2
-exit /b
-
-:install_apk
-call %SCRIPT_DIR%perf_installs.bat %2
 exit /b
 
 :dhrystone

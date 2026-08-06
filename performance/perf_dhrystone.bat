@@ -2,7 +2,7 @@
 :: ============================================================
 :: Author: Antigravity Pair Program
 :: Date: 2026-07-20
-:: Description: Optimized script for perf_eet.bat
+:: Description: 这里的dhrystone是文件形式不同于dhrystone apk
 :: ============================================================
 chcp 65001 >nul
 setlocal enabledelayedexpansion

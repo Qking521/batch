@@ -27,7 +27,6 @@ if /i "%1"=="tz" goto thermal_zones
 if /i "%1"=="hm" goto hwmon
 if /i "%1"=="cd" goto cooling_devices
 if /i "%1"=="wt" goto whatsTemp
-if /i "%1"=="install" goto install_apk
 if /i "%1"=="config" goto thermal_config
 
 echo Unknown command: %cmd%
@@ -43,7 +42,6 @@ echo   tz [en/dis]          - 查看当前所有温度传感器信息 (默认动
 echo   hm                   - 查看当前所有硬件监控器的状态信息 (默认动作).
 echo   cd                   - 查看当前所有冷却设备的状态信息 (默认动作).
 echo   wt                   - whatstemp相关的操作
-echo   install              - 安装温升辅助工具apk
 echo   config [push/pull]   - Thermal config operations.
 echo   info [tz/cd/hm]      - 查看温升tz/cd/hm等相关信息
 echo   -h                   - Show help (alias: help).
@@ -77,10 +75,6 @@ exit /b
 
 :thermal_config
 call "%SCRIPT_DIR%thermal_config.bat" %*
-exit /b
-
-:install_apk
-call "%SCRIPT_DIR%thermal_installs.bat" %2
 exit /b
 
 :whatsTemp
