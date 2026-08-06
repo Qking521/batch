@@ -52,7 +52,6 @@ echo   cd                   - Show cooling devices info.
 echo   wallpaper [color]    - Create/Set wallpaper for specific color.
 echo   profile              - Display power profile data on terminal.
 echo   reset                - Reset battery stats and clear logs.
-echo   wt [cmd]             - WhatsTemp control tools.
 echo   key                  - List common power log keywords.
 echo   wakelock             - Show system wake lock status.
 echo   cpu                  - Show CPU frequency and online status.
