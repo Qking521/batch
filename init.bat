@@ -41,7 +41,7 @@ set "SCRIPT_DIR=%~dp0"
 :: %1不为空时代表子脚本调用，用来重新设置当前脚本和输出目录
 if "%~1"=="" (
 	set "INIT_BAT=!SCRIPT_DIR!init.bat"
-	set "ABD_CHECK_BAT=!SCRIPT_DIR!adb_check.bat"
+	set "ADB_CHECK_BAT=!SCRIPT_DIR!adb_check.bat"
 	set "BASE_OUT_DIR=!SCRIPT_DIR!OUT\"
 ) else (
 	set "SCRIPT_DIR=%~1"
@@ -54,7 +54,7 @@ if "%DEBUG%"=="1" (
 	echo [DEBUG] FORMAT_TIME=%FORMAT_TIME%
 	echo [DEBUG] SCRIPT_DIR=%SCRIPT_DIR%
 	echo [DEBUG] INIT_BAT=%INIT_BAT%
-	echo [DEBUG] ABD_CHECK_BAT=%ABD_CHECK_BAT%
+	echo [DEBUG] ADB_CHECK_BAT=%ADB_CHECK_BAT%
 	echo [DEBUG] BASE_OUT_DIR=%BASE_OUT_DIR%
 	echo [DEBUG] OUT_DIR=%OUT_DIR%
 
@@ -67,7 +67,7 @@ endlocal & (
 	set "FORMAT_TIME=%FORMAT_TIME%"
 	set "SCRIPT_DIR=%SCRIPT_DIR%"
 	set "INIT_BAT=%INIT_BAT%"
-	set "ABD_CHECK_BAT=%ABD_CHECK_BAT%"
+	set "ADB_CHECK_BAT=%ADB_CHECK_BAT%"
 	set "BASE_OUT_DIR=%BASE_OUT_DIR%"
 	set "OUT_DIR=%OUT_DIR%"
 )

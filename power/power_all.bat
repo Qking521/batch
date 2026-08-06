@@ -16,9 +16,9 @@ if %ERRORLEVEL% neq 0 (
 )
 if not exist %OUT_DIR% mkdir %OUT_DIR%
 
-set "cmd=%1"
-set "param1=%2"
-set "param2=%3"
+set "cmd=%~1"
+set "param1=%~2"
+set "param2=%~3"
 
 if "%cmd%"=="" goto show_help
 if /i "%cmd%"=="-h" goto show_help
@@ -69,8 +69,7 @@ echo.
 exit /b
 
 :standby
-set "SH_SCRIPT=%SCRIPT_DIR%power_standby.sh"
-adb shell "sh -s %cmd%"  < "%SH_SCRIPT%"
+call "%SCRIPT_DIR%power_standby.bat" %param1%
 exit /b
 
 
