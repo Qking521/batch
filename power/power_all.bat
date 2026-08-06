@@ -103,7 +103,8 @@ adb shell dumpsys batterystats | grep -A 10 "Wake lock"
 exit /b
 
 :eet_test
-call "%SCRIPT_DIR%power_eet.bat" %*
+    set "SH_SCRIPT=%SCRIPT_DIR%power_eet.sh"
+    adb shell "sh -s %param1% %param2%" < "%SH_SCRIPT%"
 exit /b
 
 :spm

@@ -214,7 +214,7 @@ case "$ACTION" in
     restore) do_restore ;;
     default) do_get_default ;;
     *)
-        # 默认无参数或未知参数时执行 standby
-        do_standby
-        ;;
+    # 默认无参数或未知参数时执行 standby
+    do_standby
+    ;;
 esac

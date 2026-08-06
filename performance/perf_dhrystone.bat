@@ -62,7 +62,7 @@ exit /b
         set "FILE_CHECK=%%r"
     )
     if "!FILE_CHECK!"=="NOTEXIST" (
-        call eet_push
+        call :eet_push
     )
 
     set "DHRY_PID="

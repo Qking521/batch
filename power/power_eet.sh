@@ -15,12 +15,8 @@ CPUFREQ_DIR="/sys/devices/system/cpu/cpufreq"
 POLICY_DIR="${CPUFREQ_DIR}/policy${POLICY}"
 CPU_ONLINE_BASE="/sys/devices/system/cpu"
 
-# ---------- 分发: restore 走单独流程，不需要 POLICY/FREQ ----------
 ACTION="$1"
-if [ "$ACTION" = "restore" ]; then
-    restore
-    exit 0
-fi
+
 
 log() {
     echo "[INFO] $*"
@@ -35,18 +31,12 @@ die() {
     exit 1
 }
 
-# 恢复现场：取消唤醒锁、所有CPU online、重启thermal服务。
-restore() {
-    log "===== 现场恢复: 取消唤醒锁 ====="
-    write_sysfs "/sys/power/wake_unlock" "$WAKE_LOCK_NAME" "取消 wakelock"
- 
-    log "===== 现场恢复: 重启 thermal 相关服务 ====="
-    start thermal-engine 2>/dev/null
-    start vendor.thermal-engine 2>/dev/null
-
-    reset
- 
-    log "===== 现场恢复完成 ====="
+usage() {
+    cat <<EOF
+用法: $0 <子命令> [policy] [frequency]
+示例: $0 eet 0 650000
+EOF
+    exit 1
 }
  
 reset(){
@@ -124,29 +114,26 @@ set_governor() {
  
     write_sysfs "$gov_path" "$governor_name" "$desc"
 }
-# ---------- 0. 重置cpu online状态和governor值 ----------
-reset
 
 # ---------- 参数校验 ----------
+if [ -z "$POLICY" ] || [ -z "$FREQ" ]; then
+    echo 缺少必要的参数
+    usage
+fi
 
-# 这里限制 POLICY 只能是数字，目的不是"格式校验"本身
-# （因为下面的目录存在性检查一样能拦住 "abc" 这种输入），
-# 而是防止 POLICY 里混入 "/" 或 ".." 等字符时，
-# 拼接出来的 POLICY_DIR 逃逸到 cpufreq 目录之外，
-# 被用来误写其它 sysfs 节点。
+# 这里限制 POLICY 只能是数字
 case "$POLICY" in
     ''|*[!0-9]*) die "policy 参数非法: '$POLICY'，必须为非负整数" ;;
 esac
 
 [ -d "$POLICY_DIR" ] || die "policy 目录不存在: $POLICY_DIR，请确认 policy 编号是否正确"
 
-# freq 的合法性完全以 scaling_available_frequencies 的真实内容为准，
-# 不再单独做数字格式判断。如果这个节点都不存在，说明没有可信依据能
-# 判断 freq 是否合法，此时直接 die，而不是跳过校验静默放行。
+# freq 的合法性完全以 scaling_available_frequencies 的真实内容为准
 AVAIL_FILE="${POLICY_DIR}/scaling_available_frequencies"
 [ -f "$AVAIL_FILE" ] || die "未找到 $AVAIL_FILE，无法校验 freq 是否合法，终止执行"
 
 AVAIL_FREQS=$(cat "$AVAIL_FILE")
+echo policy $POLICY的可用频点为 $AVAIL_FREQS
 FOUND=0
 for f in $AVAIL_FREQS; do
     [ "$f" = "$FREQ" ] && FOUND=1 && break
@@ -155,6 +142,14 @@ done
 
 log "参数校验通过：policy=${POLICY} freq=${FREQ}"
 
+#------------------检查dhrystone进程------------------------
+PID=$(ps -ef | grep -F "dhrystone.sh" | grep -v grep | awk '{print $2}')
+if [ -z "$PID" ]; then
+    die "dhrystone 未运行, 请先运行dhrystone程序(perf ds)"
+fi
+
+# ---------- 0. 重置cpu online状态和governor值 ----------
+reset
 
 # ---------- 1. 关闭 thermal 进程 ----------
 log "===== 步骤1: 关闭 thermal 相关服务 ====="
