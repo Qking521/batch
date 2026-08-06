@@ -23,22 +23,25 @@
 
 这是本项目最重要的设计原则，所有涉及设备端操作的脚本都应遵循。
 
-### 分层职责
+### 单/双层控制范式说明
 
-| 层级 | 文件 | 职责 |
-|------|------|------|
-| 入口层 | `*.bat` | ① 检查外部前置条件（设备连接、依赖文件存在）<br>② 将参数传给 Shell 脚本执行<br>③ 回显执行结果给用户 |
-| 业务层 | `*.sh` | 所有业务逻辑：参数校验、设备操作、可复用函数、恢复/回滚 |
+根据功能场景及对 PC 本地资源的依赖程度，选择最简高效的执行模式：
 
-> **关键原则：** 入口层（bat）不应重复业务层（sh）已做的校验逻辑，否则两边容易不一致。
+| 范式 | 文件组成 | 适用场景 | 架构原则 |
+|------|----------|----------|----------|
+| **主入口直接注入 (纯 Shell 业务)** | `*_all.bat` (主入口) + `*.sh` (业务层) | 纯设备端逻辑（如查询/修改节点、提取 Property 等），无需 PC 本地交互 | **优先采用此方式**。由 `*_all.bat` 直接通过 `adb shell "sh -s"` 管道调用 `.sh`，无需额外保留单功能 `.bat` 中转层。 |
+| **双层包装模型 (含 PC 端逻辑)** | `*.bat` (PC代理/入口) + `*.sh` (设备业务) | 需要 PC 端资源参与（如保存截图/录屏文件到 PC 本地、解压 7z、调用 python 等） | 由 `*_all.bat` 调用子 `*.bat`，子 `*.bat` 处理 PC 端逻辑并配合调用 `.sh`。 |
+
+> **关键原则：** 入口层不应重复业务层已做的校验逻辑。纯设备端操作只维护独立的 `.sh` 业务文件，由 `*_all.bat` 统筹分发。
 
 ### 调用方式：stdin 注入模式（推荐）
 
 通过 `adb shell "sh -s <参数>"` 配合重定向 `< script.sh`，将 Shell 脚本内容通过 stdin 传入设备执行，**无需 push 文件**，避免了 CRLF 换行符污染问题。
 
 ```bat
-:: bat 入口层调用示例
-adb shell "sh -s %ACTION% %PARAM%" < "%SCRIPT_DIR%your_script.sh"
+:: bat 入口层调用示例（由 *_all.bat 直接分发）
+set "SH_SCRIPT=%SCRIPT_DIR%your_script.sh"
+adb shell "sh -s %ACTION% %PARAM%" < "%SH_SCRIPT%"
 ```
 
 ```sh
@@ -56,16 +59,15 @@ esac
 ### Shell 业务层规范
 
 - **用函数封装复用逻辑**：将重复操作（sysfs 写入、状态检查等）抽成函数，不要每处手写一遍
-- **恢复/回滚必须是独立函数**：`restore` 或 `reset` 应作为 shell 内单独可调用的分支，统一维护
 - **参数校验在 shell 内做**：包括参数合法性、目录/节点是否存在等，不依赖 bat 层重复校验
 
 ### 参考实现
 
-| 文件 | 说明 |
-|------|------|
-| `power/power_eet.bat` + `power_eet.sh` | 完整双层模型范例，含参数分发、restore 分支、错误处理 |
-| `thermal/thermal_infos.bat` + `thermal_infos.sh` | 多命令分发范例（tz/cd/hw） |
-| `thermal/thermal_cooling_devices.sh` | 轻量只读查询的 shell 范例 |
+| 范式分类 | 典型实现 | 说明 |
+|------|------|------|
+| **纯 Shell 业务（主入口直连）** | `android_all.bat` + `android_device_info.sh`<br>`android_all.bat` + `android_refresh_rate.sh` | 纯 Android 设备端操作，无单独子 bat 中转 |
+| **双层包装（PC 本地交互）** | `android_screen_record.bat` + `android_screen_record.sh` | 涉及从设备拉取文件到 PC 本地 `OUT_DIR` 并自动打开 |
+| **纯 Shell 轻量查询** | `thermal/thermal_cooling_devices.sh` | 轻量只读查询的 shell 范例 |
 
 ### 跨平台 Shebang 兼容规范
 
@@ -134,7 +136,8 @@ chcp 65001 >nul
 :: Desc:   <脚本功能描述>
 :: Usage:  <脚本名>.bat [参数说明]
 :: ============================================================
-setlocal EnableDelayedExpansion
+setlocal
+如果需要变量延迟扩展就改成setlocal EnableDelayedExpansion
 ```
 
 > **注意顺序：** `chcp 65001` 必须在 `setlocal` **之前**，否则代码页设置不生效。

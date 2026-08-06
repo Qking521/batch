@@ -139,7 +139,8 @@ if /i "%~2"=="off" (
 exit /b 0
 
 :device_info
-call "%SCRIPT_DIR%android_device_info.bat"
+set "SH_SCRIPT=%SCRIPT_DIR%android_device_info.sh"
+adb shell "sh -s" < "%SH_SCRIPT%"
 exit /b 0
 
 :android_search
