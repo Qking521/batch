@@ -71,8 +71,10 @@ exit /b
 
 
 :power_info
-call "%SCRIPT_DIR%power_info.bat"
+set "SH_SCRIPT=%SCRIPT_DIR%power_info.sh"
+adb shell "sh -s" < "%SH_SCRIPT%"
 exit /b
+
 
 :power_supply
 set "SH_SCRIPT=%SCRIPT_DIR%power_supply.sh"

@@ -20,6 +20,20 @@ set "CONFIG_FILE=%~3"
 :: n (name)：提取文件名部分（不含后缀）。x (extension)：提取扩展名部分（含点号）。比如：thermal.conf
 set "CONFIG_NAME=%~nx3"
 
+:: 预先提取 thermal service Owner信息，供全局共用
+set "thermalHalOwner=pixel"
+
+adb shell ps | findstr /i "thermal_engine" >nul && set "thermalHalOwner=qcom"
+adb shell ps | findstr /i "thermal_core"   >nul && set "thermalHalOwner=mediatek"
+
+echo thermalHalOwner=%thermalHalOwner%
+
+if "!thermalHalOwner!"=="" (
+    echo [错误]: 未能识别到 Android Thermal HAL 服务。
+    exit /b 1
+)
+
+
 :: 根据第二个参数跳转标签
 if /i "!CMD!"=="-h" goto show_help
 if /i "!CMD!"=="help" goto show_help
@@ -49,17 +63,6 @@ echo   therm config pull
 echo.
 exit /b
 
-:: 预先提取 thermal service Owner信息，供全局共用
-set "thermalHalOwner="
-for /f "tokens=4 delims=." %%i in ('adb shell "ps -A | grep -oE \"android\.hardware\.thermal-service\.[a-z0-9]+\""') do (
-    set "thermalHalOwner=%%i"
-    echo ThermalHalOwner: !thermalHalOwner!
-)
-
-if "!thermalHalOwner!"=="" (
-    echo [错误]: 未能识别到 Android Thermal HAL 服务。
-    exit /b 1
-)
 
 :config_info
     echo 当前thermal policy信息:
@@ -119,7 +122,7 @@ if "!thermalHalOwner!"=="" (
 
 :config_pull
     for /f "delims= " %%a in ('adb shell getprop ro.product.board') do set model=%%a
-    set "OUT_DIR=!OUT_DIR!\thermal_config\%model%_%format_time%" 
+    set "OUT_DIR=!OUT_DIR!\thermal_config_%model%_%format_time%"
     echo config out path=%OUT_DIR%
     if not exist %OUT_DIR% (
 	    mkdir %OUT_DIR%
@@ -145,5 +148,8 @@ if "!thermalHalOwner!"=="" (
             echo [错误]: 未找到解密脚本 "%MTK_THERMAL_DECRYPT%"
             exit /b 1
         )
+    ) else (
+        echo 当前不支持!thermalHalOwner!平台thermal config解密
+        exit /b 0
     )
     exit /b

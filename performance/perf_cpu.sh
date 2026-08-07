@@ -123,31 +123,90 @@ platform)
 # ---- CPU 总览 ----
 info)
     plat=$(detect_platform)
-    echo "=========================================="
+    echo "=========================================================="
     echo " CPU 信息总览  [平台: $plat]"
-    echo "=========================================="
-    printf '%-8s %-12s %-14s %-14s %-8s\n' 'POLICY' 'ONLINE-CPUS' 'CUR_FREQ(KHz)' 'MAX_FREQ(KHz)' 'GOV'
-    echo "----------------------------------------------------------"
+    echo "=========================================================="
+    printf '%-9s %-12s %-14s %-14s %-14s %-8s\n' 'POLICY' 'ONLINE-CPUS' 'MIN_FREQ(KHz)' 'CUR_FREQ(KHz)' 'MAX_FREQ(KHz)' 'GOV'
+    echo "----------------------------------------------------------------------"
     for policy in $(list_policies); do
         pdir="/sys/devices/system/cpu/cpufreq/$policy"
         affected=$(read_node "$pdir/affected_cpus")
+        min=$(read_node "$pdir/scaling_min_freq")
         cur=$(read_node "$pdir/scaling_cur_freq")
         max=$(read_node "$pdir/scaling_max_freq")
         gov=$(read_node "$pdir/scaling_governor")
-        printf '%-8s %-12s %-14s %-14s %-8s\n' "$policy" "$affected" "$cur" "$max" "$gov"
+        printf '%-9s %-12s %-14s %-14s %-14s %-8s\n' "$policy" "$affected" "$min" "$cur" "$max" "$gov"
+        
+        # 显示该 policy 的可用完整频点列表
+        avail=$(read_node "$pdir/scaling_available_frequencies")
+        if [ "$avail" != "N/A" ] && [ -n "$avail" ]; then
+            echo "  └─ 可用频率: $avail"
+        fi
     done
     echo ""
-    echo "--- CPU online 状态 ---"
-    for cpu in /sys/devices/system/cpu/cpu[0-9]*; do
-        id=${cpu##*/}
-        node="$cpu/online"
+    echo "--- CPU 核心信息状态 ---"
+    printf '%-8s %-12s %-16s %-10s\n' 'CPU' 'STATUS' 'CUR_FREQ(KHz)' 'TEMP'
+    echo "----------------------------------------------------"
+    for cpu_dir in /sys/devices/system/cpu/cpu[0-9]*; do
+        cpuid=${cpu_dir##*/}
+        
+        # 1. 在线状态
+        node="$cpu_dir/online"
         if [ -f "$node" ]; then
             state=$(read_node "$node")
             [ "$state" = "1" ] && status="online" || status="offline"
         else
-            status="online(固定)"   # cpu0 通常无 online 节点
+            status="online(固定)"
         fi
-        echo "  $id: $status"
+
+        # 2. 当前 CPU 频率
+        cur_freq=$(read_node "$cpu_dir/cpufreq/scaling_cur_freq")
+
+        # 3. CPU 核心温度 (针对大核等有多个传感器节点的场景，提取属于该 CPU 的传感器最大值)
+        max_temp_mC=-999000
+        cpu_num=${cpuid#cpu}
+        
+        # 确定匹配模式：小核通常为 little/cpuX，大核通常为 big-coreX / coreX
+        for tz in /sys/class/thermal/thermal_zone*; do
+            [ -d "$tz" ] || continue
+            type=$(cat "$tz/type" 2>/dev/null)
+            matched=0
+            case "$type" in
+                *cpu*little*${cpu_num}*|*cpu-${cpu_num}*|*little-core${cpu_num}*)
+                    matched=1 ;;
+                *cpu*big*core${cpu_num}*|*big-core${cpu_num}*|*core${cpu_num}*)
+                    # 针对大核编号映射（例如 8 核设备中 cpu4->big-core0, cpu5->big-core1 等，或直连数字）
+                    matched=1 ;;
+            esac
+
+            # 兼容 8 核中大核编号的物理序号换算 (例如 4~7 对应 big-core0~3)
+            if [ "$matched" -eq 0 ] && [ "$cpu_num" -ge 4 ] 2>/dev/null; then
+                big_idx=$(( cpu_num - 4 ))
+                case "$type" in
+                    *big-core${big_idx}*|*big_core${big_idx}*)
+                        matched=1 ;;
+                esac
+            fi
+
+            if [ "$matched" -eq 1 ]; then
+                temp_raw=$(cat "$tz/temp" 2>/dev/null)
+                if [ -n "$temp_raw" ] && [ "$temp_raw" -gt "$max_temp_mC" ] 2>/dev/null; then
+                    max_temp_mC=$temp_raw
+                fi
+            fi
+        done
+
+        if [ "$max_temp_mC" -gt -999000 ] 2>/dev/null; then
+            if [ "$max_temp_mC" -gt 1000 ] 2>/dev/null || [ "$max_temp_mC" -lt -1000 ] 2>/dev/null; then
+                temp_str="$(( max_temp_mC / 1000 )).$(( (max_temp_mC % 1000) / 100 )) C"
+            else
+                temp_str="${max_temp_mC} C"
+            fi
+        else
+            temp_str="N/A"
+        fi
+
+        printf '%-8s %-12s %-16s %-10s\n' "$cpuid" "$status" "$cur_freq" "$temp_str"
     done
     ;;
 

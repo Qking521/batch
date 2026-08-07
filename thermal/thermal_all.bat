@@ -18,6 +18,7 @@ if %ERRORLEVEL% neq 0 (
 set "cmd=%1"
 set "param1=%2"
 set "param2=%3"
+set "param3=%4"
 
 if "%1"=="" goto show_help
 if /i "%1"=="-h" goto show_help
@@ -56,11 +57,12 @@ call "%SCRIPT_DIR%thermal_infos.bat" %*
 exit /b
 
 :thermal_zones
-if /i "%param1%"=="" set "ACTION=info"
-if /i "%param1%"=="dis" set "ACTION=disable"
-if /i "%param1%"=="en" set "ACTION=enable"
 set "SH_SCRIPT=%SCRIPT_DIR%thermal_thermal_zones.sh"
-adb shell "sh -s %ACTION%" < "%SH_SCRIPT%"
+if /i "%param1%"==""    adb shell "sh -s info"    < "%SH_SCRIPT%" & exit /b
+if /i "%param1%"=="dis" adb shell "sh -s disable" < "%SH_SCRIPT%" & exit /b
+if /i "%param1%"=="en"  adb shell "sh -s enable"  < "%SH_SCRIPT%" & exit /b
+:: 其余参数如 zone type 名称，支持多个同时查询直接透传给 sh 业务层
+adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
 exit /b
 
 :cooling_devices
