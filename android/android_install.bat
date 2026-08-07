@@ -21,6 +21,8 @@ if /i "%cmd%"=="ds" goto dhrystone
 if /i "%cmd%"=="gl" goto webGL
 if /i "%cmd%"=="wt" goto whats_tempeture
 if /i "%cmd%"=="wmp" goto wheres_my_power
+if /i "%cmd%"=="fd" goto fast_discharge
+if /i "%cmd%"=="moto" goto moto_tools
 
 echo [错误]: 未知工具指令: %cmd%
 goto :usage
@@ -37,6 +39,8 @@ echo   ds   - 安装并配置 dhrystone 测试CPU性能的工具.
 echo   gl   - 安装并配置 webGL 测试GPU性能的工具.
 echo   wt   - 安装并配置 WhatsTemp 温度监控工具.
 echo   wmp  - 安装并配置 WheresMyPower 功耗分析工具.
+echo   fd   - 安装并配置 fastDischarge 快速耗电工具.
+echo   fd   - 安装并配置 和moto项目相关的自动化测试工具.
 echo.
 echo 示例:
 echo   ad install ds
@@ -100,6 +104,19 @@ exit /b 0
     adb shell "appops set %WMP_PACKAGE% ACCESS_RESTRICTED_SETTINGS allow"
     adb shell "am force-stop %WMP_PACKAGE%"
     adb shell "am start -a android.intent.action.VIEW -n %WMP_PACKAGE%/.SettingsActivity"
+exit /b 0
+
+:fast_discharge
+    ::fastdischarge verison:1.2
+    set FD_PACKAGE="jp.smartmobile.quickdischarge"
+    set fastDischarge_FILE_PATH=%ARCHIVE_DIR%\fastDischarge.apk
+    adb install --bypass-low-target-sdk-block %fastDischarge_FILE_PATH%
+    call :grant_permission %FD_PACKAGE%
+exit /b 0
+
+:moto_tools
+    adb install -r %ARCHIVE_DIR%\nonrootchina-debug.apk
+    adb install -r %ARCHIVE_DIR%\nonrootchina-debug-androidTest.apk
 exit /b 0
 
 :grant_permission

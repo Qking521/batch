@@ -8,6 +8,14 @@
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
+set "cmd=%1"
+set "param1=%2"
+set "param2=%3"
+
+if "%cmd%"=="" goto show_help
+if /i "%cmd%"=="-h" goto show_help
+if /i "%cmd%"=="help" goto show_help
+
 call %INIT_BAT% %~dp0
 :: 调用基础脚本检查ADB和设备（使用完整路径）
 call "%ADB_CHECK_BAT%"
@@ -18,14 +26,6 @@ if %ERRORLEVEL% neq 0 (
 
 :: 创建Android的out目录
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
-
-set "cmd=%1"
-set "param1=%2"
-set "param2=%3"
-
-if "%cmd%"=="" goto show_help
-if /i "%cmd%"=="-h" goto show_help
-if /i "%cmd%"=="help" goto show_help
 if /i "%cmd%"=="top" goto current_activity
 if /i "%cmd%"=="ss" goto screen_shot
 if /i "%cmd%"=="sr" goto screen_record
@@ -53,24 +53,24 @@ echo.
 echo Usage: ad [command] [args...]
 echo.
 echo Available commands:
-echo   top                      - 显示当前运行的 Activity / 界面焦点信息.
-echo   ss                       - 快速截图并保存/打开.
-echo   sr                       - 录屏并提取到本地.
-echo   kill [process_name]      - 杀掉指定进程名的进程.
-echo   bugreport                - 抓取/提取 bugreport 日志.
-echo   clear                    - 清除系统 logcat 和 dmesg 日志.
-echo   dev [on/off]             - 开启/关闭开发者调试辅助开关（显示触摸点、指针位置等）.
-echo   di                       - 获取设备基础信息并输出.
-echo   search [keyword]         - 检索系统 Settings 和 Properties 属性项.
-echo   monkey [pkg/kill/num]    - 运行或停止 Monkey 测试.
-echo   enable/disable [pkg]     - 启禁用指定的 Package 应用包.
-echo   dump [service] [params]  - Dump 指定系统服务状态到 OUT 目录.
-echo   rr [on/off]              - 设置/查询屏幕刷新率 (SurfaceFlinger).
-echo   skip              		- 跳过开机向导
-echo   install              	- 安装性能，温升，功耗类apk工具
-echo   de              			- 反编译apk
-echo   adbd [restart/root...]   - ADB 工具/状态配置辅助.
-echo   -h                       - 显示帮助信息 (别名: help).
+echo   top                      - Show current Activity / Focus
+echo   ss                       - Take screenshot and save/open
+echo   sr                       - Record screen and pull to local
+echo   kill [process_name]      - Kill target process by name
+echo   bugreport                - Capture/Extract bugreport log
+echo   clear                    - Clear logcat and dmesg logs
+echo   dev [on/off]             - Toggle developer touches / pointer location
+echo   di                       - Show device hardware and system info
+echo   search [keyword]         - Search Settings and Properties
+echo   monkey [pkg/kill/num]    - Run or stop Monkey test
+echo   enable/disable [pkg]     - Enable or disable package
+echo   dump [service] [params]  - Dump system service state to OUT dir
+echo   rr [on/off]              - Set or query refresh rate
+echo   skip                     - Skip setup wizard
+echo   install                  - Install perf / thermal / power apk tools
+echo   de                       - Decompile apk
+echo   adbd [restart/root...]   - ADB helper / status configuration
+echo   -h                       - Show help info (alias: help)
 echo.
 echo Examples:
 echo   ad top

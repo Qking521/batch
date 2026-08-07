@@ -1,84 +1,67 @@
 @echo off
-:: ============================================================
-:: Author: Antigravity Pair Program
-:: Date: 2026-07-20
-:: Description: Optimized script for thermal_all.bat
-:: ============================================================
 chcp 65001 >nul
-setlocal
+setlocal enabledelayedexpansion
+
+set "cmd=%~1"
+set "param1=%~2"
+set "param2=%~3"
+set "param3=%~4"
+
+if "%cmd%"=="" goto usage
+if /i "%cmd%"=="-h" goto usage
+if /i "%cmd%"=="help" goto usage
 
 call %INIT_BAT% %~dp0
-:: 调用基础脚本检查ADB和设备（使用完整路径）
 call "%ADB_CHECK_BAT%"
 if %ERRORLEVEL% neq 0 (
-    echo [错误]: 基础检测失败，退出操作。
+    echo [ERROR]: ADB check failed.
     exit /b %ERRORLEVEL%
 )
 
-set "cmd=%1"
-set "param1=%2"
-set "param2=%3"
-set "param3=%4"
-
-if "%1"=="" goto show_help
-if /i "%1"=="-h" goto show_help
-if /i "%1"=="help" goto show_help
-if /i "%1"=="info" goto thermal_infos
-if /i "%1"=="tz" goto thermal_zones
-if /i "%1"=="hm" goto hwmon
-if /i "%1"=="cd" goto cooling_devices
-if /i "%1"=="wt" goto whatsTemp
-if /i "%1"=="config" goto thermal_config
+if /i "%cmd%"=="tz" goto thermal_infos
+if /i "%cmd%"=="cd" goto thermal_infos
+if /i "%cmd%"=="hm" goto thermal_infos
+if /i "%cmd%"=="wt" goto whatsTemp
+if /i "%cmd%"=="config" goto thermal_config
 
 echo Unknown command: %cmd%
-goto show_help
-exit /b
+goto usage
+exit /b 1
 
-:show_help
+:usage
 echo.
-echo Usage: therm [command]
+echo Usage: therm [command] [options]
 echo.
 echo Available commands:
-echo   tz [en/dis]          - 查看当前所有温度传感器信息 (默认动作).
-echo   hm                   - 查看当前所有硬件监控器的状态信息 (默认动作).
-echo   cd                   - 查看当前所有冷却设备的状态信息 (默认动作).
-echo   wt                   - whatstemp相关的操作
-echo   config [push/pull]   - Thermal config operations.
-echo   info [tz/cd/hm]      - 查看温升tz/cd/hm等相关信息
-echo   -h                   - Show help (alias: help).
+echo   tz [dis/en]          - Query / Disable / Restore Thermal Zones
+echo   cd                   - Show Cooling Devices status
+echo   hm                   - Show Hardware Monitors (hwmon) status
+echo   wt                   - WhatsTemp detection and config
+echo   config [push/pull]   - Thermal config operations
+echo   -h                   - Show help info (alias: help)
 echo.
 echo Examples:
 echo   therm tz
+echo   therm tz dis
+echo   therm tz en
+echo   therm cd
+echo   therm hm
 echo.
-exit /b
+exit /b 0
 
 :thermal_infos
-call "%SCRIPT_DIR%thermal_infos.bat" %*
-exit /b
-
-:thermal_zones
-set "SH_SCRIPT=%SCRIPT_DIR%thermal_thermal_zones.sh"
-if /i "%param1%"==""    adb shell "sh -s info"    < "%SH_SCRIPT%" & exit /b
-if /i "%param1%"=="dis" adb shell "sh -s disable" < "%SH_SCRIPT%" & exit /b
-if /i "%param1%"=="en"  adb shell "sh -s enable"  < "%SH_SCRIPT%" & exit /b
-:: 其余参数如 zone type 名称，支持多个同时查询直接透传给 sh 业务层
-adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
-exit /b
-
-:cooling_devices
-set "SH_SCRIPT=%SCRIPT_DIR%thermal_cooling_devices.sh"
-adb shell "sh -s" < "%SH_SCRIPT%"
-exit /b
-
-:hwmon
-set "SH_SCRIPT=%SCRIPT_DIR%thermal_hwmon.sh"
-adb shell "sh -s"  < "%SH_SCRIPT%"
-exit /b
+set "SH_SCRIPT=%SCRIPT_DIR%thermal_infos.sh"
+if not exist "%SH_SCRIPT%" (
+    echo [ERROR] Script not found: %SH_SCRIPT%
+    exit /b 1
+)
+adb shell "sh -s %cmd% %param1% %param2% %param3%" < "%SH_SCRIPT%"
+exit /b %ERRORLEVEL%
 
 :thermal_config
 call "%SCRIPT_DIR%thermal_config.bat" %*
-exit /b
+exit /b %ERRORLEVEL%
 
 :whatsTemp
 call "%SCRIPT_DIR%thermal_whats_temp.bat" %~2
-exit /b
+exit /b %ERRORLEVEL%
