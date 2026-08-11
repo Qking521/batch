@@ -23,20 +23,22 @@ exit /b
 
 :show_help
 echo Available commands:
-echo   agy             -Antigravity cli
+echo   agy [default_dir]        -start agy cli, Add workdir if have
+echo Examples:
+echo   win cli agy [default_dir]
 echo.
 exit /b
 
 :agy
-set "default_dir=%USERPROFILE%\batScript"
-if "%param1%"=="." (
-    set "default_dir=%cd%"
-)
-::cd /d %default_dir% && agy
-::需要把wt.exe添加到环境变量
-wt.exe -w 0 -p "Antigravity CLI" -d %default_dir%
-::如果执行windwos terminal没有配antigravity导致执行失败，可以使用默认的方式
-if errorlevel 1 (
-    cd /d %default_dir% && agy
-)
+    set "default_dir=%USERPROFILE%\batScript"
+    if "%param1%"=="." (
+        set "default_dir=%cd%"
+    )
+    ::cd /d %default_dir% && agy
+    ::需要把wt.exe添加到环境变量
+    wt.exe -w 0 -p "Antigravity CLI" -d %default_dir%
+    ::如果执行windwos terminal没有配antigravity导致执行失败，可以使用默认的方式
+    if errorlevel 1 (
+        cd /d %default_dir% && agy
+    )
 exit /b

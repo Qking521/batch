@@ -15,23 +15,22 @@ if "%DEBUG%"=="1" (
 )
 
 :: *******************Get current date and time, format: MMDD-HHMM**********************
-:: Extract year, month, day safely by replacing delimiters
-set "TMP_DATE=%date%"
-set "TMP_DATE=%TMP_DATE:/=-%"
-set "TMP_DATE=%TMP_DATE:.=-%"
-set "DATE_STR=%TMP_DATE:~0,10%"
-set "TIME_STR=%time%"
+rem 解析日期
+for /f "tokens=2-4 delims=/.- " %%a in ("%date%") do (
+    set MM=%%b
+    set DD=%%c
+)
 
-:: handle leading space in time
-if "%TIME_STR:~0,1%"==" " set "TIME_STR=0%TIME_STR:~1%"
+rem 解析时间（不使用空格作为分隔符）
+for /f "tokens=1-2 delims=:" %%a in ("%time%") do (
+    set HH=%%a
+    set MN=%%b
+)
 
-:: extract MM, DD, HH, MN (assumes YYYY-MM-DD or MM/DD/YYYY formats handled)
-set "MM=%DATE_STR:~5,2%"
-set "DD=%DATE_STR:~8,2%"
-set "HH=%TIME_STR:~0,2%"
-set "MN=%TIME_STR:~3,2%"
+rem 补零（小时可能有前导空格）
+set HH=%HH: =0%
 
-set "FORMAT_TIME=%MM%%DD%-%HH%%MN%"
+set FORMAT_TIME=%MM%%DD%-%HH%%MN%
 :: *******************Get current date and time, format: MMDD-HHMM**********************
 
 :: *******************获取当前脚本所在目录**********************

@@ -1,14 +1,5 @@
 @echo off
 call "%~dp0init.bat"
-@REM open microsoft apps
-
-doskey myalias=doskey /macros
-
-doskey record=adb shell screenrecord  --bugreport /sdcard/record.mp4 ^
-$T break on ^
-$T adb pull /sdcard/record.mp4 . ^&^& start .\record.mp4
-
-doskey pullrecord=adb pull /sdcard/record.mp4 . ^&^& start .\record.mp4
 
 @REM  mtklog
 doskey mtklog=%USERPROFILE%\batScript\mtk\mtklog.bat $*

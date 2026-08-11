@@ -41,12 +41,12 @@ adb shell /data/local/tmp/simpleperf --log error report -g -i /data/local/tmp/pe
 adb pull /data/local/tmp/perf.data %OUT_DIR%/ >nul
 adb pull /data/local/tmp/perf_report.txt %OUT_DIR%/ >nul
 
-where python3 >nul 2>nul
+where python >nul 2>nul
 if errorlevel 1 (
 	echo 未检测到 Python，请先安装 Python 环境
 	exit /b
 )
-python3 %SIMPLEPERF_DIR%\report_html.py -i %OUT_DIR%/perf.data -o %OUT_DIR%/perf.html
+python %SIMPLEPERF_DIR%\report_html.py -i %OUT_DIR%/perf.data -o %OUT_DIR%/perf.html
 
 :usage
 echo.

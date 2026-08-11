@@ -85,7 +85,7 @@ exit /b
     echo ********************** start recording trace %record_time%s **********************
     :: 查看支持的TAG, adb shell atrace --list_categories
     set "google_default_cmd=sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory thermal"
-    python3 record_android_trace -o %OUT_TRACE_FILE% -t %record_time%s -b 64mb %google_default_cmd%
+    python record_android_trace -o %OUT_TRACE_FILE% -t %record_time%s -b 64mb %google_default_cmd%
     exit /b
 
 :config
@@ -159,6 +159,6 @@ exit /b
         copy /Y "%GOOGLE_OPEN_TRACE_FILE%" .
     )
     ::"C:\Program Files\Google\Chrome\Application\chrome.exe" "https://ui.perfetto.dev/"
-    python3 %GOOGLE_OPEN_TRACE_FILE% -i %OUT_TRACE_FILE%
+    python %GOOGLE_OPEN_TRACE_FILE% -i %OUT_TRACE_FILE%
     exit /b
     

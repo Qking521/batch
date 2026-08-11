@@ -34,6 +34,8 @@ if /i "%cmd%"=="regu" goto regulator
 if /i "%cmd%"=="info" goto power_info
 if /i "%cmd%"=="eet" goto eet_test
 if /i "%cmd%"=="spm" goto spm
+if /i "%cmd%"=="trace" goto trace
+if /i "%cmd%"=="sql" goto sql
 
 echo Unknown command: %cmd%
 goto show_help
@@ -44,21 +46,22 @@ echo.
 echo Usage: power [command]
 echo.
 echo Available commands:
-echo   standby              - Power base current settings.
-echo   tz [en/dis]          - Thermal zones info/enable/disable.
-echo   hm                   - Show hardware monitor info.
-echo   ps                   - Show power supply info.
-echo   cd                   - Show cooling devices info.
-echo   wallpaper [color]    - Create/Set wallpaper for specific color.
-echo   profile              - Display power profile data on terminal.
-echo   reset                - Reset battery stats and clear logs.
-echo   key                  - List common power log keywords.
-echo   wakelock             - Show system wake lock status.
-echo   cpu                  - Show CPU frequency and online status.
-echo   regu                 - Show regulator information.
-echo   info                 - Display device information related to power consumption
-echo   config [push/pull]   - Thermal config operations.
-echo   -h                   - Show help (alias: help).
+echo   standby                      - Power base current settings.
+echo   tz [en/dis]                  - Thermal zones info/enable/disable.
+echo   hm                           - Show hardware monitor info.
+echo   ps                           - Show power supply info.
+echo   cd                           - Show cooling devices info.
+echo   wallpaper [color]            - Create/Set wallpaper for specific color.
+echo   profile                      - Display power profile data on terminal.
+echo   reset                        - Reset battery stats and clear logs.
+echo   key                          - List common power log keywords.
+echo   wakelock                     - Show system wake lock status.
+echo   cpu                          - Show CPU frequency and online status.
+echo   regu                         - Show regulator information.
+echo   trace [ui/local] [bugreport] - open bugreport use perfetto.
+echo   sql [sql label] [bugreport]  - query power info by sql instead battery history.
+echo   info                         - Display device information related to power consumption
+echo   -h                           - Show help (alias: help).
 echo.
 echo Examples:
 echo   power standby
@@ -127,6 +130,17 @@ exit /b
 set "SH_SCRIPT=%SCRIPT_DIR%power_regulator.sh"
 adb shell "sh -s"  < "%SH_SCRIPT%"
 exit /b
+
+:trace
+for /f "tokens=1* delims= " %%a in ("%*") do (
+    call "%SCRIPT_DIR%power_traces.bat" %%b
+)
+exit /b
+
+:sql
+call "%SCRIPT_DIR%power_sql.bat" %*
+exit /b
+
 
 
 :keyword

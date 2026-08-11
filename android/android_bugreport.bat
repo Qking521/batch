@@ -13,12 +13,12 @@ for /f "delims= " %%a in ('adb shell getprop ro.product.device') do set model=%%
 if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
 
 :: === 3. 生成 bugreport zip 文件 ===
-set ZIPFILE=%OUT_DIR%\%model%_bugreport%EXT_INFO%_%format_time%.zip
+set ZIPFILE=%OUT_DIR%\bugreport_%model%%EXT_INFO%_%format_time%.zip
 echo Generating bugreport: %ZIPFILE%
 adb bugreport "%ZIPFILE%"
 
 :: === 4. 解压 zip 文件（使用 PowerShell） ===
-set UNZIPDIR=%OUT_DIR%\%model%_bugreport%EXT_INFO%_%format_time%
+set UNZIPDIR=%OUT_DIR%\bugreport_%model%%EXT_INFO%_%format_time%
 echo Eracting bugreport...
 :: 优先用 7z 解压
 where 7z >nul 2>&1

@@ -15,7 +15,9 @@ if /i "%1"=="cli" goto command_line
 
 :show_help
 echo Available commands:
-echo   usbip
+echo   usbip         - list/attach/auto attach/detach/clear 
+echo   unlock         - list/attach/auto attach/detach/clear 
+echo   cli           - start AI command client,such as Antigravity 
 echo.
 exit /b
 
@@ -25,4 +27,8 @@ exit /b
 
 :command_line
 call %SCRIPT_DIR%windows_cli.bat %*
+exit /b
+
+:unlock
+call %SCRIPT_DIR%windows_unlock_screen.bat %*
 exit /b
