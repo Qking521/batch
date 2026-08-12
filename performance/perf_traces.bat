@@ -14,6 +14,7 @@ if /i "%cmd%"=="help" goto show_help
 if /i "%cmd%"=="cmd" goto command
 if /i "%cmd%"=="online" goto online
 if /i "%cmd%"=="cfg" goto config
+if /i "%cmd%"=="tool" goto tool
 
 echo Unknown command: %cmd%
 goto show_help
@@ -27,6 +28,7 @@ echo Available commands:
 echo   cmd    		- 使用命令抓取trace
 echo   online		- 使用谷歌封装的trace脚本抓取trace
 echo   cfg			- 使用trace配置文件抓取trace
+echo   tool			- 下载更新trace相关的工具，record_android_trace,open_trace_in_ui
 echo.
 echo Examples:
 echo   perf trace cmd 5 [local]
@@ -38,16 +40,19 @@ exit /b
     set "TRACE_FILE=%model%_%format_time%.perfetto"
     set "OUT_TRACE_FILE=%OUT_DIR%\%TRACE_FILE%"
 
+    set GOOGLE_OPEN_TRACE_FILE=%SCRIPT_DIR%perfetto_tools\open_trace_in_ui
+
+    set TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%google_perfetto_tools\trace_processor_shell.exe
+
+    set GOOGLE_RECORD_TRACE_FILE=%SCRIPT_DIR%perfetto_tools\record_android_trace
+
     @REM **************************set record time*********************************
     set "record_time=%param1%"
     if "%record_time%"=="" (
         set "record_time=5"
     )
     :: 如果第三个参数不是数字而是字符，默认record time
-    set /a test=%param1% 2>nul
-    if errorlevel 1 (
-        set "record_time=5"
-    )
+
     exit /b
 
 :command
@@ -61,21 +66,6 @@ exit /b
     exit /b
 
 :online
-    set GOOGLE_RECORD_TRACE_FILE=%OUT_DIR%\record_android_trace
-    echo GOOGLE_RECORD_TRACE_FILE=%GOOGLE_RECORD_TRACE_FILE%
-    if not exist "%GOOGLE_RECORD_TRACE_FILE%" (
-        curl -L -f -o "%GOOGLE_RECORD_TRACE_FILE%" https://raw.githubusercontent.com/google/perfetto/master/tools/record_android_trace
-        if %errorlevel% neq 0 (
-            echo 下载失败！请检查网络/代理设置。
-            pause
-            exit /b 1
-        )
-        copy /Y "%GOOGLE_RECORD_TRACE_FILE%" .
-    )
-    if errorlevel 1 (
-        echo record_android_trace下载失败，请确保下载完成
-        exit /b
-    )
     :: 检查是否安装了 python
     where python >nul 2>nul
     if errorlevel 1 (
@@ -85,7 +75,7 @@ exit /b
     echo ********************** start recording trace %record_time%s **********************
     :: 查看支持的TAG, adb shell atrace --list_categories
     set "google_default_cmd=sched freq idle am wm gfx view binder_driver hal dalvik camera input res memory thermal"
-    python record_android_trace -o %OUT_TRACE_FILE% -t %record_time%s -b 64mb %google_default_cmd%
+    python "%GOOGLE_RECORD_TRACE_FILE%" -o %OUT_TRACE_FILE% -t %record_time%s -b 64mb %google_default_cmd%
     exit /b
 
 :config
@@ -108,7 +98,7 @@ exit /b
     echo file_write_period_ms=%file_write_period_ms%
     echo flush_period_ms=%flush_period_ms%
 
-    set "PERFETTO_CONFIG=%SCRIPT_DIR%\perf_perfetto_config.pbtxt
+    set "PERFETTO_CONFIG=%SCRIPT_DIR%archive\perf_perfetto_config.pbtxt
     set "TMP_PERFETTO_CONFIG=%OUT_DIR%\perf_perfetto_config.pbtxt
     (for /f "delims=" %%L in (%PERFETTO_CONFIG%) do (
         set "line=%%L"
@@ -127,13 +117,23 @@ exit /b
     call :open_trace
     exit /b
 
+:tool
+    ::下载自动打开perfetto并加载trace的工具谷歌工具open_trace_in_ui
+    curl -L -f -o %GOOGLE_OPEN_TRACE_FILE% https://raw.githubusercontent.com/google/perfetto/main/tools/open_trace_in_ui
+    if %errorlevel% neq 0 (
+        echo 下载失败！请检查网络/代理设置。
+    )
+    curl -L -f -o "%GOOGLE_RECORD_TRACE_FILE%" https://raw.githubusercontent.com/google/perfetto/master/tools/record_android_trace
+    if %errorlevel% neq 0 (
+        echo 下载失败！请检查网络/代理设置。
+    )
+    exit /b 0
+
 :open_trace_shell
-    ::不需要打开浏览器 UI,直接在命令行里用 SQL 对 trace 文件做数据分析的工具,尤其适合你需要写脚本自动化提取指标、批量处理多个 trace 文件的场景
-    set TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%\google_perfetto_tools\trace_processor_shell.exe
-    echo TRACE_PROCESSOR_SHELL=%TRACE_PROCESSOR_SHELL%
+    ::不需要打开浏览器 UI,直接在命令行里用 SQL 对 trace 文件做数据分析的工具
     %TRACE_PROCESSOR_SHELL% --version
     %TRACE_PROCESSOR_SHELL% "%OUT_TRACE_FILE%"
-    ::start /b trace_processor_shell.exe --httpd "%OUT_TRACE_FILE%"
+    ::trace_processor_shell.exe --httpd "%OUT_TRACE_FILE%"
     exit /b
 
 :open_trace
@@ -146,19 +146,7 @@ exit /b
         call :open_trace_shell
         exit /b
     )
-    ::默认使用ui打开perfetto trace
-    set GOOGLE_OPEN_TRACE_FILE=%OUT_DIR%\open_trace_in_ui
-    echo GOOGLE_OPEN_TRACE_FILE=%GOOGLE_OPEN_TRACE_FILE%
-    if not exist "%GOOGLE_OPEN_TRACE_FILE%" (
-        curl -L -f -o %GOOGLE_OPEN_TRACE_FILE% https://raw.githubusercontent.com/google/perfetto/main/tools/open_trace_in_ui
-        if %errorlevel% neq 0 (
-            echo 下载失败！请检查网络/代理设置。
-            pause
-            exit /b 1
-        )
-        copy /Y "%GOOGLE_OPEN_TRACE_FILE%" .
-    )
-    ::"C:\Program Files\Google\Chrome\Application\chrome.exe" "https://ui.perfetto.dev/"
+    ::默认使用ui打开perfetto
     python %GOOGLE_OPEN_TRACE_FILE% -i %OUT_TRACE_FILE%
     exit /b
     
