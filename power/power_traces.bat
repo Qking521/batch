@@ -6,14 +6,15 @@ set "cmd=%~1"
 set "param1=%~2"
 set "param2=%~3"
 
-call :trace_processor_check
+call :evn_init
 if errorlevel 1 exit /b 1
 
 if "%cmd%"=="" goto :usage
 if /i "%cmd%"=="-h" goto :usage
 if /i "%cmd%"=="help" goto :usage
 if /i "%cmd%"=="ui" goto :do_ui
-if /i "%cmd%"=="local" goto :do_local
+if /i "%cmd%"=="ui-enhance" goto :do_ui-enhance
+if /i "%cmd%"=="sh" goto :do_shell
 
 echo [ERROR] 未知命令: %cmd%
 goto :usage
@@ -24,19 +25,28 @@ echo 用法: power analyze ^<open^|sql^> [tag/sql_statement/file_path] [bugrepor
 echo.
 echo 命令:
 echo   ui [bugreport_path]              - 使用perfetto打开指定的或 OUT\android 目录下最新的 bugreport zip 文件
-echo   local [bugreport_path]           - 使用本地trace_processor_shell打开 指定的或OUT\android 目录下最新的 bugreport zip 文件
+echo   ui-enhance [bugreport_path]      - 使用perfetto打开指定的或 OUT\android 目录下最新的 bugreport zip 文件
+echo   sh [bugreport_path]              - 使用本地trace_processor_shell打开 指定的或OUT\android 目录下最新的 bugreport zip 文件
 echo   help / -h                        - 显示此帮助信息
 echo.
 echo 示例:
-echo   power trace ui
-echo   power trace local
 echo   power trace ui [bugreport路径]
+echo   power trace ui-enhance [bugreport路径]
+echo   power trace sh [bugreport路径]
 echo.
 exit /b 0
 
-:trace_processor_check
+:evn_init
+    for /f "delims= " %%a in ('adb shell getprop ro.product.board') do set model=%%a
+    set "TRACE_FILE=%model%_%format_time%.perfetto"
+    set "OUT_TRACE_FILE=%OUT_DIR%\%TRACE_FILE%"
 
-exit /b 0
+    set GOOGLE_OPEN_TRACE_FILE=%SCRIPT_DIR%..\performance\perfetto_tools\open_trace_in_ui
+
+    set TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%..\performance\google_perfetto_tools\trace_processor_shell.exe
+
+    set GOOGLE_RECORD_TRACE_FILE=%SCRIPT_DIR%..\performance\perfetto_tools\record_android_trace
+    exit /b 0
 
 :find_target_bugreport
     :: %~1 为传入的自定义 bugreport 路径
@@ -68,38 +78,32 @@ exit /b 0
         exit /b 1
     )
     echo [INFO] 使用自动找到的最新的 bugreport: %TARGET_BUGREPORT%
-exit /b 0
+    exit /b 0
 
 :do_ui
     call :find_target_bugreport "%param1%"
     if errorlevel 1 exit /b 1
 
-    set GOOGLE_OPEN_TRACE_FILE=%OUT_DIR%\open_trace_in_ui
-    echo GOOGLE_OPEN_TRACE_FILE=%GOOGLE_OPEN_TRACE_FILE%
-    if not exist "%GOOGLE_OPEN_TRACE_FILE%" (
-        curl -L -f -o %GOOGLE_OPEN_TRACE_FILE% https://raw.githubusercontent.com/google/perfetto/main/tools/open_trace_in_ui
-        if %errorlevel% neq 0 (
-            echo 下载失败！请检查网络/代理设置。
-            pause
-            exit /b 1
-        )
-        copy /Y "%GOOGLE_OPEN_TRACE_FILE%" .
-    )
     echo [INFO] 正在启动 perfetto UI打开bugreport...
+    python %GOOGLE_OPEN_TRACE_FILE% -i %TARGET_BUGREPORT%
+    exit /b 0
+
+::本地启动一个高性能的Trace Processor服务加速的 trace 解析能力
+:do_ui-enhance
+    call :find_target_bugreport "%param1%"
+    if errorlevel 1 exit /b 1
+    echo [INFO] 正在启动 本地Trace Processor 服务，加速 trace 解析...
+    "%TRACE_PROCESSOR_SHELL%" --httpd "%TARGET_BUGREPORT%"
+    
     python %GOOGLE_OPEN_TRACE_FILE% -i %TARGET_BUGREPORT%
 exit /b 0
 
-:do_local
-    set "TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%..\performance\google_perfetto_tools\trace_processor_shell.exe"
-    if not exist "%TRACE_PROCESSOR_SHELL%" (
-        echo [ERROR] 找不到 trace_processor_shell.exe
-        exit /b 1
-    )
 
+:do_shell
     call :find_target_bugreport "%param1%"
     if errorlevel 1 exit /b 1
 
     echo [INFO] 正在启动 trace_processor_shell 交互式命令行...
-    "%TRACE_PROCESSOR_SHELL%" "%TARGET_BUGREPORT%"
-exit /b 0
+    "%TRACE_PROCESSOR_SHELL%" -i "%TARGET_BUGREPORT%"
+    exit /b 0
 
