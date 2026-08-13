@@ -43,9 +43,12 @@ exit /b 0
 
     set GOOGLE_OPEN_TRACE_FILE=%SCRIPT_DIR%..\performance\perfetto_tools\open_trace_in_ui
 
-    set TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%..\performance\google_perfetto_tools\trace_processor_shell.exe
+    set TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%..\performance\perfetto_tools\trace_processor_shell.exe
 
     set GOOGLE_RECORD_TRACE_FILE=%SCRIPT_DIR%..\performance\perfetto_tools\record_android_trace
+
+    set "SQL_DIR=%SCRIPT_DIR%power_sql"
+
     exit /b 0
 
 :find_target_bugreport
@@ -94,7 +97,7 @@ exit /b 0
     if errorlevel 1 exit /b 1
     echo [INFO] 正在启动 本地Trace Processor 服务，加速 trace 解析...
     "%TRACE_PROCESSOR_SHELL%" --httpd "%TARGET_BUGREPORT%"
-    
+
     python %GOOGLE_OPEN_TRACE_FILE% -i %TARGET_BUGREPORT%
 exit /b 0
 
@@ -102,6 +105,9 @@ exit /b 0
 :do_shell
     call :find_target_bugreport "%param1%"
     if errorlevel 1 exit /b 1
+
+    ::进入power_sql目录，这样可以直接通过命令.read *.sql
+    cd /d %SQL_DIR%
 
     echo [INFO] 正在启动 trace_processor_shell 交互式命令行...
     "%TRACE_PROCESSOR_SHELL%" -i "%TARGET_BUGREPORT%"

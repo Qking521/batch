@@ -1,4 +1,8 @@
 @echo off
+:: =========================README===================================
+:: perfetto离线工具下载地址：https://github.com/google/perfetto/releases
+:: google_perfetto_tools当前版本：v52
+:: ============================================================
 chcp 65001 >nul
 setlocal 
 
@@ -42,7 +46,7 @@ exit /b
 
     set GOOGLE_OPEN_TRACE_FILE=%SCRIPT_DIR%perfetto_tools\open_trace_in_ui
 
-    set TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%google_perfetto_tools\trace_processor_shell.exe
+    set TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%perfetto_tools\trace_processor_shell.exe
 
     set GOOGLE_RECORD_TRACE_FILE=%SCRIPT_DIR%perfetto_tools\record_android_trace
 

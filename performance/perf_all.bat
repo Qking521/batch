@@ -1,8 +1,4 @@
 @echo off
-:: =========================README===================================
-:: perfetto离线工具下载地址：https://github.com/google/perfetto/releases
-:: google_perfetto_tools当前版本：v52
-:: ============================================================
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 

@@ -4,7 +4,7 @@
 INCLUDE PERFETTO MODULE android.battery;
 
 SELECT
-  ts,
+  datetime(ts / 1e9, 'unixepoch') AS time_utc,
   capacity_percent,
   voltage_uv,
   current_ua,

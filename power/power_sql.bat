@@ -28,7 +28,7 @@ echo BATTERY_CAP=!BATTERY_CAP! mAh
 call :find_target_bugreport "%param2%"
 if errorlevel 1 exit /b 1
 
-set "TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%..\performance\google_perfetto_tools\trace_processor_shell.exe"
+set "TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%..\performance\perfetto_tools\trace_processor_shell.exe"
 if not exist "%TRACE_PROCESSOR_SHELL%" (
     echo [ERROR] 找不到 trace_processor_shell.exe: %TRACE_PROCESSOR_SHELL%
     exit /b 1
@@ -71,20 +71,17 @@ exit /b 0
 :: ============================================================
 echo.
 echo Usage:
-echo   power sql ^<action^> ^<tag_or_sql^> [bugreport_path]
+echo   power sql ^<tag_or_sql^> [bugreport_path]
 echo.
 echo 参数说明:
-echo   ^<action^>          固定值，如 dcr（由调用方传入）
-echo   ^<tag_or_sql^>      SQL 预设标签名，对应 power_sql\^<tag^>.sql 文件
-echo                     或直接传入 SQL 语句字符串
-echo   [bugreport_path]  可选，指定 bugreport.zip 路径
-echo                     不指定则自动在 OUT/android/ 下查找最新文件
+echo  ^<tag_or_sql^>      -- SQL 预设标签名，对应 power_sql\^<tag^>.sql 文件或直接传入 SQL 语句字符串
+echo  bugreport           -- option
 echo.
 echo 示例:
-echo   power sql dcr dcr
-echo   power sql dcr battery
-echo   power sql dcr wakelock "C:\path\to\bugreport.zip"
-echo   power sql dcr "SELECT * FROM slice LIMIT 10"
+echo   power sql dcr
+echo   power sql battery
+echo   power sql wakelock bugreport^.zip
+echo   power sql "SELECT * FROM slice LIMIT 10"
 echo.
 echo 可用 SQL 标签 (power_sql\*.sql):
 set "SQL_DIR=%~dp0power_sql"
@@ -105,48 +102,48 @@ exit /b 0
 :: 用法: call :build_sql_with_vars "源文件.sql" "输出文件.sql"
 :: ============================================================
 :build_sql_with_vars
-set "_SRC=%~1"
-set "_DST=%~2"
-> "%_DST%" (
-    for /f "usebackq delims=" %%L in ("%_SRC%") do (
-        set "_line=%%L"
-        set "_line=!_line:__BATTERY_CAP__=%BATTERY_CAP%!"
-        echo(!_line!
-    )
-)
-exit /b 0
+  set "_SRC=%~1"
+  set "_DST=%~2"
+  > "%_DST%" (
+      for /f "usebackq delims=" %%L in ("%_SRC%") do (
+          set "_line=%%L"
+          set "_line=!_line:__BATTERY_CAP__=%BATTERY_CAP%!"
+          echo(!_line!
+      )
+  )
+  exit /b 0
 
 
 :: ============================================================
 :find_target_bugreport
-:: %~1 为传入的自定义 bugreport 路径
-:: ============================================================
-set "CUSTOM_PATH=%~1"
-set "TARGET_BUGREPORT="
+  :: %~1 为传入的自定义 bugreport 路径
+  :: ============================================================
+  set "CUSTOM_PATH=%~1"
+  set "TARGET_BUGREPORT="
 
-if not "%CUSTOM_PATH%"=="" (
-    if exist "%CUSTOM_PATH%" (
-        set "TARGET_BUGREPORT=%CUSTOM_PATH%"
-        echo [INFO] 使用指定的 bugreport: %CUSTOM_PATH%
-        exit /b 0
-    ) else (
-        echo [WARN] 路径不存在: %CUSTOM_PATH%，自动查找最新文件...
-    )
-)
+  if not "%CUSTOM_PATH%"=="" (
+      if exist "%CUSTOM_PATH%" (
+          set "TARGET_BUGREPORT=%CUSTOM_PATH%"
+          echo [INFO] 使用指定的 bugreport: %CUSTOM_PATH%
+          exit /b 0
+      ) else (
+          echo [WARN] 路径不存在: %CUSTOM_PATH%，自动查找最新文件...
+      )
+  )
 
-set "TARGET_DIR=%BASE_OUT_DIR%android"
-if not exist "%TARGET_DIR%" (
-    echo [ERROR] 目录不存在: %TARGET_DIR%
-    exit /b 1
-)
+  set "TARGET_DIR=%BASE_OUT_DIR%android"
+  if not exist "%TARGET_DIR%" (
+      echo [ERROR] 目录不存在: %TARGET_DIR%
+      exit /b 1
+  )
 
-for /f "delims=" %%F in ('dir /b /a-d /o-d "%TARGET_DIR%\bugreport_*.zip" 2^>nul') do (
-    if not defined TARGET_BUGREPORT set "TARGET_BUGREPORT=%TARGET_DIR%\%%F"
-)
+  for /f "delims=" %%F in ('dir /b /a-d /o-d "%TARGET_DIR%\bugreport_*.zip" 2^>nul') do (
+      if not defined TARGET_BUGREPORT set "TARGET_BUGREPORT=%TARGET_DIR%\%%F"
+  )
 
-if "%TARGET_BUGREPORT%"=="" (
-    echo [ERROR] 未在 %TARGET_DIR% 找到 bugreport_*.zip
-    exit /b 1
-)
-echo [INFO] 使用最新 bugreport: %TARGET_BUGREPORT%
-exit /b 0
+  if "%TARGET_BUGREPORT%"=="" (
+      echo [ERROR] 未在 %TARGET_DIR% 找到 bugreport_*.zip
+      exit /b 1
+  )
+  echo [INFO] 使用最新 bugreport: %TARGET_BUGREPORT%
+  exit /b 0
