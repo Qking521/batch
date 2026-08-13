@@ -28,6 +28,7 @@ if /i "%cmd%"=="cpu" goto cpu
 if /i "%cmd%"=="gpu" goto gpu
 if /i "%cmd%"=="flame" goto flame
 if /i "%cmd%"=="ds" goto dhrystone
+if /i "%cmd%"=="sql" goto sql
 
 echo [ERROR] 未知命令: %cmd%
 goto :usage
@@ -39,7 +40,8 @@ echo 用法: perf ^<命令^> [参数]
 echo.
 echo 命令:
 echo   sf                               - SurfaceFlinger 性能信息
-echo   trace [cmd/online/cfg] [时长(s)] - Perfetto 性能抓取
+echo   trace [cmd/online/cfg/ui/sh]    - Perfetto 性能抓取及打开 Trace
+echo   sql [tag/sql] [trace_path]       - 使用 SQL 查询性能 Trace
 echo   cpu [info/freq/online/...]       - CPU 调控
 echo   gpu                              - GPU 性能抓取 (等同 trace)
 echo   ds                               - Dhrystone 操作
@@ -48,8 +50,10 @@ echo   help / -h                        - 显示此帮助信息
 echo.
 echo 示例:
 echo   perf trace cmd 5
+echo   perf trace ui
+echo   perf sql cpu_usage
+echo   perf sql "SELECT name, dur FROM slice LIMIT 10"
 echo   perf cpu info
-echo   perf cpu fix-freq policy0 1800000
 echo.
 exit /b 0
 
@@ -91,4 +95,8 @@ exit /b
 
 :dhrystone
 call %SCRIPT_DIR%perf_dhrystone.bat %*
+exit /b
+
+:sql
+call "%SCRIPT_DIR%perf_sql.bat" %*
 exit /b
