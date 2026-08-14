@@ -122,20 +122,20 @@ exit /b
 
 :config_pull
     for /f "delims= " %%a in ('adb shell getprop ro.product.board') do set model=%%a
-    set "OUT_DIR=!OUT_DIR!\thermal_config_%model%_%format_time%"
-    echo config out path=%OUT_DIR%
-    if not exist %OUT_DIR% (
-	    mkdir %OUT_DIR%
+    set "MODULE_OUT_DIR=!MODULE_OUT_DIR!\thermal_config_%model%_%format_time%"
+    echo config out path=%MODULE_OUT_DIR%
+    if not exist %MODULE_OUT_DIR% (
+	    mkdir %MODULE_OUT_DIR%
     )
 
     if "!thermalHalOwner!"=="mediatek" (
-        adb pull vendor/etc/thermal/ %OUT_DIR%
-        start %OUT_DIR%
+        adb pull vendor/etc/thermal/ %MODULE_OUT_DIR%
+        start %MODULE_OUT_DIR%
     )
 
     if "!thermalHalOwner!"=="pixel" (
-        adb pull vendor/etc/thermal_info_config.json %OUT_DIR%
-        start %OUT_DIR%
+        adb pull vendor/etc/thermal_info_config.json %MODULE_OUT_DIR%
+        start %MODULE_OUT_DIR%
     )
     exit /b
 

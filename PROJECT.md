@@ -67,7 +67,7 @@ esac
 | 范式分类 | 典型实现 | 说明 |
 |------|------|------|
 | **纯 Shell 业务（主入口直连）** | `android_all.bat` + `android_device_info.sh`<br>`android_all.bat` + `android_refresh_rate.sh` | 纯 Android 设备端操作，无单独子 bat 中转 |
-| **双层包装（PC 本地交互）** | `android_screen_record.bat` + `android_screen_record.sh` | 涉及从设备拉取文件到 PC 本地 `OUT_DIR` 并自动打开 |
+| **双层包装（PC 本地交互）** | `android_screen_record.bat` + `android_screen_record.sh` | 涉及从设备拉取文件到 PC 本地 `MODULE_OUT_DIR` 并自动打开 |
 | **纯 Shell 轻量查询** | `thermal/thermal_cooling_devices.sh` | 轻量只读查询的 shell 范例 |
 
 ### 跨平台 Shebang 兼容规范
@@ -235,7 +235,7 @@ if not exist "%SH_SCRIPT%" (
 为了避免在各子脚本中重复初始化基础变量或硬编码路径，项目通过 `init.bat` 统一提取并对外导出以下全局环境变量：
 - `FORMAT_TIME`：格式为 `MMDD-HHMM` 的当前时间，用于日志和 Trace 文件的命名。
 - `SCRIPT_DIR`：当前执行脚本所在的目录绝对路径（以反斜杠 `\` 结尾）。
-- `OUT_DIR`：由当前脚本所在子目录名自动生成的输出日志存放路径（例如 `OUT\android\`）。
+- `MODULE_OUT_DIR`：由当前脚本所在子目录名自动生成的输出日志存放路径（例如 `OUT\android\`）。
 - `ADB_CHECK_BAT`：全局 adb 检测脚本 `adb_check.bat` 的绝对路径。
 
 **注意**：

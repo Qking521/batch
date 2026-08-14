@@ -36,8 +36,8 @@ if not exist "%TRACE_PROCESSOR_SHELL%" (
 
 set "SQL_DIR=%~dp0power_sql"
 set "SQL_FILE=%SQL_DIR%\%param1%.sql"
-set "TMP_SQL_FILE=%OUT_DIR%\tmp_query.sql"
-set "CSV_OUT_FILE=%OUT_DIR%\query_result_%FORMAT_TIME%.csv"
+set "TMP_SQL_FILE=%MODULE_OUT_DIR%\tmp_query.sql"
+set "CSV_OUT_FILE=%MODULE_OUT_DIR%\query_result_%FORMAT_TIME%.csv"
 
 echo SQL_FILE=%SQL_FILE%
 echo TMP_SQL_FILE=%TMP_SQL_FILE%
@@ -131,7 +131,7 @@ exit /b 0
       )
   )
 
-  set "TARGET_DIR=%BASE_OUT_DIR%android"
+  set "TARGET_DIR=%ROOT_OUT_DIR%android"
   if not exist "%TARGET_DIR%" (
       echo [ERROR] 目录不存在: %TARGET_DIR%
       exit /b 1

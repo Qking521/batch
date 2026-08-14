@@ -87,13 +87,13 @@ echo Step 2: Create archive
 adb shell "rm -rf /data/debuglogger/debuglog.tar.gz"
 adb shell "cd /data/debuglogger/ && tar -cvzf %model%_debuglog.tar.gz *"
 echo Step 3: Pull to local
-if not exist %OUT_DIR% (
-	mkdir  %OUT_DIR%
+if not exist %MODULE_OUT_DIR% (
+	mkdir  %MODULE_OUT_DIR%
 )
 
-adb pull /data/debuglogger/ %OUT_DIR%\%model%_mtklog_%format_time%
+adb pull /data/debuglogger/ %MODULE_OUT_DIR%\%model%_mtklog_%format_time%
 echo Step 4: Open directory
-start "" %OUT_DIR%\%model%_mtklog_%format_time%
+start "" %MODULE_OUT_DIR%\%model%_mtklog_%format_time%
 echo Log files pulled to current directory
 exit /b
 

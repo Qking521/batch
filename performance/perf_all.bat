@@ -10,8 +10,8 @@ if %ERRORLEVEL% neq 0 (
     exit /b %ERRORLEVEL%
 )
 :: 创建performance的OUT目录
-if not exist %OUT_DIR% (
-	mkdir %OUT_DIR%
+if not exist %MODULE_OUT_DIR% (
+	mkdir %MODULE_OUT_DIR%
 )
 
 set "cmd=%1"

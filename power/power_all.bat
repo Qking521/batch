@@ -14,7 +14,7 @@ if %ERRORLEVEL% neq 0 (
     echo [错误]: 基础检测失败，退出操作。
     exit /b %ERRORLEVEL%
 )
-if not exist %OUT_DIR% mkdir %OUT_DIR%
+if not exist %MODULE_OUT_DIR% mkdir %MODULE_OUT_DIR%
 
 set "cmd=%~1"
 set "param1=%~2"

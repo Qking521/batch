@@ -15,22 +15,22 @@ echo MTK_THERMAL_VERSION = %thermalVersion%
 
 :: 设置主目录路径
 set "DECRYPT_DIR=%SCRIPT_DIR%\thermal_decrypt"
-set "OUT_DIR=%OUT_DIR%\thermal_decrypt\%FORMAT_TIME%"
+set "MODULE_OUT_DIR=%MODULE_OUT_DIR%\thermal_decrypt\%FORMAT_TIME%"
 
-if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
+if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
 
-echo thermal文件目录创建成功: %OUT_DIR%
+echo thermal文件目录创建成功: %MODULE_OUT_DIR%
 
 :: 执行adb pull命令
 echo 正在执行adb pull命令...
 if %thermalVersion%==0 (
-	adb pull /vendor/etc/.tp/ "%OUT_DIR%"
+	adb pull /vendor/etc/.tp/ "%MODULE_OUT_DIR%"
 )else (
-	adb pull /vendor/etc/thermal/. "%OUT_DIR%"
+	adb pull /vendor/etc/thermal/. "%MODULE_OUT_DIR%"
 )
 
 :: 重命名文件后缀为.mtc
-cd "%OUT_DIR%"
+cd "%MODULE_OUT_DIR%"
 for /r %%f in (*.conf) do (
 	if exist "%%f" (
         set "filename=%%~nf"
@@ -38,9 +38,9 @@ for /r %%f in (*.conf) do (
     )
 )
 
-copy "%DECRYPT_DIR%"\forfiles.exe %OUT_DIR%
-copy "%DECRYPT_DIR%"\decrypt.exe %OUT_DIR%
-copy "%DECRYPT_DIR%"\decrypt_all_config.bat %OUT_DIR%
+copy "%DECRYPT_DIR%"\forfiles.exe %MODULE_OUT_DIR%
+copy "%DECRYPT_DIR%"\decrypt.exe %MODULE_OUT_DIR%
+copy "%DECRYPT_DIR%"\decrypt_all_config.bat %MODULE_OUT_DIR%
 
 rem decrypt_all_config.bat有pause，<nul会让 pause 立即收到一个“空输入”，相当于自动按下回车，不会卡住
 call decrypt_all_config.bat <nul
@@ -51,4 +51,4 @@ if %errorlevel% neq 0 (
 :: 删除所有 .mtc 文件
 del *.mtc
 
-start %OUT_DIR%
+start %MODULE_OUT_DIR%

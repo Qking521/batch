@@ -39,7 +39,7 @@ exit /b 0
 :evn_init
     for /f "delims= " %%a in ('adb shell getprop ro.product.board') do set model=%%a
     set "TRACE_FILE=%model%_%format_time%.perfetto"
-    set "OUT_TRACE_FILE=%OUT_DIR%\%TRACE_FILE%"
+    set "OUT_TRACE_FILE=%MODULE_OUT_DIR%\%TRACE_FILE%"
 
     set GOOGLE_OPEN_TRACE_FILE=%SCRIPT_DIR%..\performance\perfetto_tools\open_trace_in_ui
 
@@ -66,7 +66,7 @@ exit /b 0
         )
     )
 
-    set "TARGET_DIR=%BASE_OUT_DIR%android"
+    set "TARGET_DIR=%ROOT_OUT_DIR%android"
     if not exist "%TARGET_DIR%" (
         echo [ERROR] 目标目录不存在: %TARGET_DIR%
         exit /b 1

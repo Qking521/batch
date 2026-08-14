@@ -5,7 +5,7 @@ setlocal
 :: Define variables
 set param=%1
 set NPP_PATH=C:\Program Files\Notepad++\notepad++.exe
-set SF_OUT_DIR=%OUT_DIR%\SurfaceFlinger
+set SF_OUT_DIR=%MODULE_OUT_DIR%\SurfaceFlinger
 for /f "delims= " %%a in ('adb shell getprop ro.product.device') do set model=%%a
 if "%param%"=="" (
 	adb shell dumpsys SurfaceFlinger > SurfaceFlinger.log

@@ -8,9 +8,9 @@
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
-set "cmd=%1"
-set "param1=%2"
-set "param2=%3"
+set "cmd=%~1"
+set "param1=%~2"
+set "param2=%~3"
 
 if "%cmd%"=="" goto show_help
 if /i "%cmd%"=="-h" goto show_help
@@ -25,7 +25,7 @@ if %ERRORLEVEL% neq 0 (
 )
 
 :: 创建Android的out目录
-if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
+if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
 if /i "%cmd%"=="top" goto current_activity
 if /i "%cmd%"=="ss" goto screen_shot
 if /i "%cmd%"=="sr" goto screen_record
@@ -42,7 +42,6 @@ if /i "%cmd%"=="dump" goto dump
 if /i "%cmd%"=="rr" goto refresh_rate
 if /i "%cmd%"=="skip" goto skip_wizard
 if /i "%cmd%"=="install" goto install_apk
-if /i "%cmd%"=="de" goto decompile_apk
 if /i "%cmd%"=="adbd" goto adb_helper
 
 echo Unknown command: %cmd%
@@ -68,7 +67,6 @@ echo   dump [service] [params]  - Dump system service state to OUT dir
 echo   rr [on/off]              - Set or query refresh rate
 echo   skip                     - Skip setup wizard
 echo   install                  - Install perf / thermal / power apk tools
-echo   de                       - Decompile apk
 echo   adbd [restart/root...]   - ADB helper / status configuration
 echo   -h                       - Show help info (alias: help)
 echo.
@@ -100,9 +98,9 @@ exit /b 0
 :screen_shot
 set "shot_file=screenshot_%FORMAT_TIME%.png"
 adb shell screencap -p /sdcard/%shot_file%
-adb pull /sdcard/%shot_file% "%OUT_DIR%"
+adb pull /sdcard/%shot_file% "%MODULE_OUT_DIR%"
 adb shell "rm -rf /sdcard/%shot_file%"
-start "" "%OUT_DIR%\%shot_file%"
+start "" "%MODULE_OUT_DIR%\%shot_file%"
 exit /b 0
 
 :screen_record
@@ -189,25 +187,7 @@ exit /b 0
 call "%SCRIPT_DIR%android_install.bat" %param1%
 exit /b 0
 
-:decompile_apk
-	for %%i in ("%param1%") do set "APK_NAME=%%~ni"
-	echo 更多信息:java -jar apktool.jar -h
-	echo 官网地址:https://bitbucket.org/iBotPeaches/apktool/downloads/
-	set "APKTOOL_PATH=%SCRIPT_DIR%android_archive\apktool.jar"
-    if "%param1%"=="" (
-	    echo 请传入apk具体路径, 使用示例:
-	   	echo apktool d^|decode [options] ^<apk-file^>
-	    exit /b 1
-	)
-	if exist %OUT_DIR%\%APK_NAME% (
-		echo 正在删除同名目录
-		rd /s /q %OUT_DIR%\%APK_NAME%	
-	)
-	echo 当前apktool版本号:
-	java -jar %APKTOOL_PATH% v
-	java -jar %APKTOOL_PATH% d  -f %param1% -o %OUT_DIR%\%APK_NAME%
-	start %OUT_DIR%
-exit /b 0
+
 
 :dump
 set "service=%~2"
@@ -217,9 +197,9 @@ if "%service%"=="" (
     exit /b 1
 )
 if "%service_param%"=="" (
-    adb shell dumpsys %service% > "%OUT_DIR%\%service%.txt"
+    adb shell dumpsys %service% > "%MODULE_OUT_DIR%\%service%.txt"
 ) else (
-    adb shell dumpsys %service% %service_param% > "%OUT_DIR%\%service%.txt"
+    adb shell dumpsys %service% %service_param% > "%MODULE_OUT_DIR%\%service%.txt"
 )
-start "" "%OUT_DIR%\%service%.txt"
+start "" "%MODULE_OUT_DIR%\%service%.txt"
 exit /b 0

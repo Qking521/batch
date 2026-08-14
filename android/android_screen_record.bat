@@ -44,8 +44,8 @@ for /f "tokens=1" %%p in ('adb shell "pidof screenrecord" 2^>nul') do (
 )
 
 :: 拉取录屏文件
-if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
-set "OUT_RECORD_FILE=%OUT_DIR%%RECORD_FILE%"
+if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
+set "OUT_RECORD_FILE=%MODULE_OUT_DIR%%RECORD_FILE%"
 if exist "%OUT_RECORD_FILE%" del /f "%OUT_RECORD_FILE%"
 
 echo Pulling record file to local: %OUT_RECORD_FILE%

@@ -66,26 +66,26 @@ exit /b
 :do_pull
     echo [信息]: 正在停止whatstemp进程并拉取 WhatsTemp 日志...
     adb shell am stopservice -n %PACKAGE_NAME%/.GetInfo_Service
-    echo OUT_DIR = %OUT_DIR%
+    echo MODULE_OUT_DIR = %MODULE_OUT_DIR%
     :: 先清理本地已存在的目录，防止 adb pull 产生嵌套
-    :: if exist "%OUT_DIR%\whatsTemp" rd /s /q "%OUT_DIR%\whatsTemp"
+    :: if exist "%MODULE_OUT_DIR%\whatsTemp" rd /s /q "%MODULE_OUT_DIR%\whatsTemp"
     :: 确保父目录存在
-    if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
+    if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
     :: 直接拉取文件夹。因为本地 whatsTemp 不存在，ADB 会将远程 log 文件夹的内容直接放入新建的 whatsTemp 中
-    adb pull %WT_PATH%log/ "%OUT_DIR%\whatsTemp"
+    adb pull %WT_PATH%log/ "%MODULE_OUT_DIR%\whatsTemp"
     adb shell rm  %WT_PATH%log/*
-    if exist "%OUT_DIR%\whatsTemp" start "" "%OUT_DIR%\whatsTemp"
+    if exist "%MODULE_OUT_DIR%\whatsTemp" start "" "%MODULE_OUT_DIR%\whatsTemp"
 exit /b
 
 :do_config
-    if not exist "%OUT_DIR%" mkdir "%OUT_DIR%"
-    adb pull  %WT_PATH%/tool.config %OUT_DIR%\whatsTemp\tool.config
-    start "" "%OUT_DIR%\whatsTemp"
+    if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
+    adb pull  %WT_PATH%/tool.config %MODULE_OUT_DIR%\whatsTemp\tool.config
+    start "" "%MODULE_OUT_DIR%\whatsTemp"
 exit /b
 
 :do_show
     echo [信息]: 正在查找最近的 CSV 日志...
-    pushd "%OUT_DIR%\whatsTemp"
+    pushd "%MODULE_OUT_DIR%\whatsTemp"
     :: 按时间顺序寻找最新的 csv 文件
     for /f "delims=" %%i in ('dir /b /od *.csv 2^>nul') do set "LATEST_CSV=%%i"
     if not "!LATEST_CSV!" == "" (

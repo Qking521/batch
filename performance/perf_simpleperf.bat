@@ -38,15 +38,15 @@ timeout /t 2
 adb shell /data/local/tmp/simpleperf --log error report -g -i /data/local/tmp/perf.data -o /data/local/tmp/perf_report.txt >nul
 
 
-adb pull /data/local/tmp/perf.data %OUT_DIR%/ >nul
-adb pull /data/local/tmp/perf_report.txt %OUT_DIR%/ >nul
+adb pull /data/local/tmp/perf.data %MODULE_OUT_DIR%/ >nul
+adb pull /data/local/tmp/perf_report.txt %MODULE_OUT_DIR%/ >nul
 
 where python >nul 2>nul
 if errorlevel 1 (
 	echo 未检测到 Python，请先安装 Python 环境
 	exit /b
 )
-python %SIMPLEPERF_DIR%\report_html.py -i %OUT_DIR%/perf.data -o %OUT_DIR%/perf.html
+python %SIMPLEPERF_DIR%\report_html.py -i %MODULE_OUT_DIR%/perf.data -o %MODULE_OUT_DIR%/perf.html
 
 :usage
 echo.

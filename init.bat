@@ -37,15 +37,15 @@ set FORMAT_TIME=%MM%%DD%-%HH%%MN%
 :: --结尾有反斜杠
 set "SCRIPT_DIR=%~dp0"
 :: %1为空时代表初始化脚本init.bat调用
-:: %1不为空时代表子脚本调用，用来重新设置当前脚本和输出目录
+:: %1不为空时代表模块子脚本调用，用来重新设置当前脚本和输出目录
 if "%~1"=="" (
 	set "INIT_BAT=!SCRIPT_DIR!init.bat"
 	set "ADB_CHECK_BAT=!SCRIPT_DIR!adb_check.bat"
-	set "BASE_OUT_DIR=!SCRIPT_DIR!OUT\"
+	set "ROOT_OUT_DIR=!SCRIPT_DIR!OUT\"
 ) else (
 	set "SCRIPT_DIR=%~1"
 	for %%a in ("!SCRIPT_DIR:~0,-1!") do set "LAST_DIR=%%~nxa"
-	set "OUT_DIR=!BASE_OUT_DIR!!LAST_DIR!"
+	set "MODULE_OUT_DIR=!ROOT_OUT_DIR!!LAST_DIR!"
 )
 :: *******************获取当前脚本所在目录**********************
 
@@ -54,8 +54,8 @@ if "%DEBUG%"=="1" (
 	echo [DEBUG] SCRIPT_DIR=%SCRIPT_DIR%
 	echo [DEBUG] INIT_BAT=%INIT_BAT%
 	echo [DEBUG] ADB_CHECK_BAT=%ADB_CHECK_BAT%
-	echo [DEBUG] BASE_OUT_DIR=%BASE_OUT_DIR%
-	echo [DEBUG] OUT_DIR=%OUT_DIR%
+	echo [DEBUG] ROOT_OUT_DIR=%ROOT_OUT_DIR%
+	echo [DEBUG] MODULE_OUT_DIR=%MODULE_OUT_DIR%
 
     for /f "tokens=1-4 delims=:.," %%a in ("%time%") do set /a "END_TIME=(((%%a*60)+1%%b-100)*60+1%%c-100)*100+1%%d-100"
     set /a "ELAPSED=END_TIME - START_TIME"
@@ -67,8 +67,8 @@ endlocal & (
 	set "SCRIPT_DIR=%SCRIPT_DIR%"
 	set "INIT_BAT=%INIT_BAT%"
 	set "ADB_CHECK_BAT=%ADB_CHECK_BAT%"
-	set "BASE_OUT_DIR=%BASE_OUT_DIR%"
-	set "OUT_DIR=%OUT_DIR%"
+	set "ROOT_OUT_DIR=%ROOT_OUT_DIR%"
+	set "MODULE_OUT_DIR=%MODULE_OUT_DIR%"
 )
 
 

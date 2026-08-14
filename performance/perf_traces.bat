@@ -53,7 +53,7 @@ exit /b 0
     set "model=device"
     for /f "delims= " %%a in ('adb shell getprop ro.product.board 2^>nul') do set "model=%%a"
     set "TRACE_FILE=trace_%model%_%format_time%.perfetto"
-    set "OUT_TRACE_FILE=%OUT_DIR%\%TRACE_FILE%"
+    set "OUT_TRACE_FILE=%MODULE_OUT_DIR%\%TRACE_FILE%"
 
     set "GOOGLE_OPEN_TRACE_FILE=%SCRIPT_DIR%perfetto_tools\open_trace_in_ui"
     set "TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%perfetto_tools\trace_processor_shell.exe"
@@ -81,9 +81,9 @@ exit /b 0
         )
     )
 
-    set "TARGET_DIR=%OUT_DIR%"
+    set "TARGET_DIR=%MODULE_OUT_DIR%"
     if not exist "%TARGET_DIR%" (
-        set "TARGET_DIR=%BASE_OUT_DIR%android"
+        set "TARGET_DIR=%ROOT_OUT_DIR%android"
     )
 
     if not exist "%TARGET_DIR%" (
@@ -148,7 +148,7 @@ exit /b 0
     echo flush_period_ms=%flush_period_ms%
 
     set "PERFETTO_CONFIG=%SCRIPT_DIR%archive\perf_perfetto_config.pbtxt"
-    set "TMP_PERFETTO_CONFIG=%OUT_DIR%\perf_perfetto_config.pbtxt"
+    set "TMP_PERFETTO_CONFIG=%MODULE_OUT_DIR%\perf_perfetto_config.pbtxt"
     (for /f "delims=" %%L in ('type "%PERFETTO_CONFIG%" 2^>nul') do (
         set "line=%%L"
         setlocal enabledelayedexpansion

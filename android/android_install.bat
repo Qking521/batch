@@ -10,8 +10,8 @@ setlocal
 set "cmd=%~1"
 set "param1=%~2"
 
-set "ARCHIVE_DIR=%SCRIPT_DIR%android_archive"
-echo ARCHIVE_DIR=%ARCHIVE_DIR%
+set "APKS_DIR=%SCRIPT_DIR%android_apks"
+echo APKS_DIR=%APKS_DIR%
 
 :: 检查参数
 if "%cmd%"=="" goto :usage
@@ -48,30 +48,30 @@ exit /b 0
 
 :dhrystone
     ::dhrystone verison:7.0
-    set DHRYSTONE_FILE_PATH=%ARCHIVE_DIR%\dhrystone.apk
+    set DHRYSTONE_FILE_PATH=%APKS_DIR%\dhrystone.apk
     adb install --bypass-low-target-sdk-block %DHRYSTONE_FILE_PATH%
 exit /b 0
 
 :webGL
-    set WebGL_FILE_PATH=%ARCHIVE_DIR%\WebGLSamples_Aquarium.apk
+    set WebGL_FILE_PATH=%APKS_DIR%\WebGLSamples_Aquarium.apk
     adb install --bypass-low-target-sdk-block %WebGL_FILE_PATH%
     exit /b 0
 
 :whats_tempeture
     :: whatstempeture version:V1.9
     set "PACKAGE_NAME=com.example.mtk10263.whatsTemp"
-    set "WT_CONFIG=%ARCHIVE_DIR%\wt_common_tool.config"
+    set "WT_CONFIG=%APKS_DIR%\wt_common_tool.config"
 
     for /f %%a in ('adb shell getprop ro.product.device') do set product=%%a
     echo product: %product%
     if  "%product%"=="mica" (
         set "WT_PATH=/mnt/user/10/emulated/10/WhatsTemp/"
-        set "WT_CONFIG=%ARCHIVE_DIR%\wt_mica_tool.config"
+        set "WT_CONFIG=%APKS_DIR%\wt_mica_tool.config"
     )
     echo WT_CONFIG=%WT_CONFIG%
 
     echo [信息]: 准备安装并配置 whatstempeture
-    adb install -r "%ARCHIVE_DIR%\WhatsTemp.apk"
+    adb install -r "%APKS_DIR%\WhatsTemp.apk"
 
     set "WT_PATH=/sdcard/WhatsTemp/"
     adb shell "mkdir -p %WT_PATH%"
@@ -92,7 +92,7 @@ exit /b 0
 :wheres_my_power
     set "WMP_PACKAGE=com.motorola.wheresmypower"
     echo [信息]: 准备安装并配置 wheresmypower
-    adb install -r %ARCHIVE_DIR%\wheresmypower.apk
+    adb install -r %APKS_DIR%\wheresmypower.apk
     
     adb shell "chmod +r /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq"
     adb shell "chmod +r /sys/devices/system/cpu/cpu*/cpufreq/scaling_min_freq"
@@ -109,14 +109,14 @@ exit /b 0
 :fast_discharge
     ::fastdischarge verison:1.2
     set FD_PACKAGE="jp.smartmobile.quickdischarge"
-    set fastDischarge_FILE_PATH=%ARCHIVE_DIR%\fastDischarge.apk
+    set fastDischarge_FILE_PATH=%APKS_DIR%\fastDischarge.apk
     adb install --bypass-low-target-sdk-block %fastDischarge_FILE_PATH%
     call :grant_permission %FD_PACKAGE%
 exit /b 0
 
 :moto_tools
-    adb install -r %ARCHIVE_DIR%\nonrootchina-debug.apk
-    adb install -r %ARCHIVE_DIR%\nonrootchina-debug-androidTest.apk
+    adb install -r %APKS_DIR%\nonrootchina-debug.apk
+    adb install -r %APKS_DIR%\nonrootchina-debug-androidTest.apk
 exit /b 0
 
 :grant_permission
