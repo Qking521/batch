@@ -26,7 +26,7 @@ if %ERRORLEVEL% neq 0 (
 
 :: 创建Android的out目录
 if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
-if /i "%cmd%"=="top" goto current_activity
+if /i "%cmd%"=="top" goto top_activity
 if /i "%cmd%"=="ss" goto screen_shot
 if /i "%cmd%"=="sr" goto screen_record
 if /i "%cmd%"=="kill" goto kill_process
@@ -42,6 +42,7 @@ if /i "%cmd%"=="dump" goto dump
 if /i "%cmd%"=="rr" goto refresh_rate
 if /i "%cmd%"=="skip" goto skip_wizard
 if /i "%cmd%"=="install" goto install_apk
+if /i "%cmd%"=="shell" goto shells
 if /i "%cmd%"=="adbd" goto adb_helper
 
 echo Unknown command: %cmd%
@@ -77,45 +78,45 @@ echo   ad rr 120
 echo.
 exit /b 0
 
-:current_activity
-adb shell dumpsys window | grep mCurrentFocus
-exit /b 0
+:top_activity
+    adb shell dumpsys window | grep mCurrentFocus
+    exit /b 0
 
 :bugreport
-call "%SCRIPT_DIR%android_bugreport.bat" %~2
-exit /b 0
+    call "%SCRIPT_DIR%android_bugreport.bat" %~2
+    exit /b 0
 
 :adb_helper
-call "%SCRIPT_DIR%android_adb_helper.bat" %~2
-exit /b 0
+    call "%SCRIPT_DIR%android_adb_helper.bat" %~2
+    exit /b 0
 
 :clear_log
-adb root
-adb shell "logcat -b all -c; dmesg -C"
-echo 系统 log 清理完成
-exit /b 0
+    adb root
+    adb shell "logcat -b all -c; dmesg -C"
+    echo 系统 log 清理完成
+    exit /b 0
 
 :screen_shot
-set "shot_file=screenshot_%FORMAT_TIME%.png"
-adb shell screencap -p /sdcard/%shot_file%
-adb pull /sdcard/%shot_file% "%MODULE_OUT_DIR%"
-adb shell "rm -rf /sdcard/%shot_file%"
-start "" "%MODULE_OUT_DIR%\%shot_file%"
-exit /b 0
+    set "shot_file=screenshot_%FORMAT_TIME%.png"
+    adb shell screencap -p /sdcard/%shot_file%
+    adb pull /sdcard/%shot_file% "%MODULE_OUT_DIR%"
+    adb shell "rm -rf /sdcard/%shot_file%"
+    start "" "%MODULE_OUT_DIR%\%shot_file%"
+    exit /b 0
 
 :screen_record
-call "%SCRIPT_DIR%android_screen_record.bat" %~2
-exit /b %ERRORLEVEL%
+    call "%SCRIPT_DIR%android_screen_record.bat" %~2
+    exit /b %ERRORLEVEL%
 
 :kill_process
-if "%~2"=="" (
-    echo [错误]: 请指定需要 kill 的进程关键字。
-    exit /b 1
-)
-adb shell "ps -A | grep %~2"
-adb shell "kill -9 $(ps -A | grep %~2 | grep -v grep | awk '{print $2}')"
-adb shell "ps -A | grep %~2"
-exit /b 0
+    if "%~2"=="" (
+        echo [错误]: 请指定需要 kill 的进程关键字。
+        exit /b 1
+    )
+    adb shell "ps -A | grep %~2"
+    adb shell "kill -9 $(ps -A | grep %~2 | grep -v grep | awk '{print $2}')"
+    adb shell "ps -A | grep %~2"
+    exit /b 0
 
 :developer
 if "%~2"=="" (
@@ -163,43 +164,48 @@ if /i "%~2"=="kill" (
 exit /b 0
 
 :package_toggle
-set "SH_SCRIPT=%SCRIPT_DIR%android_package_toggle.sh"
-if not exist "%SH_SCRIPT%" (
-    echo [错误]: 找不到 Shell 业务层脚本: %SH_SCRIPT%
-    exit /b 1
-)
-adb shell "sh -s %cmd% %param1%" < "%SH_SCRIPT%"
-exit /b %ERRORLEVEL%
+    set "SH_SCRIPT=%SCRIPT_DIR%android_package_toggle.sh"
+    adb shell "sh -s %cmd% %param1%" < "%SH_SCRIPT%"
+    exit /b 0
 
 :refresh_rate
-set "SH_SCRIPT=%SCRIPT_DIR%android_refresh_rate.sh"
-adb shell "sh -s %param1% %param2%" < "%SH_SCRIPT%"
-exit /b 0
+    set "SH_SCRIPT=%SCRIPT_DIR%android_refresh_rate.sh"
+    adb shell "sh -s %param1% %param2%" < "%SH_SCRIPT%"
+    exit /b 0
 
 :skip_wizard
-adb shell settings put global device_provisioned 1
-adb shell settings put secure user_setup_complete 1
-adb reboot
-echo 如果开机向导没有跳过，可从左上角开始顺时针点击屏幕四个角
-exit /b 0
+    adb shell settings put global device_provisioned 1
+    adb shell settings put secure user_setup_complete 1
+    adb reboot
+    echo 如果开机向导没有跳过，可从左上角开始顺时针点击屏幕四个角
+    exit /b 0
 
 :install_apk
-call "%SCRIPT_DIR%android_install.bat" %param1%
-exit /b 0
+    call "%SCRIPT_DIR%android_install.bat" %param1%
+    exit /b 0
 
-
+:shells
+    set "DEVICE_SHELL_PATH=%SCRIPT_DIR%android_shells"
+    echo DEVICE_SHELL_PATH=%DEVICE_SHELL_PATH%
+    for %%F in ("%DEVICE_SHELL_PATH%\*.sh") do (
+        adb push "%%F" /data/local/tmp/ >nul
+    )
+    adb shell "chmod +x /data/local/tmp/*.sh"
+    adb shell "ls /data/local/tmp/*.sh"
+    adb shell -t "export ENV=/data/local/tmp/alias.sh; exec sh"
+    exit /b 0
 
 :dump
-set "service=%~2"
-set "service_param=%~3"
-if "%service%"=="" (
-    echo 用法: ad dump [service_name] [optional_params]
-    exit /b 1
-)
-if "%service_param%"=="" (
-    adb shell dumpsys %service% > "%MODULE_OUT_DIR%\%service%.txt"
-) else (
-    adb shell dumpsys %service% %service_param% > "%MODULE_OUT_DIR%\%service%.txt"
-)
-start "" "%MODULE_OUT_DIR%\%service%.txt"
-exit /b 0
+    set "service=%~2"
+    set "service_param=%~3"
+    if "%service%"=="" (
+        echo 用法: ad dump [service_name] [optional_params]
+        exit /b 1
+    )
+    if "%service_param%"=="" (
+        adb shell dumpsys %service% > "%MODULE_OUT_DIR%\%service%.txt"
+    ) else (
+        adb shell dumpsys %service% %service_param% > "%MODULE_OUT_DIR%\%service%.txt"
+    )
+    start "" "%MODULE_OUT_DIR%\%service%.txt"
+    exit /b 0
