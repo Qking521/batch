@@ -7,27 +7,29 @@
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
+set "cmd=%~1"
+
 call %INIT_BAT% %~dp0
-:: 调用基础脚本检查ADB和设备（使用完整路径）
-call "%ADB_CHECK_BAT%"
+:: 调用基础脚本检查ADB和设备（使用完整路径，传入当前子命令）
+call "%ADB_CHECK_BAT%" "%cmd%"
 if %ERRORLEVEL% neq 0 (
     echo [错误]: 基础检测失败，退出操作。
     exit /b %ERRORLEVEL%
 )
 
-if "%1"=="" goto show_help
-if /i "%1"=="-h" goto show_help
-if /i "%1"=="help" goto show_help
-if /i "%1"=="ui" goto open_ui
-if /i "%1"=="open" goto open_log
-if /i "%1"=="start" goto open_log
-if /i "%1"=="close" goto close_log
-if /i "%1"=="stop" goto close_log
-if /i "%1"=="clear" goto clear_log
-if /i "%1"=="pull" goto pull_log
-if /i "%1"=="new" goto new_log
+if "%cmd%"=="" goto show_help
+if /i "%cmd%"=="-h" goto show_help
+if /i "%cmd%"=="help" goto show_help
+if /i "%cmd%"=="ui" goto open_ui
+if /i "%cmd%"=="open" goto open_log
+if /i "%cmd%"=="start" goto open_log
+if /i "%cmd%"=="close" goto close_log
+if /i "%cmd%"=="stop" goto close_log
+if /i "%cmd%"=="clear" goto clear_log
+if /i "%cmd%"=="pull" goto pull_log
+if /i "%cmd%"=="new" goto new_log
 
-echo Unknown command: %1
+echo Unknown command: %cmd%
 echo Use "mtklog -h" for help
 exit /b
 
@@ -91,10 +93,10 @@ if not exist %MODULE_OUT_DIR% (
 	mkdir  %MODULE_OUT_DIR%
 )
 
-adb pull /data/debuglogger/ %MODULE_OUT_DIR%\%model%_mtklog_%format_time%
+adb pull /data/debuglogger/ %MODULE_OUT_DIR%\%model%_mtklog_%format_time% >nul
 echo Step 4: Open directory
+echo file path: %MODULE_OUT_DIR%\%model%_mtklog_%format_time%
 start "" %MODULE_OUT_DIR%\%model%_mtklog_%format_time%
-echo Log files pulled to current directory
 exit /b
 
 :new_log

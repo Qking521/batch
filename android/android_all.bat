@@ -17,8 +17,8 @@ if /i "%cmd%"=="-h" goto show_help
 if /i "%cmd%"=="help" goto show_help
 
 call %INIT_BAT% %~dp0
-:: 调用基础脚本检查ADB和设备（使用完整路径）
-call "%ADB_CHECK_BAT%"
+:: 调用基础脚本检查ADB和设备（使用完整路径，传入当前子命令）
+call "%ADB_CHECK_BAT%" "%cmd%"
 if %ERRORLEVEL% neq 0 (
     echo [错误]: 基础检测失败，退出操作。
     exit /b %ERRORLEVEL%
@@ -119,33 +119,33 @@ exit /b 0
     exit /b 0
 
 :developer
-if "%~2"=="" (
-    echo 用法: ad dev [on/off]
-    exit /b 1
-)
-if /i "%~2"=="on" (
-    adb shell settings put system show_touches 1
-    adb shell settings put system pointer_location 1
-    adb shell settings put secure clock_seconds 1
-    echo 开发者调试辅助（触摸点/指针/时钟秒数）已开启。
-)
-if /i "%~2"=="off" (
-    adb shell settings put system show_touches 0
-    adb shell settings put system pointer_location 0
-    adb shell settings put secure clock_seconds 0
-    echo 开发者调试辅助（触摸点/指针/时钟秒数）已关闭。
-)
-exit /b 0
+    if "%~2"=="" (
+        echo 用法: ad dev [on/off]
+        exit /b 1
+    )
+    if /i "%~2"=="on" (
+        adb shell settings put system show_touches 1
+        adb shell settings put system pointer_location 1
+        adb shell settings put secure clock_seconds 1
+        echo 开发者调试辅助（触摸点/指针/时钟秒数）已开启。
+    )
+    if /i "%~2"=="off" (
+        adb shell settings put system show_touches 0
+        adb shell settings put system pointer_location 0
+        adb shell settings put secure clock_seconds 0
+        echo 开发者调试辅助（触摸点/指针/时钟秒数）已关闭。
+    )
+    exit /b 0
 
 :device_info
-set "SH_SCRIPT=%SCRIPT_DIR%android_device_info.sh"
-adb shell "sh -s" < "%SH_SCRIPT%"
-exit /b 0
+    set "SH_SCRIPT=%SCRIPT_DIR%android_device_info.sh"
+    adb shell "sh -s" < "%SH_SCRIPT%"
+    exit /b 0
 
 :android_search
-set "SH_SCRIPT=%SCRIPT_DIR%android_search.sh"
-adb shell "sh -s %param1%" < "%SH_SCRIPT%"
-exit /b 0
+    set "SH_SCRIPT=%SCRIPT_DIR%android_search.sh"
+    adb shell "sh -s %param1%" < "%SH_SCRIPT%"
+    exit /b 0
 
 :monkey
 if "%~2"=="" (
@@ -170,7 +170,7 @@ exit /b 0
 
 :refresh_rate
     set "SH_SCRIPT=%SCRIPT_DIR%android_refresh_rate.sh"
-    adb shell "sh -s %param1% %param2%" < "%SH_SCRIPT%"
+    adb shell "sh -s %cmd% %param1%" < "%SH_SCRIPT%"
     exit /b 0
 
 :skip_wizard
@@ -187,11 +187,8 @@ exit /b 0
 :shells
     set "DEVICE_SHELL_PATH=%SCRIPT_DIR%android_shells"
     echo DEVICE_SHELL_PATH=%DEVICE_SHELL_PATH%
-    for %%F in ("%DEVICE_SHELL_PATH%\*.sh") do (
-        adb push "%%F" /data/local/tmp/ >nul
-    )
+    adb push "%DEVICE_SHELL_PATH%\." /data/local/tmp/ >nul
     adb shell "chmod +x /data/local/tmp/*.sh"
-    adb shell "ls /data/local/tmp/*.sh"
     adb shell -t "export ENV=/data/local/tmp/alias.sh; exec sh"
     exit /b 0
 

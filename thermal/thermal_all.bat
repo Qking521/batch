@@ -12,7 +12,7 @@ if /i "%cmd%"=="-h" goto usage
 if /i "%cmd%"=="help" goto usage
 
 call %INIT_BAT% %~dp0
-call "%ADB_CHECK_BAT%"
+call "%ADB_CHECK_BAT%" "%cmd%"
 if %ERRORLEVEL% neq 0 (
     echo [ERROR]: ADB check failed.
     exit /b %ERRORLEVEL%

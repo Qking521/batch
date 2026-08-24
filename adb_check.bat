@@ -7,6 +7,18 @@
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
+set "TARGET_CMD=%~1"
+:: 指定免检测/默认连接上的命令列表（空格分隔）
+set "WHITELIST=help adbd key"
+
+if defined TARGET_CMD (
+    for %%i in (!WHITELIST!) do (
+        if /i "!TARGET_CMD!"=="%%i" (
+            exit /b 0
+        )
+    )
+)
+
 goto adb_exist_check
 
 :: 检查 ADB 是否可用

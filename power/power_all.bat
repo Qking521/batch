@@ -7,18 +7,18 @@
 chcp 65001 >nul
 setlocal
 
+set "cmd=%~1"
+set "param1=%~2"
+set "param2=%~3"
+
 call %INIT_BAT% %~dp0
-:: 调用基础脚本检查ADB和设备（使用完整路径）
-call "%ADB_CHECK_BAT%"
+:: 调用基础脚本检查ADB和设备（使用完整路径，传入当前子命令）
+call "%ADB_CHECK_BAT%" "%cmd%"
 if %ERRORLEVEL% neq 0 (
     echo [错误]: 基础检测失败，退出操作。
     exit /b %ERRORLEVEL%
 )
 if not exist %MODULE_OUT_DIR% mkdir %MODULE_OUT_DIR%
-
-set "cmd=%~1"
-set "param1=%~2"
-set "param2=%~3"
 
 if "%cmd%"=="" goto show_help
 if /i "%cmd%"=="-h" goto show_help

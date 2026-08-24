@@ -25,4 +25,5 @@ define_alias() {
 
 # ---- 别名定义区，只在这里加新的 ----
 alias ll="ls -al"
+list() { for f in /data/local/tmp/*.sh; do [ -e "$f" ] && basename "$f" .sh; done; }
 define_alias detail /data/local/tmp/detail.sh

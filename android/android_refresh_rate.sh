@@ -25,7 +25,6 @@ route() {
     #bat传过来的参数是包含原始的命令的，所以这里需要shift剥掉传给bat的第一个参数
     shift 2>/dev/null
     cmd="$1"; 
-    echo cmd=$cmd
     case "$cmd" in
         on)        open_refresh_rate_display ;;
         off)       close_refresh_rate_display ;;

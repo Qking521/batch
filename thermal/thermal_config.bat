@@ -91,6 +91,7 @@ exit /b
             adb shell "thermal_intf apply !CONFIG_NAME!"
             :: 显示应用后的策略
             call :config_info
+            adb reboot
         ) else (
             echo [错误]: MTK 平台推送需要指定文件路径。
         )
@@ -129,7 +130,7 @@ exit /b
     )
 
     if "!thermalHalOwner!"=="mediatek" (
-        adb pull vendor/etc/thermal/ %MODULE_OUT_DIR%
+        adb pull "vendor/etc/thermal/." %MODULE_OUT_DIR%
         start %MODULE_OUT_DIR%
     )
 
