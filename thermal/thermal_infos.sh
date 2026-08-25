@@ -107,13 +107,17 @@ handle_tz() {
 
     case "$action" in
         "dis"|"disable")
+            if [ "$(id -u)" -ne 0 ]; then
+                echo "[ERROR] 禁用 Thermal Zone 需要 root 权限，请先运行 'adb root'" >&2
+                exit 1
+            fi
             echo "正在记录并禁用当前开启的温度传感器 (Thermal Zones)..."
             rm -f "$LOG_FILE"
             for d in $(ls -d /sys/class/thermal/thermal_zone* 2>/dev/null | sort -V); do
                 mode=$(cat "$d/mode" 2>/dev/null)
                 if [ "$mode" = "enabled" ]; then
                     echo "$d" >> "$LOG_FILE"
-                    echo "disabled" > "$d/mode"
+                    echo "disabled" > "$d/mode" 2>/dev/null
                     type=$(cat "$d/type" 2>/dev/null || echo 'unknown')
                     echo "[已禁用] $d ($type)"
                 fi
@@ -122,6 +126,10 @@ handle_tz() {
             ;;
 
         "en"|"enable")
+            if [ "$(id -u)" -ne 0 ]; then
+                echo "[ERROR] 恢复 Thermal Zone 需要 root 权限，请先运行 'adb root'" >&2
+                exit 1
+            fi
             echo "正在恢复先前被禁用的温度传感器..."
             if [ ! -f "$LOG_FILE" ]; then
                 echo "[警告] 未找到状态记录文件 $LOG_FILE，可能未执行过 disable 或已恢复。"
@@ -129,7 +137,7 @@ handle_tz() {
             fi
             for d in $(cat "$LOG_FILE"); do
                 if [ -d "$d" ]; then
-                    echo "enabled" > "$d/mode"
+                    echo "enabled" > "$d/mode" 2>/dev/null
                     type=$(cat "$d/type" 2>/dev/null || echo 'unknown')
                     echo "[已恢复] $d ($type)"
                 fi

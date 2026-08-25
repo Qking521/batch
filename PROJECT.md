@@ -371,4 +371,11 @@ if not exist "%SH_SCRIPT%" (
 - **原因**：`if not exist %MODULE_OUT_DIR%` 或 `mkdir %MODULE_OUT_DIR%` 未用双引号包裹，当路径含空格时被截断。
 - **解决方案**：所有路径变量引用一律加双引号：`if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"`。
 
+### 6. Bat 脚本运行报 `'oto'` / `'过）'` 不是内部或外部命令
+- **现象**：执行脚本时随机抛出 `'oto' is not recognized` 或中文字符片段（如 `'过）' is not recognized` 等奇怪的命令解析错误。
+- **原因**：`.bat` 批处理文件被意外保存成了 **纯 Linux LF (`\n`)** 换行符。Windows 的 `cmd.exe` 解释器内部采用固定 **512 字节读缓冲区** 机制，当换行符缺少 `\r` (CRLF) 且混杂 UTF-8 多字节中文时，跨 512 字节切分点会导致字符偏移严重错乱（例如 `goto` 前部被吞噬变成 `'oto'`，中文注释被腰斩残留当成命令执行）。
+- **根本解法**：
+  1. 所有 `.bat` 文件**必须严格保存为 UTF-8 无 BOM (CRLF 换行符)**；
+  2. 修复/转换命令：在仓库根目录用脚本将所有 `.bat` 文件的 `\n` 统一规范化替换为 `\r\n`。
+
 ---

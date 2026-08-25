@@ -16,9 +16,9 @@ goto :do_install
 
 :check_args
 :: 参数跳转逻辑
-if "%~1"=="" goto :show_help
-if /i "%~1"=="help" goto :show_help
-if /i "%~1"=="-h" goto :show_help
+if "%~1"=="" goto :usage
+if /i "%~1"=="help" goto :usage
+if /i "%~1"=="-h" goto :usage
 if /i "%~1"=="install" goto :do_install
 if /i "%~1"=="start" goto :do_start
 if /i "%~1"=="stop" goto :do_stop
@@ -27,24 +27,26 @@ if /i "%~1"=="config" goto :do_config
 if /i "%~1"=="show" goto :do_show
 if /i "%~1"=="guide" goto :do_guide
 
-echo [错误]: 未知指令 "%1"
-goto :show_help
+echo [ERROR] Unknown command: %~1
+goto :usage
 
-:show_help
-echo WhatsTemp 控制工具
-echo =======================
-echo 用法: power wt [command]
-echo 可用命令: 
-echo   install  - 安装 WhatsTemp 并配置权限.
-echo   start    - 启动 WhatsTemp 服务并开启采集.
-echo   stop     - 停止 WhatsTemp 采集服务.
-echo   pull     - 停止服务并从设备拉取温度日志.
-echo   config   - 从设备拉取 tool.config 配置文件.
-echo   show     - 使用 Excel 查看最近拉取的 CSV 日志.
-echo   guide    - 打开 WhatsTemp 用户使用指南 (PDF).
-echo   help     - 显示此帮助信息.
+:usage
 echo.
-exit /b
+echo WhatsTemp Control Tool
+echo =======================
+echo Usage: therm wt [command]
+echo.
+echo Available commands:
+echo   install  - Install WhatsTemp APK and grant permissions.
+echo   start    - Start WhatsTemp service to begin collection.
+echo   stop     - Stop WhatsTemp collection service.
+echo   pull     - Stop service and pull thermal logs to OUT.
+echo   config   - Pull tool.config from device.
+echo   show     - Open latest CSV log in Excel.
+echo   guide    - Open WhatsTemp User Guide PDF.
+echo   help/-h  - Show this help info.
+echo.
+exit /b 0
 
 :do_install
     :: 调用现有的安装脚本

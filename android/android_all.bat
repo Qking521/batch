@@ -1,54 +1,60 @@
 @echo off
 :: ============================================================
 :: Author: Antigravity Pair Program
-:: Date: 2026-07-20
-:: Description: Optimized script for android_all.bat
-:: Usage: ad [command] [args...]
+:: Date:   2026-08-25
+:: Desc:   Android universal command dispatcher
+:: Usage:  ad <command> [args...]
 :: ============================================================
 chcp 65001 >nul
-setlocal enabledelayedexpansion
+setlocal
 
 set "cmd=%~1"
 set "param1=%~2"
 set "param2=%~3"
 
-if "%cmd%"=="" goto show_help
-if /i "%cmd%"=="-h" goto show_help
-if /i "%cmd%"=="help" goto show_help
+:: 1. Priority help check
+if "%cmd%"==""        goto :usage
+if /i "%cmd%"=="-h"   goto :usage
+if /i "%cmd%"=="help" goto :usage
 
+:: 2. Initialize environment
 call %INIT_BAT% %~dp0
-:: 调用基础脚本检查ADB和设备（使用完整路径，传入当前子命令）
+
+:: 3. Check ADB connection (whitelist skipped automatically)
 call "%ADB_CHECK_BAT%" "%cmd%"
 if %ERRORLEVEL% neq 0 (
-    echo [错误]: 基础检测失败，退出操作。
+    echo [ERROR] ADB check failed.
     exit /b %ERRORLEVEL%
 )
 
-:: 创建Android的out目录
+:: 4. Ensure OUT directory exists
 if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
-if /i "%cmd%"=="top" goto top_activity
-if /i "%cmd%"=="ss" goto screen_shot
-if /i "%cmd%"=="sr" goto screen_record
-if /i "%cmd%"=="kill" goto kill_process
-if /i "%cmd%"=="bugreport" goto bugreport
-if /i "%cmd%"=="clear" goto clear_log
-if /i "%cmd%"=="dev" goto developer
-if /i "%cmd%"=="di" goto device_info
-if /i "%cmd%"=="search" goto android_search
-if /i "%cmd%"=="monkey" goto monkey
-if /i "%cmd%"=="enable" goto package_toggle
-if /i "%cmd%"=="disable" goto package_toggle
-if /i "%cmd%"=="dump" goto dump
-if /i "%cmd%"=="rr" goto refresh_rate
-if /i "%cmd%"=="skip" goto skip_wizard
-if /i "%cmd%"=="install" goto install_apk
-if /i "%cmd%"=="shell" goto shells
-if /i "%cmd%"=="adbd" goto adb_helper
 
-echo Unknown command: %cmd%
-goto show_help
+:: 5. Command dispatcher
+if /i "%cmd%"=="top"       goto :top_activity
+if /i "%cmd%"=="ss"        goto :screen_shot
+if /i "%cmd%"=="sr"        goto :screen_record
+if /i "%cmd%"=="kill"      goto :kill_process
+if /i "%cmd%"=="bugreport" goto :bugreport
+if /i "%cmd%"=="clear"     goto :clear_log
+if /i "%cmd%"=="dev"       goto :developer
+if /i "%cmd%"=="di"        goto :device_info
+if /i "%cmd%"=="search"    goto :android_search
+if /i "%cmd%"=="monkey"    goto :monkey
+if /i "%cmd%"=="enable"    goto :package_toggle
+if /i "%cmd%"=="disable"   goto :package_toggle
+if /i "%cmd%"=="dump"      goto :dump
+if /i "%cmd%"=="rr"        goto :refresh_rate
+if /i "%cmd%"=="skip"      goto :skip_wizard
+if /i "%cmd%"=="install"   goto :install_apk
+if /i "%cmd%"=="shell"     goto :shells
+if /i "%cmd%"=="adbd"      goto :adb_helper
+if /i "%cmd%"=="key"       goto :keyword
 
-:show_help
+echo [ERROR] Unknown command: %cmd%
+goto :usage
+
+:usage
 echo.
 echo Usage: ad [command] [args...]
 echo.
@@ -57,7 +63,7 @@ echo   top                      - Show current Activity / Focus
 echo   ss                       - Take screenshot and save/open
 echo   sr                       - Record screen and pull to local
 echo   kill [process_name]      - Kill target process by name
-echo   bugreport                - Capture/Extract bugreport log
+echo   bugreport [tag]          - Capture/Extract bugreport log
 echo   clear                    - Clear logcat and dmesg logs
 echo   dev [on/off]             - Toggle developer touches / pointer location
 echo   di                       - Show device hardware and system info
@@ -67,14 +73,16 @@ echo   enable/disable [pkg]     - Enable or disable package
 echo   dump [service] [params]  - Dump system service state to OUT dir
 echo   rr [on/off]              - Set or query refresh rate
 echo   skip                     - Skip setup wizard
-echo   install                  - Install perf / thermal / power apk tools
-echo   adbd [restart/root...]   - ADB helper / status configuration
-echo   -h                       - Show help info (alias: help)
+echo   install [toolname]       - Install perf / thermal / power apk tools
+echo   adbd [category/keyword]  - ADB helper command dictionary
+echo   key                      - List common power/thermal log keywords
+echo   -h / help                - Show help info
 echo.
 echo Examples:
 echo   ad top
 echo   ad dev on
 echo   ad rr 120
+echo   ad ss
 echo.
 exit /b 0
 
@@ -83,126 +91,168 @@ exit /b 0
     exit /b 0
 
 :bugreport
-    call "%SCRIPT_DIR%android_bugreport.bat" %~2
-    exit /b 0
+    call "%SCRIPT_DIR%android_bugreport.bat" %param1%
+    exit /b %ERRORLEVEL%
 
 :adb_helper
-    call "%SCRIPT_DIR%android_adb_helper.bat" %~2
-    exit /b 0
+    call "%SCRIPT_DIR%android_adb_helper.bat" %param1%
+    exit /b %ERRORLEVEL%
 
 :clear_log
     adb root
     adb shell "logcat -b all -c; dmesg -C"
-    echo 系统 log 清理完成
+    echo [OK] Logcat and dmesg cleared.
     exit /b 0
 
 :screen_shot
     set "shot_file=screenshot_%FORMAT_TIME%.png"
-    adb shell screencap -p /sdcard/%shot_file%
-    adb pull /sdcard/%shot_file% "%MODULE_OUT_DIR%"
-    adb shell "rm -rf /sdcard/%shot_file%"
-    start "" "%MODULE_OUT_DIR%\%shot_file%"
+    adb shell screencap -p "/sdcard/%shot_file%"
+    adb pull "/sdcard/%shot_file%" "%MODULE_OUT_DIR%" >nul 2>&1
+    adb shell "rm -f /sdcard/%shot_file%"
+    if exist "%MODULE_OUT_DIR%\%shot_file%" (
+        echo [OK] Screenshot saved: %MODULE_OUT_DIR%\%shot_file%
+        start "" "%MODULE_OUT_DIR%\%shot_file%"
+    ) else (
+        echo [ERROR] Failed to save screenshot.
+        exit /b 1
+    )
     exit /b 0
 
 :screen_record
-    call "%SCRIPT_DIR%android_screen_record.bat" %~2
+    call "%SCRIPT_DIR%android_screen_record.bat" %param1%
     exit /b %ERRORLEVEL%
 
 :kill_process
-    if "%~2"=="" (
-        echo [错误]: 请指定需要 kill 的进程关键字。
+    if "%param1%"=="" (
+        echo [ERROR] Please specify process name keyword.
         exit /b 1
     )
-    adb shell "ps -A | grep %~2"
-    adb shell "kill -9 $(ps -A | grep %~2 | grep -v grep | awk '{print $2}')"
-    adb shell "ps -A | grep %~2"
+    adb shell "ps -A | grep %param1%"
+    adb shell "kill -9 $(ps -A | grep %param1% | grep -v grep | awk '{print $2}')"
+    adb shell "ps -A | grep %param1%"
     exit /b 0
 
 :developer
-    if "%~2"=="" (
-        echo 用法: ad dev [on/off]
+    if "%param1%"=="" (
+        echo Usage: ad dev [on/off]
         exit /b 1
     )
-    if /i "%~2"=="on" (
+    if /i "%param1%"=="on" (
         adb shell settings put system show_touches 1
         adb shell settings put system pointer_location 1
         adb shell settings put secure clock_seconds 1
-        echo 开发者调试辅助（触摸点/指针/时钟秒数）已开启。
+        echo [OK] Developer touches / pointer location / seconds enabled.
     )
-    if /i "%~2"=="off" (
+    if /i "%param1%"=="off" (
         adb shell settings put system show_touches 0
         adb shell settings put system pointer_location 0
         adb shell settings put secure clock_seconds 0
-        echo 开发者调试辅助（触摸点/指针/时钟秒数）已关闭。
+        echo [OK] Developer touches / pointer location / seconds disabled.
     )
     exit /b 0
 
 :device_info
     set "SH_SCRIPT=%SCRIPT_DIR%android_device_info.sh"
+    if not exist "%SH_SCRIPT%" (
+        echo [ERROR] Script not found: %SH_SCRIPT%
+        exit /b 1
+    )
     adb shell "sh -s" < "%SH_SCRIPT%"
-    exit /b 0
+    exit /b %ERRORLEVEL%
 
 :android_search
     set "SH_SCRIPT=%SCRIPT_DIR%android_search.sh"
+    if not exist "%SH_SCRIPT%" (
+        echo [ERROR] Script not found: %SH_SCRIPT%
+        exit /b 1
+    )
     adb shell "sh -s %param1%" < "%SH_SCRIPT%"
-    exit /b 0
+    exit /b %ERRORLEVEL%
 
 :monkey
-if "%~2"=="" (
+if "%param1%"=="" (
     adb shell monkey --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
     exit /b 0
 )
-set "pkg_prefix=%~2"
-if "%pkg_prefix:~0,3%"=="com" (
-    adb shell monkey -p %~2 --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
-)
-if /i "%~2"=="kill" (
-    for /f "delims=" %%p in ('adb shell pidof com.android.commands.monkey') do (
+if /i "%param1%"=="kill" (
+    for /f "delims=" %%p in ('adb shell pidof com.android.commands.monkey 2^>nul') do (
         adb shell kill -9 %%p
     )
+    echo [OK] Monkey stopped.
+    exit /b 0
+)
+set "pkg_prefix=%param1%"
+if "%pkg_prefix:~0,3%"=="com" (
+    adb shell monkey -p %param1% --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
+) else (
+    echo [ERROR] Invalid package name: %param1%
+    exit /b 1
 )
 exit /b 0
 
 :package_toggle
     set "SH_SCRIPT=%SCRIPT_DIR%android_package_toggle.sh"
+    if not exist "%SH_SCRIPT%" (
+        echo [ERROR] Script not found: %SH_SCRIPT%
+        exit /b 1
+    )
     adb shell "sh -s %cmd% %param1%" < "%SH_SCRIPT%"
-    exit /b 0
+    exit /b %ERRORLEVEL%
 
 :refresh_rate
     set "SH_SCRIPT=%SCRIPT_DIR%android_refresh_rate.sh"
+    if not exist "%SH_SCRIPT%" (
+        echo [ERROR] Script not found: %SH_SCRIPT%
+        exit /b 1
+    )
     adb shell "sh -s %cmd% %param1%" < "%SH_SCRIPT%"
-    exit /b 0
+    exit /b %ERRORLEVEL%
 
 :skip_wizard
     adb shell settings put global device_provisioned 1
     adb shell settings put secure user_setup_complete 1
     adb reboot
-    echo 如果开机向导没有跳过，可从左上角开始顺时针点击屏幕四个角
+    echo [OK] Setup wizard skipped, device rebooting.
     exit /b 0
 
 :install_apk
     call "%SCRIPT_DIR%android_install.bat" %param1%
-    exit /b 0
+    exit /b %ERRORLEVEL%
 
 :shells
     set "DEVICE_SHELL_PATH=%SCRIPT_DIR%android_shells"
-    echo DEVICE_SHELL_PATH=%DEVICE_SHELL_PATH%
     adb push "%DEVICE_SHELL_PATH%\." /data/local/tmp/ >nul
     adb shell "chmod +x /data/local/tmp/*.sh"
     adb shell -t "export ENV=/data/local/tmp/alias.sh; exec sh"
     exit /b 0
 
 :dump
-    set "service=%~2"
-    set "service_param=%~3"
-    if "%service%"=="" (
-        echo 用法: ad dump [service_name] [optional_params]
+    if "%param1%"=="" (
+        echo Usage: ad dump [service_name] [optional_params]
         exit /b 1
     )
-    if "%service_param%"=="" (
-        adb shell dumpsys %service% > "%MODULE_OUT_DIR%\%service%.txt"
+    if "%param2%"=="" (
+        adb shell dumpsys %param1% > "%MODULE_OUT_DIR%\%param1%.txt"
     ) else (
-        adb shell dumpsys %service% %service_param% > "%MODULE_OUT_DIR%\%service%.txt"
+        adb shell dumpsys %param1% %param2% > "%MODULE_OUT_DIR%\%param1%.txt"
     )
-    start "" "%MODULE_OUT_DIR%\%service%.txt"
+    if exist "%MODULE_OUT_DIR%\%param1%.txt" (
+        echo [OK] Dumpsys saved: %MODULE_OUT_DIR%\%param1%.txt
+        start "" "%MODULE_OUT_DIR%\%param1%.txt"
+    )
     exit /b 0
+
+:keyword
+echo "查看唤醒锁和唤醒原因"
+echo "All kernel wake locks|All partial wake locks|All wakeup reasons|All screen wake reasons"
+echo "查看系统是否待机"
+echo "suspend entry|suspend exit|26M_off_pct|blocked by"
+echo "查看系统待机后唤醒原因"
+echo "wakeup_reason|wakeup alarm|Resume caused by|suspend wake up by|Pending Wakeup Sources|active wakeup source|set alarm :"
+echo "查看NTC温度"
+echo adb shell "i=0 ; while [[ $i -lt 80 ]] ; do (type=`cat /sys/class/thermal/thermal_zone$i/type` ; temp=`cat /sys/class/thermal/thermal_zone$i/temp` ; echo \"$i $type : $temp\"); i=$((i+1));done"
+echo "温升分析"
+echo "DexOptimizer|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:"
+echo "其它未分类"
+echo "screen_toggled|sys.powerctl|AlarmManager: Adjust deliver|sensorservice"
+exit /b 0

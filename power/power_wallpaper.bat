@@ -22,7 +22,10 @@ if /i "!action!"=="view" goto :resolve_wallpaper
 echo [ERROR] 未知 action: !action! (支持: set ^| view)
 goto :usage
 
-echo 111
+if not exist "%SH_SCRIPT%" (
+    echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
+    exit /b 1
+)
 
 :resolve_wallpaper
 :: 先检查是否为固定资源壁纸（直接取 power_wallpapers 目录中的文件）

@@ -17,6 +17,11 @@ CPU_ONLINE_BASE="/sys/devices/system/cpu"
 
 ACTION="$1"
 
+# ---------- 前置 Root 权限检查 ----------
+if [ "$(id -u)" -ne 0 ]; then
+    echo "[ERROR] 此操作需要 root 权限，请在执行前运行 'adb root'" >&2
+    exit 1
+fi
 
 log() {
     echo "[INFO] $*"
@@ -153,8 +158,12 @@ reset
 
 # ---------- 1. 关闭 thermal 进程 ----------
 log "===== 步骤1: 关闭 thermal 相关服务 ====="
-/vendor/bin/thermal_intf apply disable_thermal.conf
-log "thermal 服务关闭指令已下发（若服务不存在会被忽略）"
+if [ -x "/vendor/bin/thermal_intf" ]; then
+    /vendor/bin/thermal_intf apply disable_thermal.conf 2>/dev/null
+    log "thermal 服务关闭指令已下发"
+else
+    log "未检测到 /vendor/bin/thermal_intf，跳过 thermal 服务控制"
+fi
 
 # ---------- 2. 设置唤醒锁 ----------
 log "===== 步骤2: 设置唤醒锁 ====="

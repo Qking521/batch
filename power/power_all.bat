@@ -1,8 +1,9 @@
 @echo off
 :: ============================================================
 :: Author: Antigravity Pair Program
-:: Date: 2026-07-20
-:: Description: Optimized script for power_all.bat
+:: Date:   2026-08-25
+:: Desc:   Power management command dispatcher
+:: Usage:  power <command> [args...]
 :: ============================================================
 chcp 65001 >nul
 setlocal
@@ -11,149 +12,155 @@ set "cmd=%~1"
 set "param1=%~2"
 set "param2=%~3"
 
+:: 1. Priority help check
+if "%cmd%"==""        goto :usage
+if /i "%cmd%"=="-h"   goto :usage
+if /i "%cmd%"=="help" goto :usage
+
+:: 2. Initialize environment
 call %INIT_BAT% %~dp0
-:: 调用基础脚本检查ADB和设备（使用完整路径，传入当前子命令）
+
+:: 3. Check ADB connection (whitelist skipped automatically)
 call "%ADB_CHECK_BAT%" "%cmd%"
 if %ERRORLEVEL% neq 0 (
-    echo [错误]: 基础检测失败，退出操作。
+    echo [ERROR] ADB check failed.
     exit /b %ERRORLEVEL%
 )
-if not exist %MODULE_OUT_DIR% mkdir %MODULE_OUT_DIR%
 
-if "%cmd%"=="" goto show_help
-if /i "%cmd%"=="-h" goto show_help
-if /i "%cmd%"=="help" goto show_help
-if /i "%cmd%"=="standby" goto standby
-if /i "%cmd%"=="ps" goto power_supply
-if /i "%cmd%"=="wallpaper" goto wallpaper
-if /i "%cmd%"=="profile" goto power_profile
-if /i "%cmd%"=="reset" goto reset
-if /i "%cmd%"=="key" goto keyword
-if /i "%cmd%"=="wakelock" goto wakelock
-if /i "%cmd%"=="regu" goto regulator
-if /i "%cmd%"=="info" goto power_info
-if /i "%cmd%"=="eet" goto eet_test
-if /i "%cmd%"=="spm" goto spm
-if /i "%cmd%"=="trace" goto trace
-if /i "%cmd%"=="sql" goto sql
+:: 4. Ensure OUT directory exists
+if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
 
-echo Unknown command: %cmd%
-goto show_help
-exit /b
+:: 5. Command dispatcher
+if /i "%cmd%"=="standby"   goto :standby
+if /i "%cmd%"=="ps"        goto :power_supply
+if /i "%cmd%"=="wallpaper" goto :wallpaper
+if /i "%cmd%"=="profile"   goto :power_profile
+if /i "%cmd%"=="reset"     goto :reset
+if /i "%cmd%"=="wakelock"  goto :wakelock
+if /i "%cmd%"=="regu"      goto :regulator
+if /i "%cmd%"=="info"      goto :power_info
+if /i "%cmd%"=="eet"       goto :eet_test
+if /i "%cmd%"=="spm"       goto :spm
+if /i "%cmd%"=="trace"     goto :trace
+if /i "%cmd%"=="sql"       goto :sql
 
-:show_help
+echo [ERROR] Unknown command: %cmd%
+goto :usage
+
+:usage
 echo.
-echo Usage: power [command]
+echo Usage: power [command] [args...]
 echo.
 echo Available commands:
-echo   standby                      - Power base current settings.
-echo   tz [en/dis]                  - Thermal zones info/enable/disable.
-echo   hm                           - Show hardware monitor info.
-echo   ps                           - Show power supply info.
-echo   cd                           - Show cooling devices info.
-echo   wallpaper [color]            - Create/Set wallpaper for specific color.
-echo   profile                      - Display power profile data on terminal.
-echo   reset                        - Reset battery stats and clear logs.
-echo   key                          - List common power log keywords.
-echo   wakelock                     - Show system wake lock status.
-echo   cpu                          - Show CPU frequency and online status.
-echo   regu                         - Show regulator information.
-echo   trace [ui/local] [bugreport] - open bugreport use perfetto.
-echo   sql [sql label] [bugreport]  - query power info by sql instead battery history.
-echo   info                         - Display device information related to power consumption
-echo   -h                           - Show help (alias: help).
+echo   standby                      - Power base current settings
+echo   ps                           - Show power supply info
+echo   wallpaper [color] [action]   - Create / Set / Preview wallpaper
+echo   profile                      - Display power profile data
+echo   reset                        - Reset battery stats and clear logs
+echo   wakelock                     - Show system wake lock status
+echo   regu                         - Show regulator information
+echo   info                         - Display device info related to power
+echo   eet [policy] [freq]          - EET CPU fixed frequency test
+echo   spm [data_file]              - Parse MediaTek SPM state data
+echo   trace [ui/ui-enhance/sh]     - Perfetto trace collection and analysis
+echo   sql [tag/statement] [zip]    - Query power info via SQL from bugreport
+echo   -h / help                    - Show help info
 echo.
 echo Examples:
 echo   power standby
+echo   power info
+echo   power wallpaper black set
 echo.
-exit /b
+exit /b 0
 
 :standby
 call "%SCRIPT_DIR%power_standby.bat" %param1%
-exit /b
-
+exit /b %ERRORLEVEL%
 
 :power_info
 set "SH_SCRIPT=%SCRIPT_DIR%power_info.sh"
+if not exist "%SH_SCRIPT%" (
+    echo [ERROR] Script not found: %SH_SCRIPT%
+    exit /b 1
+)
 adb shell "sh -s" < "%SH_SCRIPT%"
-exit /b
-
+exit /b %ERRORLEVEL%
 
 :power_supply
 set "SH_SCRIPT=%SCRIPT_DIR%power_supply.sh"
-adb shell "sh -s"  < "%SH_SCRIPT%"
-exit /b
+if not exist "%SH_SCRIPT%" (
+    echo [ERROR] Script not found: %SH_SCRIPT%
+    exit /b 1
+)
+adb shell "sh -s" < "%SH_SCRIPT%"
+exit /b %ERRORLEVEL%
 
 :wallpaper
-call "%SCRIPT_DIR%power_wallpaper.bat" %~2 %~3
-exit /b
+call "%SCRIPT_DIR%power_wallpaper.bat" %param1% %param2%
+exit /b %ERRORLEVEL%
 
 :power_profile
 adb shell dumpsys batterystats --power-profile
-exit /b
+exit /b %ERRORLEVEL%
 
 :reset
 adb root
 adb shell "logcat -b all -c; dmesg -C"
 adb shell dumpsys batterystats --reset
 adb shell dumpsys batterystats --enable full-wake-history
-adb shell dumpsys alarm log on > nul
-exit /b
+adb shell dumpsys alarm log on >nul
+echo [OK] Battery stats reset and logs cleared.
+exit /b 0
 
 :wakelock
-adb shell cat /sys/power/wake_lock
+echo [INFO] Kernel Wake Locks:
+adb shell cat /sys/power/wake_lock 2>nul
+echo.
+echo [INFO] Framework Wake Locks (Dumpsys Power):
 adb shell dumpsys power | grep -A 20 "Wake Locks"
+echo.
+echo [INFO] Battery History Wake Locks:
 adb shell dumpsys batterystats | grep -A 10 "Wake lock"
-exit /b
+exit /b 0
 
 :eet_test
-    set "SH_SCRIPT=%SCRIPT_DIR%power_eet.sh"
-    adb shell "sh -s %param1% %param2%" < "%SH_SCRIPT%"
-exit /b
+set "SH_SCRIPT=%SCRIPT_DIR%power_eet.sh"
+if not exist "%SH_SCRIPT%" (
+    echo [ERROR] Script not found: %SH_SCRIPT%
+    exit /b 1
+)
+adb shell "sh -s %param1% %param2%" < "%SH_SCRIPT%"
+exit /b %ERRORLEVEL%
 
 :spm
-for /f "delims= " %%a in ('adb shell getprop ro.product.board') do set model=%%a
-set SPM_CONFIG=%SCRIPT_DIR%\power_spm_config\%model%_spm_config.xlsx
-if not exist %SPM_CONFIG% (
-    echo %SPM_CONFIG%文件不存在，请确认
-    exit /b
+for /f "delims= " %%a in ('adb shell getprop ro.product.board 2^>nul') do set "model=%%a"
+set "SPM_CONFIG=%SCRIPT_DIR%power_spm_config\%model%_spm_config.xlsx"
+if not exist "%SPM_CONFIG%" (
+    echo [ERROR] SPM config file not found: %SPM_CONFIG%
+    exit /b 1
 )
-echo param1=%param1%
 if "%param1%"=="" (
-    echo 数据文件不存在，请确认
-    exit /b
+    echo [ERROR] Please specify data file path.
+    exit /b 1
 )
-python "%SCRIPT_DIR%power_spm.py" %SPM_CONFIG% %param1%
-exit /b
+python "%SCRIPT_DIR%power_spm.py" "%SPM_CONFIG%" "%param1%"
+exit /b %ERRORLEVEL%
 
 :regulator
 set "SH_SCRIPT=%SCRIPT_DIR%power_regulator.sh"
-adb shell "sh -s"  < "%SH_SCRIPT%"
-exit /b
+if not exist "%SH_SCRIPT%" (
+    echo [ERROR] Script not found: %SH_SCRIPT%
+    exit /b 1
+)
+adb shell "sh -s" < "%SH_SCRIPT%"
+exit /b %ERRORLEVEL%
 
 :trace
 for /f "tokens=1* delims= " %%a in ("%*") do (
     call "%SCRIPT_DIR%power_traces.bat" %%b
 )
-exit /b
+exit /b %ERRORLEVEL%
 
 :sql
 call "%SCRIPT_DIR%power_sql.bat" %*
-exit /b
-
-
-
-:keyword
-echo "查看唤醒锁和唤醒原因"
-echo "All kernel wake locks|All partial wake locks|All wakeup reasons|All screen wake reasons"
-echo "查看系统是否待机"
-echo "suspend entry|suspend exit|26M_off_pct|blocked by"
-echo "查看系统待机后唤醒原因"
-echo "wakeup_reason|wakeup alarm|Resume caused by|suspend wake up by|Pending Wakeup Sources|active wakeup source|set alarm :"
-echo "查看NTC温度"
-echo adb shell "i=0 ; while [[ $i -lt 80 ]] ; do (type=`cat /sys/class/thermal/thermal_zone$i/type` ; temp=`cat /sys/class/thermal/thermal_zone$i/temp` ; echo "$i $type : $temp"); i=$((i+1));done"
-echo "温升分析"
-echo "DexOptimizer|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:"
-echo "其它未分类"
-echo "screen_toggled|sys.powerctl|AlarmManager: Adjust deliver|sensorservice"
-exit /b
+exit /b %ERRORLEVEL%
