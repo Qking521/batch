@@ -12,11 +12,13 @@
   - `Notepad++` (用于日志查看)
 
 ## 项目结构
-- `power_all.bat`: 电源管理指令主入口
-- `thermal_all.bat`: 热管理指令主入口
-- `perf_all.bat`: 性能管理指令主入口
-- `android_all.bat`: Android 通用命令指令主入口
-- `windows_all.bat`: Windows 自动化脚本入口
+- `power/power_all.bat`: 电源管理指令主入口 (别名: `pw`)
+- `thermal/thermal_all.bat`: 热管理指令主入口 (别名: `tm`)
+- `performance/perf_all.bat`: 性能管理指令主入口 (别名: `pf`)
+- `android/android_all.bat`: Android 通用命令指令主入口 (别名: `ad`)
+- `windows/windows_all.bat`: Windows 自动化脚本入口 (别名: `wd`)
+- `mediatek/mtklog.bat`: MediaTek 日志抓取与管理 (别名: `mtk`)
+
 ---
 
 ## 核心架构范式：双层控制模型
@@ -68,20 +70,23 @@ esac
 |------|------|------|
 | **纯 Shell 业务（主入口直连）** | `android_all.bat` + `android_device_info.sh`<br>`android_all.bat` + `android_refresh_rate.sh` | 纯 Android 设备端操作，无单独子 bat 中转 |
 | **双层包装（PC 本地交互）** | `android_screen_record.bat` + `android_screen_record.sh` | 涉及从设备拉取文件到 PC 本地 `MODULE_OUT_DIR` 并自动打开 |
-| **纯 Shell 轻量查询** | `thermal/thermal_cooling_devices.sh` | 轻量只读查询的 shell 范例 |
+| **纯 Shell 轻量查询** | `thermal/thermal_infos.sh` | 轻量只读查询的 shell 范例 |
 
-### 跨平台 Shebang 兼容规范
+### 跨平台解释器声明行（#! Shebang）兼容规范
+
+> **什么是 `#!`（Shebang）：** Shell 脚本第一行的 `#!/system/bin/sh` 叫做"解释器声明行"（英文俚语 Shebang，取自 `#` = sharp、`!` = bang）。它告诉操作系统用哪个程序来执行这个脚本文件。
 
 - **规范**：Shell 脚本文件首行统一声明为 `#!/system/bin/sh`（Android 默认 Shell 解释器路径）。
-- **跨平台兼容**：在双层模型中，由于我们主要通过 PC 端的 `adb shell "sh -s ... " < script.sh` 管道方式注入执行，该命令直接由 Android 端本机的 `sh` 解析 stdin，不依赖 Shebang 解释器。因此，Windows 批处理入口调用此模式不受 Shebang 限制。
+- **跨平台兼容**：在双层模型中，由于我们主要通过 PC 端的 `adb shell "sh -s ... " < script.sh` 管道方式注入执行，该命令直接由 Android 端本机的 `sh` 解析 stdin，不依赖首行解释器声明。因此，Windows 批处理入口调用此模式不受 `#!` 首行限制。
 - **Linux 环境直接执行**：如果在纯 Linux 宿主机下以 `./script.sh` 直接运行，可能会因找不到 `/system/bin/sh` 路径而报错。这属于正常环境差异，在 Linux 下测试时可以通过 `sh script.sh` 手动运行，或在 Linux 系统中建立软链接 `ln -s /bin/sh /system/bin/sh` 来保障完美兼容。代码中应统一保持 `#!/system/bin/sh`。
+
 
 ### Root 权限检查与节点访问安全规范 (防闪退/报错)
 
 - **Root 权限检查**：功耗与性能调试脚本经常读写 `/sys` 或 `/proc` 节点，必须在 Shell 业务层前置进行 root 检查，防止无权限导致逻辑失效：
   ```sh
   if [ "$(id -u)" -ne 0 ]; then
-      echo "[ERROR] 此操作需要 root 权限，请在执行前运行 'adb root'" >&2
+      echo "[ERROR] 此操作需要 root 权限，请在执行前运行 adb root" >&2
       exit 1
   fi
   ```
@@ -120,10 +125,6 @@ esac
 
 ---
 
-> **最终目标：** 可以直接放到linux环境下完美执行
-
-
-
 ## Windows 批处理编码规范
 
 ### 脚本头部（强制格式）
@@ -138,10 +139,46 @@ chcp 65001 >nul
 :: Usage:  <脚本名>.bat [参数说明]
 :: ============================================================
 setlocal
-如果需要变量延迟扩展就改成setlocal EnableDelayedExpansion
+::如果需要变量延迟扩展就改成setlocal EnableDelayedExpansion
 ```
 
 > **注意顺序：** `chcp 65001` 必须在 `setlocal` **之前**，否则代码页设置不生效。
+
+### *_all.bat 主入口初始化顺序（强制）
+
+`*_all.bat` 主入口脚本必须严格按照以下顺序执行初始化，**不得颠倒**：
+
+```bat
+@echo off
+chcp 65001 >nul
+setlocal enabledelayedexpansion
+
+set "cmd=%~1"
+set "param1=%~2"
+
+:: 1. 优先判断 help，无需初始化环境直接响应，避免无谓的 ADB 检测
+if "%cmd%"==""   goto :usage
+if /i "%cmd%"=="-h"   goto :usage
+if /i "%cmd%"=="help" goto :usage
+
+:: 2. 通过 help 检测后，才初始化环境变量（SCRIPT_DIR / MODULE_OUT_DIR 等）
+call %INIT_BAT% %~dp0
+
+:: 3. 环境就绪后，执行 ADB 连接检查（白名单命令会自动跳过）
+call "%ADB_CHECK_BAT%" "%cmd%"
+if %ERRORLEVEL% neq 0 (
+    echo [ERROR] ADB check failed.
+    exit /b %ERRORLEVEL%
+)
+
+:: 4. 确保输出目录存在
+if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
+
+:: 5. 命令分发
+if /i "%cmd%"=="xxx" goto xxx
+```
+
+> **关键原则：** help 判断必须放在 `call %INIT_BAT%` **之前**，确保用户单纯查看帮助时不触发环境初始化和 ADB 检测，保证响应速度且避免误报错。
 
 ### 帮助信息（强制）
 
@@ -192,6 +229,8 @@ exit /b 0
 
 > **判断依据：** 脚本是否存在"无副作用、只读"的合理默认行为。查询/展示类用模式 B，写入/修改类用模式 A。
 
+> **规范细节：** 所有 `:usage` 标签结尾必须显式 `exit /b 0`。
+
 ### 变量安全
 
 - 在 `setlocal EnableDelayedExpansion` 环境下，循环体内和条件块内的变量**必须用 `!VAR!`** 而非 `%VAR%`
@@ -218,7 +257,17 @@ exit /b 0
 
 ### 前置条件检查
 
-**ADB 设备检查只在 `*_all.bat` 中做一次**（由 `adb_check.bat` 统一处理），子脚本（如 `power_standby.bat`）不应重复检查 ADB 连接，避免冗余和不一致。
+**ADB 设备检查只在 `*_all.bat` 中做一次**（由 `adb_check.bat` 统一处理），子脚本（如 `power_screen_record.bat`）不应重复检查 ADB 连接，避免冗余和不一致。
+
+调用 `adb_check.bat` 时需传入当前子命令 `%cmd%`，由 `adb_check.bat` 内部白名单进行判断（如 `adbd`、`key` 等无需依赖真实设备在线的子命令跳过设备连接检查直接放行）：
+
+```bat
+call "%ADB_CHECK_BAT%" "%cmd%"
+if %ERRORLEVEL% neq 0 (
+    echo [ERROR] ADB check failed.
+    exit /b %ERRORLEVEL%
+)
+```
 
 子脚本只需检查自身依赖的 `.sh` 文件是否存在：
 
@@ -234,12 +283,17 @@ if not exist "%SH_SCRIPT%" (
 
 为了避免在各子脚本中重复初始化基础变量或硬编码路径，项目通过 `init.bat` 统一提取并对外导出以下全局环境变量：
 - `FORMAT_TIME`：格式为 `MMDD-HHMM` 的当前时间，用于日志和 Trace 文件的命名。
-- `SCRIPT_DIR`：当前执行脚本所在的目录绝对路径（以反斜杠 `\` 结尾）。
-- `MODULE_OUT_DIR`：由当前脚本所在子目录名自动生成的输出日志存放路径（例如 `OUT\android\`）。
+- `SCRIPT_DIR`：当前执行脚本所在的目录绝对路径（**末尾带反斜杠 `\`**）。
+- `MODULE_OUT_DIR`：由当前脚本所在子目录名自动生成的输出日志存放路径（例如 `OUT\android`，**末尾不带反斜杠**）。
 - `ADB_CHECK_BAT`：全局 adb 检测脚本 `adb_check.bat` 的绝对路径。
 
 **注意**：
-- 子脚本必须在首部通过 `call %INIT_BAT% %~dp0` 或类似方式正确初始化环境变量上下文。
+- `*_all.bat` 主入口必须在通过 help 检查之后，才通过 `call %INIT_BAT% %~dp0` 初始化环境变量上下文（详见"主入口初始化顺序"章节）。
+- `MODULE_OUT_DIR` 末尾**不带反斜杠**，引用路径时写 `"%MODULE_OUT_DIR%\file.txt"` 而不是 `"%MODULE_OUT_DIR%file.txt"`。
+- 路径变量引用时务必用双引号包裹，避免路径含空格时报错：
+  ```bat
+  if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
+  ```
 
 ### 参数安全与防御
 
@@ -276,16 +330,17 @@ if not exist "%SH_SCRIPT%" (
 ### 常用提示词
 
 - **双层重构：**
-  > "参考 GEMINI.md 的双层控制模型，优先将指定的bat脚本改造成同功能的shel脚本，然后由入口脚本调用，参考android_all.bat调用android_refresh_rate.sh”
-  > "针对涉及本地资源无法直接将bat直接改造成shell脚本的，将这个脚本重构为 `.bat`（入口层）+ `.sh`（业务层）的结构。参考`power_eet.bat` + `power_eet.sh` 的结构"
+  > "参考 PROJECT.md 的双层控制模型，优先将指定的 bat 脚本改造成同功能的 shell 脚本，然后由主入口脚本直接通过 stdin 管道注入调用（参考 `android_all.bat` 调用 `android_refresh_rate.sh`）"
+  > "针对涉及本地资源无法直接改造成纯 shell 的脚本，重构为 `.bat`（入口层/PC代理）+ `.sh`（设备业务层）的结构（参考 `power_screen_record.bat` + `power_screen_record.sh`）"
 
 - **新脚本生成：**
-  > "参考 GEMINI.md 的规范，为 [功能] 生成脚本，要求包含帮助信息、ADB 连接检查和错误处理。"
+  > "参考 PROJECT.md 的规范，为 [功能] 生成脚本，要求包含帮助信息、ADB 连接检查和错误处理。"
 
 ### AI 生成脚本注意事项
 
 - 生成新脚本时，优先考虑健壮的错误处理（检查 `7z.exe`、sh 文件等依赖是否存在）
 - 修改 Perfetto 配置时，确保输出保持为有效的 `.pbtxt` 结构
+- 生成 `*_all.bat` 主入口时，**严格遵守主入口初始化顺序**：help 检查 → init → adb_check → mkdir → 命令分发
 
 ---
 
@@ -298,7 +353,7 @@ if not exist "%SH_SCRIPT%" (
 
 ### 2. 自提取脚本首行出现冒号 `:` 污染
 - **原因**：`more +n` 偏移量计算不准，包含了标签行
-- **解决方案**：确保 `SKIP` 变量准确指向标签所在行号，`more +%SKIP%` 从下一行（Shebang 行）开始读取
+- **解决方案**：确保 `SKIP` 变量准确指向标签所在行号，`more +%SKIP%` 从下一行（解释器声明行 `#!`）开始读取
 
 ### 3. Git 换行符 (CRLF) 自动转换防范
 - **原因**：Windows 系统的 Git 客户端在克隆或检出代码时，默认可能会把 Linux 换行符（LF）自动转换为 Windows 换行符（CRLF），从而破坏 `.sh` 脚本在 Linux/Android 环境下的运行。
@@ -307,5 +362,13 @@ if not exist "%SH_SCRIPT%" (
   ```bash
   git add --renormalize .
   ```
+
+### 4. help 显示也要求 ADB 连接（主入口初始化顺序错误）
+- **原因**：`call %INIT_BAT%` 和 `call "%ADB_CHECK_BAT%"` 被放在了 help 判断之前，导致用户只想看帮助时也必须有 ADB 设备连接。
+- **解决方案**：严格遵守**主入口初始化顺序**规范，将 help 判断提到最前面，通过 help 检查后再执行 init 和 adb_check（参考 `android_all.bat` 的正确实现）。
+
+### 5. 路径变量未加引号导致含空格路径失败
+- **原因**：`if not exist %MODULE_OUT_DIR%` 或 `mkdir %MODULE_OUT_DIR%` 未用双引号包裹，当路径含空格时被截断。
+- **解决方案**：所有路径变量引用一律加双引号：`if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"`。
 
 ---
