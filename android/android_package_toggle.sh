@@ -87,6 +87,22 @@ com.google.android.apps.walletnfcrel
 com.google.android.partnersetup
 com.google.android.ims
 com.roger.test
+com.google.android.apps.bard
+com.google.android.apps.messaging
+com.google.android.dialer
+com.google.android.apps.nbu.files
+com.google.android.apps.wallpaper
+com.google.android.calculator
+com.google.android.deskclock
+com.google.android.apps.chromecast.app
+com.google.android.marvin.talkback
+com.google.android.apps.safetyhub
+com.google.android.apps.restore
+com.google.android.apps.turbo
+com.google.android.apps.adm
+com.google.android.apps.scone
+com.google.android.apps.tycho
+com.google.ar.core
 "
 
 MOTO_PACKAGES="
