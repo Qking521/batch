@@ -58,45 +58,51 @@ echo.
 exit /b 0
 
 :surface_flinger
-call %SCRIPT_DIR%surface_flinger.bat %2
-exit /b
+    call %SCRIPT_DIR%surface_flinger.bat %2
+    exit /b
 
 :trace
-call %SCRIPT_DIR%perf_traces.bat %*
-exit /b
+    call %SCRIPT_DIR%perf_traces.bat %*
+    exit /b
 
 :cpu
-set "SH_SCRIPT=%SCRIPT_DIR%perf_cpu.sh"
-if not exist "%SH_SCRIPT%" (
-    echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
-    exit /b 1
-)
-adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
-exit /b
+    set "SH_SCRIPT=%SCRIPT_DIR%perf_cpu.sh"
+    if not exist "%SH_SCRIPT%" (
+        echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
+        exit /b 1
+    )
+    adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
+    exit /b
 
 :gpu
-set "SH_SCRIPT=%SCRIPT_DIR%perf_gpu.sh"
-if not exist "%SH_SCRIPT%" (
-    echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
-    exit /b 1
-)
-adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
-exit /b
+    set "SH_SCRIPT=%SCRIPT_DIR%perf_gpu.sh"
+    if not exist "%SH_SCRIPT%" (
+        echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
+        exit /b 1
+    )
+    adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
+    exit /b
 
 
 :origin
-rem "" 是窗口标题
-start "" %USERPROFILE%\"batScript\performance\perfettoCaptureTools_original"
-exit /b
+    rem "" 是窗口标题
+    start "" %USERPROFILE%\"batScript\performance\perfettoCaptureTools_original"
+    exit /b
 
 :flame
-call %SCRIPT_DIR%perf_simpleperf.bat %2
-exit /b
+    call %SCRIPT_DIR%perf_simpleperf.bat %2
+    exit /b
 
 :dhrystone
-call %SCRIPT_DIR%perf_dhrystone.bat %*
-exit /b
+    call %SCRIPT_DIR%perf_dhrystone.bat
+    set "SH_SCRIPT=%SCRIPT_DIR%perf_dhrystone.sh"
+    if not exist "%SH_SCRIPT%" (
+        echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
+        exit /b 1
+    )
+    adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
+    exit /b
 
 :sql
-call "%SCRIPT_DIR%perf_sql.bat" %*
-exit /b
+    call "%SCRIPT_DIR%perf_sql.bat" %*
+    exit /b

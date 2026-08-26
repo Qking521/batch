@@ -10,4 +10,3 @@ adb shell chmod 777 /data/dhrystone.elf
 adb shell chmod 777 /data/dhrystone.sh
 adb shell chmod 777 /data/_dhrystone_multi.sh
 adb shell chmod 777 /data/dhrystone_multi.sh
-pause

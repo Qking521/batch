@@ -129,6 +129,7 @@ if not exist "%SH_SCRIPT%" (
     echo [ERROR] Script not found: %SH_SCRIPT%
     exit /b 1
 )
+::param1传policy的值，param2传policy的频点值
 adb shell "sh -s %param1% %param2%" < "%SH_SCRIPT%"
 exit /b %ERRORLEVEL%
 
@@ -163,4 +164,4 @@ exit /b %ERRORLEVEL%
 
 :sql
 call "%SCRIPT_DIR%power_sql.bat" %*
-exit /b %ERRORLEVEL%
+exit /b %ERRORLEVEL%
