@@ -10,15 +10,15 @@
 #   freq              - 查看各簇可用频率列表
 #   online            - 查看各核 online 状态
 #   set-online   <cpu_id> <0|1>  - 上下线指定核（cpu0 不可下线）
-#   fix-freq     <policy> <freq> - 定频指定 policy（单位 Hz，如 1800000）
-#   unfix-freq   <policy>        - 解除定频（恢复 schedutil/interactive）
-#   fix-freq-all <freq>          - 所有 policy 统一定频
+#   fix-freq     <policy> <khz>  - 定频指定 policy (支持 0, 4, policy0, cpu4 等，单位 KHz)
+#   unfix-freq   <policy>        - 解除定频（恢复默认调度）
+#   fix-freq-all <khz>           - 所有 policy 统一定频
 #   unfix-all                    - 解除所有 policy 定频
 #   boost        <0|1>           - 开关 CPU boost（平台自适应）
 #   affinity     <pid> <mask>    - 设置进程绑核（taskset 十六进制 mask）
 #   gov          <policy> <gov>  - 切换 governor（schedutil/performance/powersave）
 #   gov-all      <gov>           - 所有 policy 统一切换 governor
-#   cap          <policy> <freq> - 限制最大频率（性能限制）
+#   cap          <policy> <khz>  - 限制最大频率（单位 KHz）
 #   uncap        <policy>        - 解除最大频率限制
 #   platform                     - 检测当前平台（MTK/Qualcomm/UNISOC/Other）
 # ============================================================
@@ -51,6 +51,41 @@ detect_platform() {
 # 列出所有 cpufreq policy 目录
 list_policies() {
     ls /sys/devices/system/cpu/cpufreq/ 2>/dev/null | grep '^policy'
+}
+
+# 智能解析 policy 输入 (支持 0, 4, policy0, policy4, cpu0, cpu4 等格式)
+resolve_policy() {
+    input="$1"
+    [ -z "$input" ] && return 1
+
+    # 1. 直接匹配现有 policy 目录名 (例如 policy0, policy4)
+    if [ -d "/sys/devices/system/cpu/cpufreq/$input" ]; then
+        echo "$input"
+        return 0
+    fi
+
+    # 2. 如果输入的是数字 N，优先匹配 policyN (例如输入 0 匹配 policy0, 输入 4 匹配 policy4)
+    if [ -d "/sys/devices/system/cpu/cpufreq/policy$input" ]; then
+        echo "policy$input"
+        return 0
+    fi
+
+    # 3. 如果输入的是 cpu 编号 (例如输入 1, cpu1, 5, cpu5)，通过 cpuX/cpufreq 软链接解析所属 policy
+    cpuname="$input"
+    case "$cpuname" in
+        cpu[0-9]*) ;;
+        [0-9]*) cpuname="cpu$input" ;;
+    esac
+
+    if [ -e "/sys/devices/system/cpu/$cpuname/cpufreq" ]; then
+        target=$(readlink "/sys/devices/system/cpu/$cpuname/cpufreq" 2>/dev/null)
+        if [ -n "$target" ]; then
+            echo "${target##*/}"
+            return 0
+        fi
+    fi
+
+    return 1
 }
 
 # 读节点，失败返回 N/A
@@ -213,17 +248,17 @@ info)
 # ---- 频率列表 ----
 freq)
     echo "=========================================="
-    echo " 各 Policy 可用频率 (Hz)"
+    echo " 各 Policy 可用频率列表"
     echo "=========================================="
     for policy in $(list_policies); do
         pdir="/sys/devices/system/cpu/cpufreq/$policy"
         affected=$(read_node "$pdir/affected_cpus")
         echo ""
-        echo "[$policy] cpus: $affected"
+        echo "[$policy] (绑定核心: cpu $affected)"
         avail=$(read_node "$pdir/scaling_available_frequencies")
         for f in $avail; do
-            khz=$((f / 1000))
-            echo "    ${f} Hz  (${khz} MHz)"
+            mhz=$((f / 1000))
+            echo "    ${f} KHz  (${mhz} MHz)"
         done
     done
     ;;
@@ -262,33 +297,78 @@ set-online)
 
 # ---- 定频指定 policy ----
 fix-freq)
-    policy="$PARAM1"
+    # 单参数直接定频所有 policy (如 fix-freq 1800000)
+    is_num=0
+    case "$PARAM1" in
+        *[!0-9]*) is_num=0 ;;
+        "")       is_num=0 ;;
+        *)        is_num=1 ;;
+    esac
+
+    if [ "$is_num" -eq 1 ] && [ -z "$PARAM2" ]; then
+        freq="$PARAM1"
+        for policy in $(list_policies); do
+            pdir="/sys/devices/system/cpu/cpufreq/$policy"
+            cur_min=$(read_node "$pdir/scaling_min_freq")
+            if [ "$freq" -ge "$cur_min" ] 2>/dev/null; then
+                write_node "$pdir/scaling_max_freq" "$freq"
+                write_node "$pdir/scaling_min_freq" "$freq"
+            else
+                write_node "$pdir/scaling_min_freq" "$freq"
+                write_node "$pdir/scaling_max_freq" "$freq"
+            fi
+        done
+        exit 0
+    fi
+
+    raw_policy="$PARAM1"
     freq="$PARAM2"
-    if [ -z "$policy" ] || [ -z "$freq" ]; then
-        echo "[ERROR] 用法: fix-freq <policy> <freq_hz>  例如: fix-freq policy0 1800000"
+    if [ -z "$raw_policy" ] || [ -z "$freq" ]; then
+        echo "[ERROR] 用法: fix-freq [policy|cpu_id] <freq_khz>"
+        echo "  例如: fix-freq 1800000 (所有 policy) 或 fix-freq 4 2400000 (指定 policy4)"
+        echo "  可用 policy: $(list_policies | tr '\n' ' ')"
+        exit 1
+    fi
+    policy=$(resolve_policy "$raw_policy")
+    if [ -z "$policy" ]; then
+        echo "[ERROR] 找不到对应的 policy: $raw_policy"
+        echo "  当前设备可用 policy: $(list_policies | tr '\n' ' ')"
         exit 1
     fi
     pdir="/sys/devices/system/cpu/cpufreq/$policy"
-    if [ ! -d "$pdir" ]; then
-        echo "[ERROR] policy 不存在: $pdir"
-        exit 1
+
+    cur_min=$(read_node "$pdir/scaling_min_freq")
+    if [ "$freq" -ge "$cur_min" ] 2>/dev/null; then
+        write_node "$pdir/scaling_max_freq" "$freq"
+        write_node "$pdir/scaling_min_freq" "$freq"
+    else
+        write_node "$pdir/scaling_min_freq" "$freq"
+        write_node "$pdir/scaling_max_freq" "$freq"
     fi
-    write_node "$pdir/scaling_min_freq" "$freq"
-    write_node "$pdir/scaling_max_freq" "$freq"
     ;;
 
 # ---- 解除定频 ----
 unfix-freq)
-    policy="$PARAM1"
+    raw_policy="$PARAM1"
+    # 无参数或传 all 时解除所有 policy 定频
+    if [ -z "$raw_policy" ] || [ "$raw_policy" = "all" ]; then
+        for policy in $(list_policies); do
+            pdir="/sys/devices/system/cpu/cpufreq/$policy"
+            min=$(read_node "$pdir/cpuinfo_min_freq")
+            max=$(read_node "$pdir/cpuinfo_max_freq")
+            write_node "$pdir/scaling_min_freq" "$min"
+            write_node "$pdir/scaling_max_freq" "$max"
+        done
+        echo "[OK] 所有 policy 已解除定频"
+        exit 0
+    fi
+    policy=$(resolve_policy "$raw_policy")
     if [ -z "$policy" ]; then
-        echo "[ERROR] 用法: unfix-freq <policy>  例如: unfix-freq policy0"
+        echo "[ERROR] 找不到对应的 policy: $raw_policy"
+        echo "  当前设备可用 policy: $(list_policies | tr '\n' ' ')"
         exit 1
     fi
     pdir="/sys/devices/system/cpu/cpufreq/$policy"
-    if [ ! -d "$pdir" ]; then
-        echo "[ERROR] policy 不存在: $pdir"
-        exit 1
-    fi
     min=$(read_node "$pdir/cpuinfo_min_freq")
     max=$(read_node "$pdir/cpuinfo_max_freq")
     write_node "$pdir/scaling_min_freq" "$min"
@@ -299,13 +379,19 @@ unfix-freq)
 fix-freq-all)
     freq="$PARAM1"
     if [ -z "$freq" ]; then
-        echo "[ERROR] 用法: fix-freq-all <freq_hz>  例如: fix-freq-all 1800000"
+        echo "[ERROR] 用法: fix-freq-all <freq_khz>  例如: fix-freq-all 1800000"
         exit 1
     fi
     for policy in $(list_policies); do
         pdir="/sys/devices/system/cpu/cpufreq/$policy"
-        write_node "$pdir/scaling_min_freq" "$freq"
-        write_node "$pdir/scaling_max_freq" "$freq"
+        cur_min=$(read_node "$pdir/scaling_min_freq")
+        if [ "$freq" -ge "$cur_min" ] 2>/dev/null; then
+            write_node "$pdir/scaling_max_freq" "$freq"
+            write_node "$pdir/scaling_min_freq" "$freq"
+        else
+            write_node "$pdir/scaling_min_freq" "$freq"
+            write_node "$pdir/scaling_max_freq" "$freq"
+        fi
     done
     ;;
 
@@ -364,18 +450,32 @@ affinity)
 
 # ---- 切换 governor ----
 gov)
-    policy="$PARAM1"
+    # 单参数直接切换所有 policy 的 governor (如 gov performance)
+    if [ -n "$PARAM1" ] && [ -z "$PARAM2" ]; then
+        governor="$PARAM1"
+        for policy in $(list_policies); do
+            pdir="/sys/devices/system/cpu/cpufreq/$policy"
+            write_node "$pdir/scaling_governor" "$governor"
+        done
+        exit 0
+    fi
+
+    raw_policy="$PARAM1"
     governor="$PARAM2"
-    if [ -z "$policy" ] || [ -z "$governor" ]; then
-        echo "[ERROR] 用法: gov <policy> <governor>"
+    if [ -z "$raw_policy" ] || [ -z "$governor" ]; then
+        echo "[ERROR] 用法: gov [policy|cpu_id] <governor>"
         echo "  常用 governor: schedutil performance powersave ondemand conservative"
+        echo "  例如: gov performance (所有 policy) 或 gov 4 schedutil (指定 policy4)"
+        echo "  可用 policy: $(list_policies | tr '\n' ' ')"
+        exit 1
+    fi
+    policy=$(resolve_policy "$raw_policy")
+    if [ -z "$policy" ]; then
+        echo "[ERROR] 找不到对应的 policy: $raw_policy"
+        echo "  当前设备可用 policy: $(list_policies | tr '\n' ' ')"
         exit 1
     fi
     pdir="/sys/devices/system/cpu/cpufreq/$policy"
-    if [ ! -d "$pdir" ]; then
-        echo "[ERROR] policy 不存在: $pdir"
-        exit 1
-    fi
     avail=$(read_node "$pdir/scaling_available_governors")
     echo "可用 governor: $avail"
     write_node "$pdir/scaling_governor" "$governor"
@@ -396,25 +496,68 @@ gov-all)
 
 # ---- 限制最大频率（cap）----
 cap)
-    policy="$PARAM1"
+    # 单参数直接限制所有 policy 最大频率 (如 cap 2400000)
+    is_num=0
+    case "$PARAM1" in
+        *[!0-9]*) is_num=0 ;;
+        "")       is_num=0 ;;
+        *)        is_num=1 ;;
+    esac
+
+    if [ "$is_num" -eq 1 ] && [ -z "$PARAM2" ]; then
+        freq="$PARAM1"
+        for policy in $(list_policies); do
+            pdir="/sys/devices/system/cpu/cpufreq/$policy"
+            cur_min=$(read_node "$pdir/scaling_min_freq")
+            if [ "$freq" -lt "$cur_min" ] 2>/dev/null; then
+                write_node "$pdir/scaling_min_freq" "$freq"
+            fi
+            write_node "$pdir/scaling_max_freq" "$freq"
+        done
+        exit 0
+    fi
+
+    raw_policy="$PARAM1"
     freq="$PARAM2"
-    if [ -z "$policy" ] || [ -z "$freq" ]; then
-        echo "[ERROR] 用法: cap <policy> <freq_hz>  例如: cap policy2 1400000"
+    if [ -z "$raw_policy" ] || [ -z "$freq" ]; then
+        echo "[ERROR] 用法: cap [policy|cpu_id] <freq_khz>"
+        echo "  例如: cap 2400000 (所有 policy) 或 cap 4 2400000 (指定 policy4)"
+        echo "  可用 policy: $(list_policies | tr '\n' ' ')"
+        exit 1
+    fi
+    policy=$(resolve_policy "$raw_policy")
+    if [ -z "$policy" ]; then
+        echo "[ERROR] 找不到对应的 policy: $raw_policy"
+        echo "  当前设备可用 policy: $(list_policies | tr '\n' ' ')"
         exit 1
     fi
     pdir="/sys/devices/system/cpu/cpufreq/$policy"
-    if [ ! -d "$pdir" ]; then
-        echo "[ERROR] policy 不存在: $pdir"
-        exit 1
+
+    cur_min=$(read_node "$pdir/scaling_min_freq")
+    if [ "$freq" -lt "$cur_min" ] 2>/dev/null; then
+        write_node "$pdir/scaling_min_freq" "$freq"
     fi
     write_node "$pdir/scaling_max_freq" "$freq"
     ;;
 
 # ---- 解除最大频率限制 ----
 uncap)
-    policy="$PARAM1"
+    raw_policy="$PARAM1"
+    # 无参数或传 all 时解除所有 policy 限制
+    if [ -z "$raw_policy" ] || [ "$raw_policy" = "all" ]; then
+        for policy in $(list_policies); do
+            pdir="/sys/devices/system/cpu/cpufreq/$policy"
+            max=$(read_node "$pdir/cpuinfo_max_freq")
+            write_node "$pdir/scaling_max_freq" "$max"
+        done
+        echo "[OK] 所有 policy 已解除最大频率限制"
+        exit 0
+    fi
+
+    policy=$(resolve_policy "$raw_policy")
     if [ -z "$policy" ]; then
-        echo "[ERROR] 用法: uncap <policy>"
+        echo "[ERROR] 找不到对应的 policy: $raw_policy"
+        echo "  当前设备可用 policy: $(list_policies | tr '\n' ' ')"
         exit 1
     fi
     pdir="/sys/devices/system/cpu/cpufreq/$policy"
@@ -431,17 +574,17 @@ uncap)
     echo "  freq                          - 各 policy 可用频率列表"
     echo "  online                        - 各核 online 状态"
     echo "  platform                      - 检测芯片平台"
-    echo "  set-online  <cpu_id> <0|1>    - 上下线指定核"
-    echo "  fix-freq    <policy> <hz>     - 定频指定 policy"
-    echo "  unfix-freq  <policy>          - 解除定频"
-    echo "  fix-freq-all <hz>             - 所有 policy 定频"
-    echo "  unfix-all                     - 解除所有定频"
-    echo "  boost       <0|1>             - CPU boost 开关（平台自适应）"
-    echo "  affinity    <pid> <mask>      - 绑核（taskset hex mask）"
-    echo "  gov         <policy> <gov>    - 切换 governor"
-    echo "  gov-all     <gov>             - 所有 policy 切换 governor"
-    echo "  cap         <policy> <hz>     - 限制最大频率"
-    echo "  uncap       <policy>          - 解除最大频率限制"
+    echo "  set-online   <cpu_id> <0|1>   - 上下线指定核"
+    echo "  fix-freq     [policy] <khz>   - 定频指定 policy（单参数如 1800000 默认定频所有 policy）"
+    echo "  unfix-freq   [policy]         - 解除定频（无参数默认解除所有 policy）"
+    echo "  fix-freq-all <khz>            - 所有 policy 统一定频"
+    echo "  unfix-all                     - 解除所有 policy 定频"
+    echo "  boost        <0|1>            - CPU boost 开关（平台自适应）"
+    echo "  affinity     <pid> <mask>     - 绑核（taskset hex mask）"
+    echo "  gov          [policy] <gov>   - 切换 governor（单参数默认切换所有 policy）"
+    echo "  gov-all      <gov>            - 所有 policy 统一切换 governor"
+    echo "  cap          [policy] <khz>   - 限制最大频率（单参数如 2400000 默认限制所有 policy）"
+    echo "  uncap        [policy]         - 解除最大频率限制（无参数默认解除所有 policy）"
     exit 1
     ;;
 esac
