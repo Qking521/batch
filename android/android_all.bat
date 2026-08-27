@@ -50,6 +50,7 @@ if /i "%cmd%"=="install"   goto :install_apk
 if /i "%cmd%"=="shell"     goto :shells
 if /i "%cmd%"=="adbd"      goto :adb_helper
 if /i "%cmd%"=="key"       goto :keyword
+if /i "%cmd%"=="watch"     goto :watch_changes
 
 echo [ERROR] Unknown command: %cmd%
 goto :usage
@@ -68,6 +69,7 @@ echo   clear                    - Clear logcat and dmesg logs
 echo   dev [on/off]             - Toggle developer touches / pointer location
 echo   di                       - Show device hardware and system info
 echo   search [keyword]         - Search Settings and Properties
+echo   watch [interval]         - Watch Settings, getprop, audio volume & status
 echo   monkey [pkg/kill/num]    - Run or stop Monkey test
 echo   enable/disable [pkg]     - Enable or disable package
 echo   dump [service] [params]  - Dump system service state to OUT dir
@@ -81,6 +83,8 @@ echo.
 echo Examples:
 echo   ad top
 echo   ad dev on
+echo   ad watch
+echo   ad watch 1
 echo   ad rr 120
 echo   ad ss
 echo.
@@ -223,6 +227,7 @@ exit /b 0
     set "DEVICE_SHELL_PATH=%SCRIPT_DIR%android_shells"
     adb push "%DEVICE_SHELL_PATH%\." /data/local/tmp/ >nul
     adb shell "chmod +x /data/local/tmp/*.sh"
+    :: -t: 强制分配伪终端 (PTY)，支持交互式终端环境与 alias 环境变量
     adb shell -t "export ENV=/data/local/tmp/alias.sh; exec sh"
     exit /b 0
 
@@ -258,3 +263,19 @@ echo "DexOptimizer|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_
 echo "其它未分类"
 echo "screen_toggled|sys.powerctl|AlarmManager: Adjust deliver|sensorservice"
 exit /b 0
+
+:watch_changes
+    set "SH_SCRIPT=%SCRIPT_DIR%android_watch.sh"
+    if not exist "%SH_SCRIPT%" (
+        echo [ERROR] Script not found: %SH_SCRIPT%
+        exit /b 1
+    )
+    adb push "%SH_SCRIPT%" /data/local/tmp/android_watch.sh >nul 2>&1
+    adb shell "chmod +x /data/local/tmp/android_watch.sh" >nul 2>&1
+    :: -t: 强制为远程命令分配伪终端 (PTY)。
+    :: 作用:
+    :: 1. 确保在 Windows 终端按 Ctrl+C 时，SIGINT/SIGHUP 中断信号能即时透传至手机端脚本，触发 trap 优雅清理并退出。
+    :: 2. 保证终端支持 ANSI 彩色高亮输出。
+    adb shell -t "sh /data/local/tmp/android_watch.sh %param1%"
+    adb shell "if [ -f /data/local/tmp/.ad_watch.pid ]; then kill -9 $(cat /data/local/tmp/.ad_watch.pid 2>/dev/null) 2>/dev/null; rm -f /data/local/tmp/.ad_watch* 2>/dev/null; fi" >nul 2>&1
+    exit /b 0
