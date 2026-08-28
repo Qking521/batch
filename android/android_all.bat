@@ -1,6 +1,6 @@
 @echo off
 :: ============================================================
-:: Author: Antigravity Pair Program
+:: Author: WangQiang
 :: Date:   2026-08-25
 :: Desc:   Android universal command dispatcher
 :: Usage:  ad <command> [args...]
@@ -49,7 +49,7 @@ if /i "%cmd%"=="skip"      goto :skip_wizard
 if /i "%cmd%"=="install"   goto :install_apk
 if /i "%cmd%"=="shell"     goto :shells
 if /i "%cmd%"=="adbd"      goto :adb_helper
-if /i "%cmd%"=="key"       goto :keyword
+if /i "%cmd%"=="qs"        goto :quick_search
 if /i "%cmd%"=="watch"     goto :watch_changes
 
 echo [ERROR] Unknown command: %cmd%
@@ -77,7 +77,7 @@ echo   rr [on/off]              - Set or query refresh rate
 echo   skip                     - Skip setup wizard
 echo   install [toolname]       - Install perf / thermal / power apk tools
 echo   adbd [category/keyword]  - ADB helper command dictionary
-echo   key                      - List common power/thermal log keywords
+echo   qs [category]            - Quick raw commands & log keywords (log/therm/perf/power/sys/all)
 echo   -h / help                - Show help info
 echo.
 echo Examples:
@@ -85,6 +85,8 @@ echo   ad top
 echo   ad dev on
 echo   ad watch
 echo   ad watch 1
+echo   ad qs log
+echo   ad qs therm
 echo   ad rr 120
 echo   ad ss
 echo.
@@ -247,22 +249,19 @@ exit /b 0
     )
     exit /b 0
 
-:keyword
-echo "查看唤醒锁和唤醒原因"
-echo "All kernel wake locks|All partial wake locks|All wakeup reasons|All screen wake reasons"
-echo "系统无法suspend"
-echo "Pending Wakeup Sources|Wake lock|blocked by|prevent_suspend_time|PM: suspend returned|aborting suspend|active wakeup source"
-echo "查看系统待机及唤醒"
-echo "suspend entry|suspend exit|suspend wake up by|Resume caused by|caused by IRQ|set alarm :"
-echo "系统suspend但子系统仍在工作"
-echo "26M_off_pct|AP suspend ratio"
-echo "查看NTC温度"
-echo adb shell "i=0 ; while [[ $i -lt 80 ]] ; do (type=`cat /sys/class/thermal/thermal_zone$i/type` ; temp=`cat /sys/class/thermal/thermal_zone$i/temp` ; echo \"$i $type : $temp\"); i=$((i+1));done"
-echo "温升分析"
-echo "DexOptimizer|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:"
-echo "其它未分类"
-echo "screen_toggled|sys.powerctl|AlarmManager: Adjust deliver|sensorservice"
-exit /b 0
+:quick_search
+    set "SH_SCRIPT=%SCRIPT_DIR%android_quick_info.sh"
+    if not exist "%SH_SCRIPT%" (
+        echo [ERROR] Script not found: %SH_SCRIPT%
+        exit /b 1
+    )
+    where sh >nul 2>&1
+    if %ERRORLEVEL% equ 0 (
+        sh "%SH_SCRIPT%" %param1% %param2%
+    ) else (
+        adb shell "sh -s %param1% %param2%" < "%SH_SCRIPT%"
+    )
+    exit /b %ERRORLEVEL%
 
 :watch_changes
     set "SH_SCRIPT=%SCRIPT_DIR%android_watch.sh"

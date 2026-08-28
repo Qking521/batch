@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ============================================================
-# Author: Antigravity Pair Program
+# Author: WangQiang
 # Date:   2026-07-31
 # Desc:   CPU 信息查询与调控工具
 # Usage:  adb shell "sh -s <action> [param1] [param2]" < perf_cpu.sh

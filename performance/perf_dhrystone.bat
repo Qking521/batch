@@ -1,6 +1,6 @@
 @echo off
 :: ============================================================
-:: Author: Antigravity Pair Program
+:: Author: WangQiang
 :: Date: 2026-08-26
 :: Description: 检查设备端 /data/dhrystone.sh 是否存在，不存在时自动 push
 :: ============================================================

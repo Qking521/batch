@@ -63,6 +63,15 @@ esac
 
 - **用函数封装复用逻辑**：将重复操作（sysfs 写入、状态检查等）抽成函数，不要每处手写一遍
 - **参数校验在 shell 内做**：包括参数合法性、目录/节点是否存在等，不依赖 bat 层重复校验
+- **路由分发单行紧凑规范**：Shell 业务层中的 `case "$ACTION" in` 命令分发分支，**必须尽量写成单行**（如 `apply) do_apply ;;`），使路由表一目了然，避免简单分支多行展开占用行数：
+  ```sh
+  case "$ACTION" in
+      apply)   do_apply ;;
+      restore) do_restore ;;
+      info)    do_info ;;
+      *)       echo "[ERROR] 未知命令: $ACTION"; exit 1 ;;
+  esac
+  ```
 
 ### 参考实现
 
@@ -133,7 +142,7 @@ esac
 @echo off
 chcp 65001 >nul
 :: ============================================================
-:: Author: <作者>
+:: Author: WangQiang
 :: Date:   <日期>
 :: Desc:   <脚本功能描述>
 :: Usage:  <脚本名>.bat [参数说明]
@@ -144,7 +153,8 @@ setlocal
 
 > **注意顺序与原则：**
 > 1. `chcp 65001` 必须在 `setlocal` **之前**，否则代码页设置不生效。
-> 2. **延迟变量扩展最小化原则**：默认一律使用 `setlocal`。除非脚本内存在 `for` / `if` 块中需要原地修改并立刻消费变量（如 `!VAR!`），否则**严禁无意义地默认开启 `setlocal EnableDelayedExpansion`**，避免引入感叹号转义等副作用。
+> 2. **Author 声明规范**：所有新建或维护的 `.bat` 及 `.sh` 脚本头部，Author 字段一律统一声明为 `wangqiang`。
+> 3. **延迟变量扩展最小化原则**：默认一律使用 `setlocal`。除非脚本内存在 `for` / `if` 块中需要原地修改并立刻消费变量（如 `!VAR!`），否则**严禁无意义地默认开启 `setlocal EnableDelayedExpansion`**，避免引入感叹号转义等副作用。
 
 ### *_all.bat 主入口初始化顺序（强制）
 
@@ -176,11 +186,15 @@ if %ERRORLEVEL% neq 0 (
 :: 4. 确保输出目录存在
 if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
 
-:: 5. 命令分发
-if /i "%cmd%"=="xxx" goto xxx
+:: 5. 命令分发 (路由分发必须尽量写成单行，保持对齐与紧凑)
+if /i "%cmd%"=="top"   goto :top_activity
+if /i "%cmd%"=="qs"    goto :quick_search
+if /i "%cmd%"=="xxx"   goto :xxx
 ```
 
-> **关键原则：** help 判断必须放在 `call %INIT_BAT%` **之前**，确保用户单纯查看帮助时不触发环境初始化和 ADB 检测，保证响应速度且避免误报错。
+> **关键原则：**
+> 1. help 判断必须放在 `call %INIT_BAT%` **之前**，确保用户单纯查看帮助时不触发环境初始化和 ADB 检测，保证响应速度且避免误报错。
+> 2. **路由分发单行原则**：无论 Bat 主入口的 `if /i "%cmd%"=="xxx" goto :xxx` 还是子脚本中的命令分发，**必须尽量写成单行**，保持分发区紧凑、整洁、易读。
 
 ### 帮助信息规范（强制）
 

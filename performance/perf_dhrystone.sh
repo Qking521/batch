@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ============================================================
-# Author: Antigravity Pair Program
+# Author: WangQiang
 # Date:   2026-08-26
 # Desc:   Dhrystone 压力测试控制工具
 # Usage:  adb shell "sh -s <action> [param1]" < perf_dhrystone.sh

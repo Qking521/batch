@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ============================================================
-# Author: Antigravity Pair Program
+# Author: WangQiang
 # Date: 2026-08-06
 # Desc: Android 设备信息采集业务层脚本
 # Usage: adb shell "sh -s" < android_device_info.sh

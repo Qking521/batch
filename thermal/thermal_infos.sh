@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ============================================================
-# Author: Antigravity Pair Program
+# Author: WangQiang
 # Date:   2026-08-07
 # Desc:   Thermal 硬件监控、冷却设备与 Thermal Zone 整合管理工具
 # Usage:  adb shell "sh -s <cmd> [sub_action|params]" < thermal_infos.sh

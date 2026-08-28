@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ============================================================
-# Author: Antigravity Pair Program
+# Author: WangQiang
 # Date:   2026-07-31
 # Desc:   搜索 Android settings 三库及 getprop 属性（模糊匹配）
 # Usage:  通过 stdin 注入: adb shell "sh -s <pattern>" < android_search.sh

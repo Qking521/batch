@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ============================================================
-# Author: Antigravity Pair Program
+# Author: WangQiang
 # Date:   2026-08-27
 # Desc:   实时监听 Android settings 三库、getprop、audio 音量及系统状态变化
 # Usage:  sh /data/local/tmp/android_watch.sh [interval]

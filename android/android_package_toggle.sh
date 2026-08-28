@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ============================================================
-# Author: Antigravity Pair Program
+# Author: WangQiang
 # Date:   2026-08-05
 # Desc:   开启/禁用 Android 应用包（支持单应用包名或预设组 google/moto）
 # Usage:  adb shell "sh -s <enable|disable> <pkg_name|google|moto>" < android_package_toggle.sh

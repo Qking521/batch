@@ -1,7 +1,7 @@
 @echo off
 chcp 65001 >nul
 :: ============================================================
-:: Author: Antigravity Pair Program
+:: Author: WangQiang
 :: Date:   2026-08-05
 :: Desc:   Android 录屏入口脚本
 :: Usage:  android_screen_record.bat [filename.mp4]

@@ -1,7 +1,7 @@
 @echo off
 chcp 65001 >nul
 :: ============================================================
-:: Author: Antigravity Pair Program
+:: Author: WangQiang
 :: Date:   2026-08-25
 :: Desc:   基础待机电流配置与恢复
 :: Usage:  power standby [restore|default]

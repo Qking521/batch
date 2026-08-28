@@ -1,7 +1,7 @@
 @echo off
 chcp 65001 >nul
 :: ============================================================
-:: Author: Antigravity Pair Program
+:: Author: WangQiang
 :: Date:   2026-08-25
 :: Desc:   Perfetto Trace 追踪与 Bugreport 分析辅助
 :: Usage:  power trace <ui|ui-enhance|sh> [bugreport_path]

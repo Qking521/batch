@@ -1,6 +1,6 @@
-﻿#!/system/bin/sh
+#!/system/bin/sh
 # ============================================================
-# Author: Antigravity Pair Program
+# Author: WangQiang
 # Date:   2026-08-05
 # Desc:   Android 设备端录屏业务逻辑脚本
 # Usage:  adb shell "sh -s <start|stop> [file_name]" < android_screen_record.sh

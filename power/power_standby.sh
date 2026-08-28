@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ============================================================
-# Author: Antigravity Pair Program
+# Author: WangQiang
 # Date:   2026-08-06
 # Desc:   Android 待机基准环境配置与恢复脚本
 # Usage:  adb shell "sh -s <apply|restore|get_default>" < power_standby.sh

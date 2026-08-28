@@ -1,6 +1,6 @@
 @echo off
 :: ============================================================
-:: Author: Antigravity Pair Program
+:: Author: WangQiang
 :: Date:   2026-08-25
 :: Desc:   Thermal management command dispatcher
 :: Usage:  therm <command> [options]

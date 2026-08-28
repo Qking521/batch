@@ -1,6 +1,6 @@
 @echo off
 :: ============================================================
-:: Author: Antigravity Pair Program
+:: Author: WangQiang
 :: Date: 2026-07-20
 :: Description: Optimized script for adb_check.bat
 :: ============================================================
@@ -9,7 +9,7 @@ setlocal enabledelayedexpansion
 
 set "TARGET_CMD=%~1"
 :: 指定免检测/默认连接上的命令列表（空格分隔）
-set "WHITELIST=help adbd key"
+set "WHITELIST=help adbd qs"
 
 if defined TARGET_CMD (
     for %%i in (!WHITELIST!) do (

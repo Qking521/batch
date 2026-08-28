@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ============================================================
-# Author: Antigravity
+# Author: WangQiang
 # Date:   2026-07-30
 # Desc:   设备侧壁纸操作脚本
 #         通过 am start 设置或查看已推送到设备的壁纸文件

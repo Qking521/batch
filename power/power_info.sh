@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ============================================================
-# Author: Antigravity Pair Program
+# Author: WangQiang
 # Date: 2026-08-07
 # Desc: Android 功耗相关设备与状态信息采集业务层脚本
 # Usage: adb shell "sh -s" < power_info.sh

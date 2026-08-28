@@ -1,6 +1,6 @@
 @echo off
 :: ============================================================
-:: Author: Antigravity Pair Program
+:: Author: WangQiang
 :: Date: 2026-07-20
 :: Description: Optimized script for decrypt_all_config.bat
 :: ============================================================
