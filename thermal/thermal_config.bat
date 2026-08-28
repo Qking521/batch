@@ -141,7 +141,7 @@ exit /b
     exit /b
 
 :config_decrypt
-    set MTK_THERMAL_DECRYPT=%SCRIPT_DIR%thermal_decrypt_mtk.bat
+    set "MTK_THERMAL_DECRYPT=%SCRIPT_DIR%thermal_decrypt_mtk.bat"
     if "!thermalHalOwner!"=="mediatek" (
         if exist "%MTK_THERMAL_DECRYPT%" (
             call "%MTK_THERMAL_DECRYPT%"

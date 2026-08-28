@@ -1,54 +1,66 @@
 @echo off
 :: ============================================================
-:: Author: WangQiang
-:: Date: 2026-07-20
-:: Description: Optimized script for power_mtk_thermal_decrypt.bat
+:: Author: wangqiang
+:: Date:   2026-08-28
+:: Desc:   MTK 平台 Thermal 配置文件导出与解密工具
+:: Usage:  therm config decrypt
 :: ============================================================
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
-：：此脚本由thermal_config.bat在平台为mediatek时调用
-:: 检查thermal策略
-set thermalVersion=-1
-for /f %%a in ('adb shell getprop ro.vendor.mtk_thermal_2_0') do set thermalVersion=%%a
-echo MTK_THERMAL_VERSION = %thermalVersion%
+:: 1. 检查 MTK Thermal 策略版本 (2.0 或 1.0)
+set "thermalVersion=-1"
+for /f "delims=" %%a in ('adb shell getprop ro.vendor.mtk_thermal_2_0 2^>nul') do set "thermalVersion=%%a"
+echo [INFO] MTK_THERMAL_VERSION = !thermalVersion!
 
-:: 设置主目录路径
-set "DECRYPT_DIR=%SCRIPT_DIR%\thermal_decrypt"
+:: 2. 设置路径 (SCRIPT_DIR 末尾已有斜杠)
+set "DECRYPT_DIR=%SCRIPT_DIR%thermal_decrypt"
 set "MODULE_OUT_DIR=%MODULE_OUT_DIR%\thermal_decrypt\%FORMAT_TIME%"
 
 if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
+echo [INFO] Thermal 导出目录: %MODULE_OUT_DIR%
 
-echo thermal文件目录创建成功: %MODULE_OUT_DIR%
-
-:: 执行adb pull命令
-echo 正在执行adb pull命令...
-if %thermalVersion%==0 (
-	adb pull /vendor/etc/.tp/ "%MODULE_OUT_DIR%"
-)else (
-	adb pull /vendor/etc/thermal/. "%MODULE_OUT_DIR%"
+:: 3. 从设备拉取 Thermal 配置文件
+echo [INFO] 正在从设备拉取 thermal 配置文件...
+if "!thermalVersion!"=="0" (
+    adb pull /vendor/etc/.tp/. "%MODULE_OUT_DIR%"
+) else (
+    adb pull /vendor/etc/thermal/. "%MODULE_OUT_DIR%"
 )
 
-:: 重命名文件后缀为.mtc
-cd "%MODULE_OUT_DIR%"
+:: 4. 进入输出目录执行格式转换与解密
+pushd "%MODULE_OUT_DIR%"
+
+if not exist "%DECRYPT_DIR%\decrypt.exe" (
+    echo [ERROR] 未找到解密工具: %DECRYPT_DIR%\decrypt.exe
+    popd
+    exit /b 1
+)
+
 for /r %%f in (*.conf) do (
-	if exist "%%f" (
+    if exist "%%f" (
         set "filename=%%~nf"
-        copy "%%f" "!filename!.mtc" >nul
+        copy /y "%%f" "!filename!.mtc" >nul 2>&1
     )
 )
 
-copy "%DECRYPT_DIR%"\forfiles.exe %MODULE_OUT_DIR%
-copy "%DECRYPT_DIR%"\decrypt.exe %MODULE_OUT_DIR%
-copy "%DECRYPT_DIR%"\decrypt_all_config.bat %MODULE_OUT_DIR%
+copy /y "%DECRYPT_DIR%\decrypt.exe" . >nul 2>&1
 
-rem decrypt_all_config.bat有pause，<nul会让 pause 立即收到一个“空输入”，相当于自动按下回车，不会卡住
-call decrypt_all_config.bat <nul
-if %errorlevel% neq 0 (
-    echo 警告: 解密脚本执行可能有问题
+:: 对所有 .mtc 文件调用 decrypt.exe 进行解密
+for %%f in (*.mtc) do (
+    if exist "%%f" (
+        echo [INFO] 正在解密: %%f
+        decrypt.exe "%%f" >nul 2>&1
+    )
 )
 
-:: 删除所有 .mtc 文件
-del *.mtc
+:: 清理临时 .exe 与 .mtc 文件
+del /f /q decrypt.exe >nul 2>&1
+del /f /q *.mtc >nul 2>&1
 
-start %MODULE_OUT_DIR%
+echo [OK] Thermal 配置文件解密完成.
+
+popd
+
+start "" "%MODULE_OUT_DIR%"
+exit /b 0
