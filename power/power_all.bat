@@ -108,6 +108,7 @@ adb root
 adb shell "logcat -b all -c; dmesg -C"
 adb shell dumpsys batterystats --reset
 adb shell dumpsys batterystats --enable full-wake-history
+adb shell dumpsys alarm --reset >nul
 adb shell dumpsys alarm log on >nul
 echo [OK] Battery stats reset and logs cleared.
 exit /b 0

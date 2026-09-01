@@ -35,6 +35,7 @@ if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
 if /i "%cmd%"=="tz"     goto :thermal_infos
 if /i "%cmd%"=="cd"     goto :thermal_infos
 if /i "%cmd%"=="hm"     goto :thermal_infos
+if /i "%cmd%"=="fake"   goto :thermal_fake
 if /i "%cmd%"=="wt"     goto :whats_temp
 if /i "%cmd%"=="config" goto :thermal_config
 
@@ -49,6 +50,7 @@ echo Available commands:
 echo   tz [dis/en]          - Query / Disable / Restore Thermal Zones
 echo   cd                   - Show Cooling Devices status
 echo   hm                   - Show Hardware Monitors (hwmon) status
+echo   fake [zone] [temp_c] - Write emul_temp to simulate thermal zone temperature
 echo   wt [start/stop/pull] - WhatsTemp detection, recording and config
 echo   config [push/pull]   - Thermal config operations
 echo   -h / help            - Show help info
@@ -79,3 +81,12 @@ exit /b %ERRORLEVEL%
 :whats_temp
 call "%SCRIPT_DIR%thermal_whats_temp.bat" %param1%
 exit /b %ERRORLEVEL%
+
+:thermal_fake
+set "SH_SCRIPT=%SCRIPT_DIR%thermal_infos.sh"
+if not exist "%SH_SCRIPT%" (
+    echo [ERROR] Shell script not found: %SH_SCRIPT%
+    exit /b 1
+)
+adb shell "sh -s tz fake %param1% %param2%" < "%SH_SCRIPT%"
+exit /b %ERRORLEVEL%

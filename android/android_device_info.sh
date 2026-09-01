@@ -60,6 +60,7 @@ get_system_info() {
     echo "  API Level:     $(get_prop_or_unk ro.build.version.sdk)"
     echo "  Build ID:      $(get_prop_or_unk ro.build.id)"
     echo "  Build 描述:    $(get_prop_or_unk ro.build.description)"
+    echo "  Build 日期:    $(get_prop_or_unk ro.build.date)"
     echo "  安全补丁版本:  $(get_prop_or_unk ro.build.version.security_patch)"
 
     # Mica 项目特有版本信息判断与打印

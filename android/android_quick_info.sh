@@ -134,7 +134,7 @@ All kernel wake locks|All partial wake locks|All wakeup reasons|All screen wake 
 Pending Wakeup Sources|Wake lock|blocked by|prevent_suspend_time|PM: suspend returned|aborting suspend|active wakeup source
 
 # 7. 查看系统待机及唤醒关键字 (进出 suspend 时间点、唤醒中断/Alarm 来源)
-suspend entry|suspend exit|suspend wake up by|Resume caused by|caused by IRQ|set alarm :
+suspend entry|suspend exit|suspend wake up by|Resume caused by|caused by IRQ|\d+ alarms:
 
 # 8. 系统 suspend 但子系统仍在工作关键字
 26M_off_pct|AP suspend ratio

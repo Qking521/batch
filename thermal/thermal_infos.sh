@@ -26,6 +26,7 @@ Usage:
   therm tz [info]           - 查看所有 Thermal Zone 信息 (默认)
   therm tz dis|disable      - 禁用所有已开启的 Thermal Zone
   therm tz en|enable        - 恢复被禁用的 Thermal Zone
+  therm tz fake <type> <temp_c> - 对指定 zone 写入模拟温度 (emul_temp)
   therm tz <zone_type>      - 按 type 名称查询指定 zone 详情
   therm tz <z1> <z2> ...    - 查询多个指定 zone (如: therm tz front_temp back_temp)
 EOF
@@ -106,7 +107,41 @@ handle_tz() {
     local action="$1"
 
     case "$action" in
+        "fake")
+            local zone_type="$2"
+            local temp_c="$3"
+            if [ -z "$zone_type" ] || [ -z "$temp_c" ]; then
+                echo "[ERROR] 用法: therm tz fake <zone_type> <temp_c>"
+                echo "  例如: therm tz fake ap_ntc 30"
+                exit 1
+            fi
+            if [ "$(id -u)" -ne 0 ]; then
+                echo "[ERROR] 写入 emul_temp 需要 root 权限，请先运行 'adb root'" >&2
+                exit 1
+            fi
+            local zone_dir
+            zone_dir=$(find_zone_by_type "$zone_type")
+            if [ -z "$zone_dir" ]; then
+                echo "[ERROR] 未找到 Thermal Zone: '$zone_type'"
+                exit 1
+            fi
+            local emul_path="$zone_dir/emul_temp"
+            if [ ! -f "$emul_path" ]; then
+                echo "[ERROR] 该 Zone 不支持 emul_temp: $emul_path"
+                exit 1
+            fi
+            local emul_val=$(( temp_c * 1000 ))
+            echo "$emul_val" > "$emul_path" 2>/dev/null
+            if [ $? -eq 0 ]; then
+                echo "[OK] $zone_type ($zone_dir): emul_temp = ${temp_c}C (写入 ${emul_val})"
+            else
+                echo "[ERROR] 写入失败: $emul_path"
+                exit 1
+            fi
+            ;;
+
         "dis"|"disable")
+
             if [ "$(id -u)" -ne 0 ]; then
                 echo "[ERROR] 禁用 Thermal Zone 需要 root 权限，请先运行 'adb root'" >&2
                 exit 1

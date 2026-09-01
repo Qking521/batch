@@ -69,7 +69,7 @@ echo   clear                    - Clear logcat and dmesg logs
 echo   dev [on/off]             - Toggle developer touches / pointer location
 echo   di                       - Show device hardware and system info
 echo   search [keyword]         - Search Settings and Properties
-echo   watch [interval]         - Watch Settings, getprop, audio volume & status
+echo   watch [interval]         - Watch Settings, getprop, audio volume ^& status
 echo   monkey [pkg/kill/num]    - Run or stop Monkey test
 echo   enable/disable [pkg]     - Enable or disable package
 echo   dump [service] [params]  - Dump system service state to OUT dir
@@ -77,7 +77,7 @@ echo   rr [on/off]              - Set or query refresh rate
 echo   skip                     - Skip setup wizard
 echo   install [toolname]       - Install perf / thermal / power apk tools
 echo   adbd [category/keyword]  - ADB helper command dictionary
-echo   qs [category]            - Quick raw commands & log keywords (log/therm/perf/power/sys/all)
+echo   qs [category]            - Quick raw commands ^& log keywords (log/therm/perf/power/sys/all)
 echo   -h / help                - Show help info
 echo.
 echo Examples:

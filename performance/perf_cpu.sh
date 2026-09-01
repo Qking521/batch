@@ -161,18 +161,29 @@ info)
     echo "=========================================================="
     echo " CPU 信息总览  [平台: $plat]"
     echo "=========================================================="
-    printf '%-9s %-12s %-14s %-14s %-14s %-8s\n' 'POLICY' 'ONLINE-CPUS' 'MIN_FREQ(KHz)' 'CUR_FREQ(KHz)' 'MAX_FREQ(KHz)' 'GOV'
-    echo "----------------------------------------------------------------------"
+    # Policy 表：含硬件最大频点与限频状态
+    printf '%-9s %-12s %-10s %-10s %-14s %-14s %-10s %s\n' \
+        'POLICY' 'CPUS' 'MIN(KHz)' 'CUR(KHz)' 'MAX(KHz)' 'HW_MAX(KHz)' 'GOV' 'THROTTLE?'
+    echo "-----------------------------------------------------------------------------------------"
     for policy in $(list_policies); do
         pdir="/sys/devices/system/cpu/cpufreq/$policy"
         affected=$(read_node "$pdir/affected_cpus")
-        min=$(read_node "$pdir/scaling_min_freq")
-        cur=$(read_node "$pdir/scaling_cur_freq")
-        max=$(read_node "$pdir/scaling_max_freq")
-        gov=$(read_node "$pdir/scaling_governor")
-        printf '%-9s %-12s %-14s %-14s %-14s %-8s\n' "$policy" "$affected" "$min" "$cur" "$max" "$gov"
-        
-        # 显示该 policy 的可用完整频点列表
+        min=$(read_node     "$pdir/scaling_min_freq")
+        cur=$(read_node     "$pdir/scaling_cur_freq")
+        max=$(read_node     "$pdir/scaling_max_freq")
+        hw_max=$(read_node  "$pdir/cpuinfo_max_freq")
+        gov=$(read_node     "$pdir/scaling_governor")
+
+        # 限频判断：scaling_max < cpuinfo_max
+        throttle="no"
+        if [ "$max" != "N/A" ] && [ "$hw_max" != "N/A" ]; then
+            [ "$max" -lt "$hw_max" ] 2>/dev/null && throttle="[YES] ${max} < ${hw_max}"
+        fi
+
+        printf '%-9s %-12s %-10s %-10s %-14s %-14s %-10s %s\n' \
+            "$policy" "$affected" "$min" "$cur" "$max" "$hw_max" "$gov" "$throttle"
+
+        # 可用频率列表
         avail=$(read_node "$pdir/scaling_available_frequencies")
         if [ "$avail" != "N/A" ] && [ -n "$avail" ]; then
             echo "  └─ 可用频率: $avail"
