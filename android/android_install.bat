@@ -23,6 +23,7 @@ if /i "%cmd%"=="wt" goto whats_tempeture
 if /i "%cmd%"=="wmp" goto wheres_my_power
 if /i "%cmd%"=="fd" goto fast_discharge
 if /i "%cmd%"=="moto" goto moto_tools
+if /i "%cmd%"=="cell" goto cellular
 
 echo [错误]: 未知工具指令: %cmd%
 goto :usage
@@ -35,12 +36,13 @@ echo =======================
 echo 用法: ad install [toolname]
 echo.
 echo 可用工具:
-echo   ds   - 安装并配置 dhrystone 测试CPU性能的工具.
-echo   gl   - 安装并配置 webGL 测试GPU性能的工具.
-echo   wt   - 安装并配置 WhatsTemp 温度监控工具.
-echo   wmp  - 安装并配置 WheresMyPower 功耗分析工具.
-echo   fd   - 安装并配置 fastDischarge 快速耗电工具.
-echo   fd   - 安装并配置 和moto项目相关的自动化测试工具.
+echo   ds       - 安装并配置 dhrystone 测试CPU性能的工具.
+echo   gl       - 安装并配置 webGL 测试GPU性能的工具.
+echo   wt       - 安装并配置 WhatsTemp 温度监控工具.
+echo   wmp      - 安装并配置 WheresMyPower 功耗分析工具.
+echo   fd       - 安装并配置 fastDischarge 快速耗电工具.
+echo   moto     - 安装并配置 和moto项目相关的自动化测试工具.
+echo   moto     - 安装并配置 cellular 查看通讯网络信息工具.
 echo.
 echo 示例:
 echo   ad install ds
@@ -117,6 +119,10 @@ exit /b 0
 :moto_tools
     adb install -r %APKS_DIR%\nonrootchina-debug.apk
     adb install -r %APKS_DIR%\nonrootchina-debug-androidTest.apk
+exit /b 0
+
+:cellular
+    adb install -r %APKS_DIR%\cellular-Z.apk
 exit /b 0
 
 :grant_permission
