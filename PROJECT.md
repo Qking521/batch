@@ -196,9 +196,29 @@ if /i "%cmd%"=="xxx"   goto :xxx
 > 1. help 判断必须放在 `call %INIT_BAT%` **之前**，确保用户单纯查看帮助时不触发环境初始化和 ADB 检测，保证响应速度且避免误报错。
 > 2. **路由分发单行原则**：无论 Bat 主入口的 `if /i "%cmd%"=="xxx" goto :xxx` 还是子脚本中的命令分发，**必须尽量写成单行**，保持分发区紧凑、整洁、易读。
 
+### 参数层级与命名规范（强制）
+
+为了保证整个项目中主入口与各子脚本参数传递的一致性与可读性，各级脚本的参数命名必须严格遵守以下层级约定：
+
+1. **一级 Bat（主入口，如 `*_all.bat`）**：
+   - 第 1 个参数变量名统一为 `cmd`（例如 `set "cmd=%~1"`）；
+   - 后续参数依次命名为 `param1`（`%~2`）、`param2`（`%~3`）、`param3`（`%~4`）依此类推；
+   - 主入口调用二级子 Bat 时，统一通过 `%*` 透传完整参数列表。
+
+2. **二级/子 Bat（模块子脚本，如 `perf_simpleperf.bat`、`perf_traces.bat`、`perf_sql.bat` 等）**：
+   - 第 1 个业务动作变量名统一为 `action`（从 `%~2` 接收，例如 `set "action=%~2"`）；
+   - 后续参数依次命名为 `param1`（从 `%~3` 接收，例如 `set "param1=%~3"`）、`param2`（`%~4`）依此类推。
+
+3. **完整参数对应关系示例**：
+   以命令 `perf flame parse E:\Temp\perf.data` 为例：
+   - `perf`：用户终端 Alias 快捷命令；
+   - `flame`：一级 Bat (`perf_all.bat`) 的 `%~1`，即 `cmd`；
+   - `parse`：二级 Bat (`perf_simpleperf.bat`) 的 `%~2`，即 `action`；
+   - `E:\Temp\perf.data`：二级 Bat (`perf_simpleperf.bat`) 的 `%~3`，即 `param1`。
+
 ### 帮助信息规范（强制）
 
-- **Bat 脚本**：帮助标签一律统一命名为 `:usage`（跳转 `goto :usage`），结尾显式 `exit /b 0`。
+- **Bat 脚本**：帮助标签一律统一命名为 `:usage`（跳转 `goto :usage`），结尾显式 `exit /b 0`，**严禁使用 `show_help` 等自定义名称**。
 - **Shell 脚本**：帮助展示函数一律统一命名为 `usage()`（禁止使用 `show_help` 等自定义名称），支持 `help` / `-h` 参数触发。
 
 **无参数的行为根据脚本类型分两种模式：**

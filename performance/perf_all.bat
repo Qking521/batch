@@ -45,7 +45,7 @@ echo   sql [tag/sql] [trace_path]       - 使用 SQL 查询性能 Trace
 echo   cpu [info/freq/online/...]       - CPU 调控
 echo   gpu                              - GPU 性能抓取 (等同 trace)
 echo   ds                               - Dhrystone 操作
-echo   flame                            - 火焰图抓取 (simpleperf)
+echo   flame [record/parse]             - 火焰图抓取与解析 (simpleperf)
 echo   help / -h                        - 显示此帮助信息
 echo.
 echo 示例:
@@ -54,6 +54,9 @@ echo   perf trace ui
 echo   perf sql cpu_usage
 echo   perf sql "SELECT name, dur FROM slice LIMIT 10"
 echo   perf cpu info
+echo   perf flame record
+echo   perf flame record com.android.settings
+echo   perf flame parse
 echo.
 exit /b 0
 
@@ -90,7 +93,7 @@ exit /b 0
     exit /b
 
 :flame
-    call %SCRIPT_DIR%perf_simpleperf.bat %2
+    call %SCRIPT_DIR%perf_simpleperf.bat %*
     exit /b
 
 :dhrystone
