@@ -9,7 +9,7 @@ setlocal enabledelayedexpansion
 
 set "TARGET_CMD=%~1"
 :: 指定免检测/默认连接上的命令列表（空格分隔）
-set "WHITELIST=help adbd qs"
+set "WHITELIST=help adbd qs bind"
 
 if defined TARGET_CMD (
     for %%i in (!WHITELIST!) do (

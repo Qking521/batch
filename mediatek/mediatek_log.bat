@@ -97,12 +97,11 @@ goto :usage
     echo [INFO] Step 1/4: Stop logging...
     adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name stop --ei cmd_target -1 -n com.debug.loggerui/.framework.LogReceiver >nul
 
-    rem Step 2: Poll MTK properties
+    rem Step 2: Poll MTK properties until stopped (max 4s)
     echo [INFO] Step 2/4: Waiting for log daemon flush...
     for /l %%i in (1,1,4) do (
         for /f "tokens=*" %%p in ('adb shell "getprop vendor.MB.running" 2^>nul') do set "mb_running=%%p"
         for /f "tokens=*" %%p in ('adb shell "getprop vendor.mdlogger.Running" 2^>nul') do set "md_running=%%p"
-        
         if "!mb_running!"=="0" if "!md_running!"=="0" (
             goto :log_stopped
         )
@@ -110,7 +109,6 @@ goto :usage
     )
 :log_stopped
     adb shell sync
-
     echo [INFO] MTK log recording stopped and flushed.
 
     rem Step 3: Pull core mobilelog first and open directory immediately
@@ -120,9 +118,11 @@ goto :usage
     echo [INFO] Core log pulled. Opening directory: %TARGET_DIR%
     start "" "%TARGET_DIR%"
 
-    rem Step 4: Pull full logs and create archive
+    rem Step 4: Pull full logs (enumerate subdirs only, skip root-level files like file_tree.txt)
     echo [INFO] Step 4/4: Pulling full logs and creating archive...
-    adb pull /data/debuglogger "%TARGET_DIR%"
+    for /f "tokens=*" %%d in ('adb shell "find /data/debuglogger -maxdepth 1 -mindepth 1 -type d 2>/dev/null"') do (
+        adb pull "%%d" "%TARGET_DIR%"
+    )
 
     set "SEVEN_ZIP="
     where 7z >nul 2>&1
@@ -133,7 +133,7 @@ goto :usage
 
     if defined SEVEN_ZIP (
         echo [INFO] Compressing full logs on PC using 7-Zip...
-        "%SEVEN_ZIP%" a -t7z "%MODULE_OUT_DIR%\%model%_mtklog_%SNAPSHOT_TIME%.7z" "%TARGET_DIR%\debuglogger" -mx=5 >nul 2>&1
+        "%SEVEN_ZIP%" a -t7z "%MODULE_OUT_DIR%\%model%_mtklog_%SNAPSHOT_TIME%.7z" "%TARGET_DIR%" -mx=5 >nul 2>&1
         if !errorlevel! equ 0 (
             echo [OK] 7-Zip archive created: %MODULE_OUT_DIR%\%model%_mtklog_%SNAPSHOT_TIME%.7z
         )

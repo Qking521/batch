@@ -4,7 +4,7 @@ set HTTP_PROXY=http://127.0.0.1:10809
 set HTTPS_PROXY=http://127.0.0.1:10809
 
 @REM  mediatek platform
-doskey mtk=%USERPROFILE%\batScript\mediatek\mtklog.bat $*
+doskey mtk=%USERPROFILE%\batScript\mediatek\mediatek_all.bat $*
 
 @REM android
 doskey ad=%USERPROFILE%\batScript\android\android_all.bat $*

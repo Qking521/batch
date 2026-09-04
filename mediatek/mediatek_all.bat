@@ -41,7 +41,7 @@ goto :usage
     echo MTK Log Management Tool
     echo =======================
     echo.
-    echo Usage: mtklog [command]
+    echo Usage: mtk log [command]
     echo.
     echo Available commands:
     echo   ui      - Open log UI interface
@@ -53,12 +53,12 @@ goto :usage
     echo   help    - Show help (alias: -h)
     echo.
     echo Examples:
-    echo   mtklog ui
-    echo   mtklog start
-    echo   mtklog pull
+    echo   mtk log ui
+    echo   mtk log start
+    echo   mtk log pull
     echo.
     exit /b 0
 
 :mediatek_log
-    call "%SCRIPT_DIR%mtklog.bat" %*
+    call "%SCRIPT_DIR%mediatek_log.bat" %*
     exit /b %ERRORLEVEL%

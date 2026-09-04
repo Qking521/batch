@@ -51,6 +51,7 @@ if /i "%cmd%"=="shell"     goto :shells
 if /i "%cmd%"=="adbd"      goto :adb_helper
 if /i "%cmd%"=="qs"        goto :quick_search
 if /i "%cmd%"=="watch"     goto :watch_changes
+if /i "%cmd%"=="bind"      goto :bind
 
 echo [ERROR] Unknown command: %cmd%
 goto :usage
@@ -61,6 +62,7 @@ echo Usage: ad [command] [args...]
 echo.
 echo Available commands:
 echo   top                      - Show current Activity / Focus
+echo   bind [serial]            - Bind device ro.serialno (set ANDROID_SERIAL ^& title)
 echo   ss                       - Take screenshot and save/open
 echo   sr                       - Record screen and pull to local
 echo   kill [process_name]      - Kill target process by name
@@ -82,6 +84,7 @@ echo   -h / help                - Show help info
 echo.
 echo Examples:
 echo   ad top
+echo   ad bind
 echo   ad dev on
 echo   ad watch
 echo   ad watch 1
@@ -277,4 +280,22 @@ exit /b 0
     :: 2. 保证终端支持 ANSI 彩色高亮输出。
     adb shell -t "sh /data/local/tmp/android_watch.sh %param1%"
     adb shell "if [ -f /data/local/tmp/.ad_watch.pid ]; then kill -9 $(cat /data/local/tmp/.ad_watch.pid 2>/dev/null) 2>/dev/null; rm -f /data/local/tmp/.ad_watch* 2>/dev/null; fi" >nul 2>&1
+    exit /b 0
+
+:bind
+    set "SERIAL="
+    if not "%param1%"=="" (
+        for /f "tokens=*" %%a in ('adb -s %param1% shell getprop ro.serialno 2^>nul') do set "SERIAL=%%a"
+        if "%SERIAL%"=="" set "SERIAL=%param1%"
+    ) else (
+        for /f "tokens=*" %%a in ('adb shell getprop ro.serialno 2^>nul') do set "SERIAL=%%a"
+    )
+    if "%SERIAL%"=="" (
+        echo [ERROR] Failed to get ro.serialno.
+        adb devices
+        exit /b 1
+    )
+    title %SERIAL%
+    echo [OK] ANDROID_SERIAL=%SERIAL%
+    endlocal & set "ANDROID_SERIAL=%SERIAL%"
     exit /b 0
