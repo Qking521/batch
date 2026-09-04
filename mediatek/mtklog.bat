@@ -5,110 +5,160 @@
 :: Description: Optimized script for mtklog.bat
 :: ============================================================
 chcp 65001 >nul
-setlocal enabledelayedexpansion
+setlocal EnableDelayedExpansion
 
-set "cmd=%~1"
+set "action=%~2"
 
-call %INIT_BAT% %~dp0
-:: 调用基础脚本检查ADB和设备（使用完整路径，传入当前子命令）
-call "%ADB_CHECK_BAT%" "%cmd%"
-if %ERRORLEVEL% neq 0 (
-    echo [错误]: 基础检测失败，退出操作。
-    exit /b %ERRORLEVEL%
-)
+if "%action%"=="" goto :usage
+if /i "%action%"=="-h" goto :usage
+if /i "%action%"=="help" goto :usage
 
-if "%cmd%"=="" goto show_help
-if /i "%cmd%"=="-h" goto show_help
-if /i "%cmd%"=="help" goto show_help
-if /i "%cmd%"=="ui" goto open_ui
-if /i "%cmd%"=="open" goto open_log
-if /i "%cmd%"=="start" goto open_log
-if /i "%cmd%"=="close" goto close_log
-if /i "%cmd%"=="stop" goto close_log
-if /i "%cmd%"=="clear" goto clear_log
-if /i "%cmd%"=="pull" goto pull_log
-if /i "%cmd%"=="new" goto new_log
+if /i "%action%"=="ui" goto :open_ui
+if /i "%action%"=="open" goto :open_log
+if /i "%action%"=="start" goto :open_log
+if /i "%action%"=="close" goto :close_log
+if /i "%action%"=="stop" goto :close_log
+if /i "%action%"=="clear" goto :clear_log
+if /i "%action%"=="pull" goto :pull_log
+if /i "%action%"=="new" goto :new_log
 
-echo Unknown command: %cmd%
-echo Use "mtklog -h" for help
-exit /b
+echo [ERROR] Unknown command: %action%
+goto :usage
 
-:show_help
-echo.
-echo MTK Log Management Tool
-echo =======================
-echo.
-echo Usage: mtklog [command]
-echo.
-echo Available commands:
-echo   ui      - Open log UI interface
-echo   open    - Start log recording (alias: start^)
-echo   close   - Stop log recording (alias: stop^)
-echo   clear   - Clear all logs
-echo   pull    - Stop and pull log files to current directory
-echo   new     - Restart (stop-clear-start^)
-echo   -h      - Show help (alias: help^)
-echo.
-echo Examples:
-echo   mtklog ui
-echo   mtklog start
-echo   mtklog pull
-echo.
-exit /b
+:usage
+    echo.
+    echo MTK Log Management Tool
+    echo =======================
+    echo.
+    echo Usage: mtklog [command]
+    echo.
+    echo Available commands:
+    echo   ui      - Open log UI interface
+    echo   open    - Start log recording (alias: start)
+    echo   close   - Stop log recording (alias: stop)
+    echo   clear   - Clear all logs
+    echo   pull    - Stop and pull log files to OUT directory
+    echo   new     - Restart (stop-clear-start)
+    echo   help    - Show help (alias: -h)
+    echo.
+    echo Examples:
+    echo   mtk log ui
+    echo   mtk log start
+    echo   mtk log pull
+    echo.
+    exit /b 0
 
 :open_ui
-echo Opening log UI interface...
-adb shell am start -n com.debug.loggerui/com.debug.loggerui.MainActivity
-echo Log UI opened
-exit /b
+    echo Opening log UI interface...
+    adb shell am start -n com.debug.loggerui/com.debug.loggerui.MainActivity
+    echo Log UI opened
+    exit /b 0
 
 :open_log
-echo Starting log recording...
-adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name start --ei cmd_target -1 -n com.debug.loggerui/.framework.LogReceiver
-echo Log recording started
-exit /b
+    echo Starting log recording...
+    adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name start --ei cmd_target -1 -n com.debug.loggerui/.framework.LogReceiver >nul
+    for /l %%i in (1,1,6) do (
+        for /f "tokens=*" %%p in ('adb shell "getprop vendor.MB.running" 2^>nul') do set "mb_running=%%p"
+        for /f "tokens=*" %%p in ('adb shell "getprop vendor.mdlogger.Running" 2^>nul') do set "md_running=%%p"
+        if "!mb_running!"=="1" if "!md_running!"=="1" (
+            goto :log_started
+        )
+        timeout /t 1 /nobreak >nul
+    )
+:log_started
+    echo Log recording started
+    exit /b 0
 
 :close_log
-echo Stopping log recording...
-adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name stop --ei cmd_target -1 -n com.debug.loggerui/.framework.LogReceiver
-echo Log recording stopped
-exit /b
+    echo Stopping log recording...
+    adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name stop --ei cmd_target -1 -n com.debug.loggerui/.framework.LogReceiver
+    echo Log recording stopped
+    exit /b 0
 
 :clear_log
-echo Clearing all logs...
-adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name clear_all_logs -n com.debug.loggerui/.framework.LogReceiver
-echo Logs cleared
-exit /b
+    echo Clearing all logs...
+    adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name clear_all_logs -n com.debug.loggerui/.framework.LogReceiver
+    echo Logs cleared
+    exit /b 0
 
 :pull_log
-for /f "delims= " %%a in ('adb shell getprop ro.product.board') do set model=%%a
-echo Stopping and pulling log files...
-echo Step 1: Stop logging
-adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name stop --ei cmd_target -1 -n com.debug.loggerui/.framework.LogReceiver
-echo Step 2: Create archive
-adb shell "rm -rf /data/debuglogger/debuglog.tar.gz"
-adb shell "cd /data/debuglogger/ && tar -cvzf %model%_debuglog.tar.gz *"
-echo Step 3: Pull to local
-if not exist %MODULE_OUT_DIR% (
-	mkdir  %MODULE_OUT_DIR%
-)
+    set "SNAPSHOT_TIME=%FORMAT_TIME%"
+    for /f "delims= " %%a in ('adb shell getprop ro.product.board 2^>nul') do set "model=%%a"
+    if "%model%"=="" set "model=device"
 
-adb pull /data/debuglogger/ %MODULE_OUT_DIR%\%model%_mtklog_%format_time% >nul
-echo Step 4: Open directory
-echo file path: %MODULE_OUT_DIR%\%model%_mtklog_%format_time%
-start "" %MODULE_OUT_DIR%\%model%_mtklog_%format_time%
-exit /b
+    set "TARGET_DIR=%MODULE_OUT_DIR%\%model%_mtklog_%SNAPSHOT_TIME%"
+    if not exist "%TARGET_DIR%" mkdir "%TARGET_DIR%" 2>nul
+
+    echo ============================================================
+    echo [INFO] Stopping and pulling MTK log...
+    echo ============================================================
+
+    rem Step 1: Send stop broadcast
+    echo [INFO] Step 1/4: Stop logging...
+    adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name stop --ei cmd_target -1 -n com.debug.loggerui/.framework.LogReceiver >nul
+
+    rem Step 2: Poll MTK properties
+    echo [INFO] Step 2/4: Waiting for log daemon flush...
+    for /l %%i in (1,1,4) do (
+        for /f "tokens=*" %%p in ('adb shell "getprop vendor.MB.running" 2^>nul') do set "mb_running=%%p"
+        for /f "tokens=*" %%p in ('adb shell "getprop vendor.mdlogger.Running" 2^>nul') do set "md_running=%%p"
+        
+        if "!mb_running!"=="0" if "!md_running!"=="0" (
+            goto :log_stopped
+        )
+        timeout /t 1 /nobreak >nul
+    )
+:log_stopped
+    adb shell sync
+
+    echo [INFO] MTK log recording stopped and flushed.
+
+    rem Step 3: Pull core mobilelog first and open directory immediately
+    echo [INFO] Step 3/4: Pulling core mobilelog...
+    adb pull /data/debuglogger/mobilelog "%TARGET_DIR%" >nul 2>&1
+
+    echo [INFO] Core log pulled. Opening directory: %TARGET_DIR%
+    start "" "%TARGET_DIR%"
+
+    rem Step 4: Pull full logs and create archive
+    echo [INFO] Step 4/4: Pulling full logs and creating archive...
+    adb pull /data/debuglogger "%TARGET_DIR%"
+
+    set "SEVEN_ZIP="
+    where 7z >nul 2>&1
+    if %errorlevel% equ 0 set "SEVEN_ZIP=7z"
+    if not defined SEVEN_ZIP (
+        if exist "C:\Program Files\7-Zip\7z.exe" set "SEVEN_ZIP=C:\Program Files\7-Zip\7z.exe"
+    )
+
+    if defined SEVEN_ZIP (
+        echo [INFO] Compressing full logs on PC using 7-Zip...
+        "%SEVEN_ZIP%" a -t7z "%MODULE_OUT_DIR%\%model%_mtklog_%SNAPSHOT_TIME%.7z" "%TARGET_DIR%\debuglogger" -mx=5 >nul 2>&1
+        if !errorlevel! equ 0 (
+            echo [OK] 7-Zip archive created: %MODULE_OUT_DIR%\%model%_mtklog_%SNAPSHOT_TIME%.7z
+        )
+    ) else (
+        echo [INFO] PC 7-Zip not found, creating archive on device...
+        adb shell "rm -f /data/debuglogger/*_debuglog.tar.gz /data/debuglogger/debuglog.tar.gz" >nul 2>&1
+        adb shell "cd /data/debuglogger/ && tar -czf %model%_debuglog.tar.gz *" >nul 2>&1
+        adb pull "/data/debuglogger/%model%_debuglog.tar.gz" "%MODULE_OUT_DIR%" >nul 2>&1
+        adb shell "rm -f /data/debuglogger/%model%_debuglog.tar.gz" >nul 2>&1
+        echo [OK] Tar archive created: %MODULE_OUT_DIR%\%model%_debuglog.tar.gz
+    )
+
+    echo [OK] All logs pull and backup completed: %TARGET_DIR%
+    exit /b 0
 
 :new_log
-echo Restarting log recording...
-echo Step 1: Stop logging
-adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name stop --ei cmd_target -1 -n com.debug.loggerui/.framework.LogReceiver
-echo Step 2: Clear logs
-adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name clear_all_logs -n com.debug.loggerui/.framework.LogReceiver
-adb shell "logcat -b all -c; dmesg -C"
-timeout /t 3 /nobreak >nul
-echo Step 3: Start new logging
-::cmd_target的1/2/4/16，分别代表MobileLog/ModemLog/NetworkLog/GPSLog，如果要所有就改成它们的和23
-adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name start --ei cmd_target 1 -n com.debug.loggerui/.framework.LogReceiver
-echo New log recording started
-exit /b
+    echo Restarting log recording...
+    echo Step 1: Stop logging
+    adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name stop --ei cmd_target -1 -n com.debug.loggerui/.framework.LogReceiver
+    echo Step 2: Clear logs
+    adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name clear_all_logs -n com.debug.loggerui/.framework.LogReceiver
+    adb shell "logcat -b all -c; dmesg -C"
+    timeout /t 3 /nobreak >nul
+    echo Step 3: Start new logging
+    ::cmd_target的1/2/4/16，分别代表MobileLog/ModemLog/NetworkLog/GPSLog，如果要所有就改成它们的和23
+    adb shell am broadcast -a com.debug.loggerui.ADB_CMD -e cmd_name start --ei cmd_target 1 -n com.debug.loggerui/.framework.LogReceiver
+    echo New log recording started
+    exit /b 0
