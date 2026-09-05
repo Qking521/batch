@@ -28,14 +28,45 @@ get_hardware_info() {
     echo "  设备型号:        $(get_prop_or_unk ro.product.model)"
     echo "  内部代号 (Device):$(get_prop_or_unk ro.product.device)"
     echo "  主板/芯片:      $(get_prop_or_unk ro.product.board)"
-    echo "  SoC 型号:       $(get_prop_or_unk ro.vendor.soc.model.external_name)"
+
+    local soc_name="$(getprop ro.product.soc.mkt_name 2>/dev/null)"
+    [ -z "$soc_name" ] && soc_name="$(getprop ro.vendor.soc.model.external_name 2>/dev/null)"
+    [ -z "$soc_name" ] && soc_name="$(getprop ro.soc.model 2>/dev/null)"
+    [ -z "$soc_name" ] && soc_name="$(getprop ro.board.platform 2>/dev/null)"
+    [ -z "$soc_name" ] && soc_name="$(getprop ro.hardware 2>/dev/null)"
+    echo "  SoC 型号:       ${soc_name:-UNKNOWN}"
+
     echo "  SKU:           $(get_prop_or_unk ro.boot.hardware.sku)"
     echo "  序列号 (SN):    $(get_prop_or_unk ro.serialno)"
 }
 
-# 2. CPU / SoC 架构与核心信息
-get_cpu_info() {
-    log_info "=== CPU / SoC 详细信息 ==="
+# 2. SoC 架构与核心信息
+get_soc_info() {
+    log_info "=== SoC 架构与核心信息 ==="
+
+    # 1) SoC 平台与 CPU 架构
+    local soc_mfg="$(getprop ro.soc.manufacturer 2>/dev/null)"
+    [ -z "$soc_mfg" ] && soc_mfg="$(getprop ro.hardware.soc.manufacturer 2>/dev/null)"
+    [ -z "$soc_mfg" ] && soc_mfg="$(getprop ro.product.manufacturer 2>/dev/null)"
+
+    local soc_mkt="$(getprop ro.product.soc.mkt_name 2>/dev/null)"
+    local soc_ext="$(getprop ro.vendor.soc.model.external_name 2>/dev/null)"
+    local soc_model="$(getprop ro.soc.model 2>/dev/null)"
+    local soc_plat="$(getprop ro.board.platform 2>/dev/null)"
+    local soc_hw="$(getprop ro.hardware 2>/dev/null)"
+
+    local soc_full=""
+    [ -n "$soc_mkt" ] && soc_full="$soc_mkt"
+    if [ -n "$soc_ext" ]; then
+        [ -n "$soc_full" ] && soc_full="$soc_full ($soc_ext)" || soc_full="$soc_ext"
+    elif [ -n "$soc_model" ]; then
+        [ -n "$soc_full" ] && soc_full="$soc_full ($soc_model)" || soc_full="$soc_model"
+    elif [ -n "$soc_plat" ]; then
+        [ -n "$soc_full" ] && soc_full="$soc_full ($soc_plat)" || soc_full="$soc_plat"
+    else
+        soc_full="$soc_hw"
+    fi
+
     local abi=$(get_prop_or_unk ro.product.cpu.abi)
     local cpu_cores=0
     if [ -d /sys/devices/system/cpu ]; then
@@ -48,20 +79,203 @@ get_cpu_info() {
         governor=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>/dev/null)
     fi
 
+    # CPU 频率档位汇总 (各核心簇最高主频)
+    local cpu_freq_summary=""
+    if [ -d /sys/devices/system/cpu/cpu0/cpufreq ]; then
+        local max_freqs=""
+        for cf in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/cpuinfo_max_freq; do
+            if [ -f "$cf" ]; then
+                local f_khz=$(cat "$cf" 2>/dev/null)
+                if [ -n "$f_khz" ] && [ "$f_khz" -gt 0 ] 2>/dev/null; then
+                    local f_mhz=$(( f_khz / 1000 ))
+                    max_freqs="${max_freqs} ${f_mhz}"
+                fi
+            fi
+        done
+        if [ -n "$max_freqs" ]; then
+            local uniq_freqs=$(echo "$max_freqs" | tr ' ' '\n' | grep -E '^[0-9]+$' | sort -n -u | tr '\n' '/' | sed 's/\/$//')
+            [ -n "$uniq_freqs" ] && cpu_freq_summary="${uniq_freqs} MHz"
+        fi
+    fi
+
+    echo "  [CPU 信息]"
+    echo "  SoC 芯片型号:   ${soc_full:-UNKNOWN}"
+    [ -n "$soc_mfg" ] && echo "  SoC 芯片厂商:   ${soc_mfg}"
     echo "  CPU 架构 (ABI): ${abi}"
     echo "  核心数量:      ${cpu_cores} 核"
-    echo "  调频模式:      ${governor}"
+    echo "  CPU 调频模式:  ${governor}"
+    [ -n "$cpu_freq_summary" ] && echo "  最高主频档位:  ${cpu_freq_summary}"
+
+    # 2) GPU 信息收集（结合 SurfaceFlinger、系统属性与各厂商专属节点）
+    echo "  [GPU 信息]"
+    local gles_line=$(dumpsys SurfaceFlinger 2>/dev/null | grep -m 1 '^GLES:' | tr -d '\r')
+    local gpu_vendor=""
+    local gpu_renderer=""
+    local gles_version=""
+    if [ -n "$gles_line" ]; then
+        local gles_clean=$(echo "$gles_line" | sed 's/^GLES:[ \t]*//')
+        gpu_vendor=$(echo "$gles_clean" | cut -d',' -f1 | sed 's/^[ \t]*//;s/[ \t]*$//')
+        gpu_renderer=$(echo "$gles_clean" | cut -d',' -f2 | sed 's/^[ \t]*//;s/[ \t]*$//')
+        gles_version=$(echo "$gles_clean" | cut -d',' -f3- | sed 's/^[ \t]*//;s/[ \t]*$//')
+    fi
+
+    # 兜底厂商与型号检测
+    if [ -z "$gpu_renderer" ] || [ "$gpu_renderer" = "UNKNOWN" ]; then
+        if [ -f /sys/class/kgsl/kgsl-3d0/gpu_model ]; then
+            gpu_renderer=$(cat /sys/class/kgsl/kgsl-3d0/gpu_model 2>/dev/null | tr -d '\r\n')
+            [ -z "$gpu_vendor" ] && gpu_vendor="Qualcomm"
+        fi
+    fi
+    if [ -z "$gpu_vendor" ]; then
+        local egl_prop="$(getprop ro.hardware.egl 2>/dev/null)"
+        case "$egl_prop" in
+            *adreno*) gpu_vendor="Qualcomm" ;;
+            *mali*)   gpu_vendor="ARM" ;;
+            *powervr*|*rogue*) gpu_vendor="Imagination Technologies" ;;
+            *) gpu_vendor="${egl_prop:-UNKNOWN}" ;;
+        esac
+    fi
+
+    local vulkan_support="UNKNOWN"
+    local vk_prop="$(getprop ro.hardware.vulkan 2>/dev/null)"
+    if [ -n "$vk_prop" ]; then
+        vulkan_support="支持 (${vk_prop})"
+    elif [ -e /system/lib64/libvulkan.so ] || [ -e /vendor/lib64/hw/vulkan.*.so ]; then
+        vulkan_support="支持"
+    fi
+
+    echo "  GPU 厂商:      ${gpu_vendor:-UNKNOWN}"
+    echo "  GPU 渲染器型号:${gpu_renderer:-UNKNOWN}"
+    echo "  GLES 版本:     ${gles_version:-UNKNOWN}"
+    echo "  Vulkan 支持:   ${vulkan_support}"
+
+    local gpu_freq="UNKNOWN"
+    local gpu_gov="UNKNOWN"
+
+    # 厂商差异化运行状态探测 (Vendor-Specific)
+    # A. 高通 (Qualcomm / KGSL / Adreno)
+    if [ -d /sys/class/kgsl/kgsl-3d0 ]; then
+        local kgsl_dir="/sys/class/kgsl/kgsl-3d0"
+        local devfreq_dir="$kgsl_dir/devfreq"
+
+        local cur_hz=""
+        [ -f "$devfreq_dir/cur_freq" ] && cur_hz=$(cat "$devfreq_dir/cur_freq" 2>/dev/null | tr -d '\r\n ')
+        if [ -n "$cur_hz" ] && [ "$cur_hz" -gt 0 ] 2>/dev/null; then
+            if [ "$cur_hz" -ge 100000000 ]; then
+                gpu_freq="$(( cur_hz / 1000000 )) MHz"
+            elif [ "$cur_hz" -ge 100000 ]; then
+                gpu_freq="$(( cur_hz / 1000 )) MHz"
+            else
+                gpu_freq="${cur_hz} MHz"
+            fi
+        fi
+
+        [ -f "$devfreq_dir/governor" ] && gpu_gov=$(cat "$devfreq_dir/governor" 2>/dev/null | tr -d '\r\n')
+
+        local min_hz=$(cat "$devfreq_dir/min_freq" 2>/dev/null | tr -d '\r\n ')
+        local max_hz=$(cat "$devfreq_dir/max_freq" 2>/dev/null | tr -d '\r\n ')
+        local freq_range=""
+        if [ -n "$min_hz" ] && [ -n "$max_hz" ]; then
+            freq_range="$(( min_hz / 1000000 )) ~ $(( max_hz / 1000000 )) MHz"
+        fi
+
+        local busy_pct=""
+        [ -f "$kgsl_dir/gpu_busy_percentage" ] && busy_pct=$(cat "$kgsl_dir/gpu_busy_percentage" 2>/dev/null | tr -d '\r\n')
+
+        echo "  [Qualcomm KGSL 驱动信息]"
+        echo "    驱动节点:        $kgsl_dir"
+        echo "    GPU 当前频率:    ${gpu_freq}"
+        [ -n "$freq_range" ] && echo "    GPU 频点范围:    ${freq_range}"
+        [ "$gpu_gov" != "UNKNOWN" ] && echo "    GPU 调频模式:    ${gpu_gov}"
+        [ -n "$busy_pct" ] && echo "    GPU 负载率:      ${busy_pct}"
+
+    # B. 联发科 (MediaTek / GED / gpufreq)
+    elif [ -d /sys/kernel/ged/hal ] || [ -d /proc/gpufreqv2 ] || [ -d /proc/gpufreq ]; then
+        local ged_hal="/sys/kernel/ged/hal"
+        if [ -d "$ged_hal" ]; then
+            local raw_freq=$(cat "$ged_hal/current_freqency" 2>/dev/null | tr -d '\r')
+            if [ -n "$raw_freq" ]; then
+                local f_val=$(echo "$raw_freq" | awk '{if (NF >= 2) print $2; else print $1}')
+                if [ -n "$f_val" ] && [ "$f_val" -gt 0 ] 2>/dev/null; then
+                    if [ "$f_val" -ge 100000000 ]; then
+                        gpu_freq="$(( f_val / 1000000 )) MHz"
+                    elif [ "$f_val" -ge 100000 ]; then
+                        gpu_freq="$(( f_val / 1000 )) MHz"
+                    else
+                        gpu_freq="${f_val} MHz"
+                    fi
+                fi
+            fi
+
+            local ged_ver=$(cat "$ged_hal/ged_version" 2>/dev/null | tr -d '\r\n')
+            local total_levels=$(cat "$ged_hal/total_gpu_freq_level_count" 2>/dev/null | tr -d '\r\n')
+            local gpu_util=$(cat "$ged_hal/gpu_utilization" 2>/dev/null | tr -d '\r\n')
+            local gpu_idle=$(cat /sys/module/ged/parameters/gpu_idle 2>/dev/null | tr -d '\r\n')
+
+            echo "  [MediaTek GED 驱动信息]"
+            echo "    驱动架构:        MTK GED (Gas Emission Device)"
+            echo "    GPU 当前频率:    ${gpu_freq}"
+            [ -n "$total_levels" ] && echo "    频点档位数量:    ${total_levels} 档"
+            [ -n "$ged_ver" ] && echo "    GED 驱动版本:    ${ged_ver}"
+            if [ -n "$gpu_util" ]; then
+                local act_pct=$(echo "$gpu_util" | awk '{print $1}')
+                echo "    GPU 使用率:      约 ${act_pct}% (Raw: ${gpu_util})"
+            elif [ -n "$gpu_idle" ]; then
+                echo "    GPU 空闲率:      ${gpu_idle}%"
+            fi
+        fi
+
+    # C. 三星 Exynos / 展锐 UNISOC / Google Tensor / 通用 Devfreq 设备
+    else
+        local devfreq_gpu=""
+        for d in /sys/class/devfreq/*gpu* /sys/class/devfreq/*mali* /sys/devices/platform/*gpu*/devfreq/*gpu* /sys/devices/platform/*mali*/devfreq/*mali*; do
+            if [ -d "$d" ] && [ -f "$d/cur_freq" ]; then
+                devfreq_gpu="$d"
+                break
+            fi
+        done
+
+        if [ -n "$devfreq_gpu" ]; then
+            local cur_f=$(cat "$devfreq_gpu/cur_freq" 2>/dev/null | tr -d '\r\n ')
+            if [ -n "$cur_f" ] && [ "$cur_f" -gt 0 ] 2>/dev/null; then
+                if [ "$cur_f" -ge 100000000 ]; then
+                    gpu_freq="$(( cur_f / 1000000 )) MHz"
+                elif [ "$cur_f" -ge 100000 ]; then
+                    gpu_freq="$(( cur_f / 1000 )) MHz"
+                else
+                    gpu_freq="${cur_f} MHz"
+                fi
+            fi
+            [ -f "$devfreq_gpu/governor" ] && gpu_gov=$(cat "$devfreq_gpu/governor" 2>/dev/null | tr -d '\r\n')
+
+            echo "  [Devfreq GPU 驱动信息]"
+            echo "    驱动节点:        $devfreq_gpu"
+            echo "    GPU 当前频率:    ${gpu_freq}"
+            [ "$gpu_gov" != "UNKNOWN" ] && echo "    GPU 调频模式:    ${gpu_gov}"
+        fi
+    fi
 }
 
-# 3. 系统版本与 Build 信息
+# 兼容旧名称调用
+get_cpu_info() {
+    get_soc_info
+}
+
+# 3. 系统版本与 Build 信息（合并运行时状态）
 get_system_info() {
-    log_info "=== 系统版本信息 ==="
+    log_info "=== 系统版本与 Build 信息 ==="
     echo "  Android 版本:  $(get_prop_or_unk ro.build.version.release)"
     echo "  API Level:     $(get_prop_or_unk ro.build.version.sdk)"
     echo "  Build ID:      $(get_prop_or_unk ro.build.id)"
     echo "  Build 描述:    $(get_prop_or_unk ro.build.description)"
     echo "  Build 日期:    $(get_prop_or_unk ro.build.date)"
     echo "  安全补丁版本:  $(get_prop_or_unk ro.build.version.security_patch)"
+
+    # 运行时状态已合并在此处
+    local uptime_str=$(uptime 2>/dev/null | sed 's/^[ \t]*//')
+    local focus_act=$(dumpsys window 2>/dev/null | grep mCurrentFocus | awk -F'[{}]' '{print $2}')
+    echo "  系统运行时间:  ${uptime_str:-UNKNOWN}"
+    echo "  当前焦点界面:  ${focus_act:-UNKNOWN}"
 
     # Mica 项目特有版本信息判断与打印
     local device_name="$(getprop ro.product.device 2>/dev/null)"
@@ -385,24 +599,19 @@ get_network_info() {
     echo "  Wi-Fi MAC 地址:${wlan_mac:-UNKNOWN}"
 }
 
-# 9. 运行时状态
+# 兼容运行时状态单独查询
 get_runtime_info() {
-    log_info "=== 系统运行时状态 ==="
-    local uptime_str=$(uptime 2>/dev/null | sed 's/^[ \t]*//')
-    local focus_act=$(dumpsys window 2>/dev/null | grep mCurrentFocus | awk -F'[{}]' '{print $2}')
-
-    echo "  系统运行时间:  ${uptime_str:-UNKNOWN}"
-    echo "  当前焦点界面:  ${focus_act:-UNKNOWN}"
+    get_system_info
 }
 
-# 模块扩展注册函数
+# 模块扩展注册函数（打印全部信息）
 show_all_info() {
     echo "============================================================"
     echo "             Android 设备信息概览 (Device Info)"
     echo "============================================================"
     get_hardware_info
     echo ""
-    get_cpu_info
+    get_soc_info
     echo ""
     get_system_info
     echo ""
@@ -415,13 +624,65 @@ show_all_info() {
     get_battery_info
     echo ""
     get_network_info
-    echo ""
-    get_runtime_info
     echo "============================================================"
 }
 
+show_usage() {
+    echo "Usage: ad device [category] / ad di [category]"
+    echo ""
+    echo "Available categories:"
+    echo "  all                    - 打印所有设备信息 (默认)"
+    echo "  hw / hardware          - 基础硬件与平台信息"
+    echo "  soc / cpu / gpu        - SoC 架构与核心信息 (CPU & GPU)"
+    echo "  sys / system / runtime - 系统版本与 Build 信息 (含运行时状态)"
+    echo "  ram / mem              - 内存 (RAM) 信息"
+    echo "  rom / storage          - 存储 (ROM/UFS/eMMC) 信息"
+    echo "  display / screen       - 显示与屏幕信息"
+    echo "  battery / bat / power  - 电池与电源状态"
+    echo "  net / network / wifi   - 网络与连接状态"
+    echo "  -h / help              - 显示帮助信息"
+}
+
 main() {
-    show_all_info
+    local target="$1"
+    case "$target" in
+        ""|all)
+            show_all_info
+            ;;
+        hw|hardware)
+            get_hardware_info
+            ;;
+        soc|cpu|gpu)
+            get_soc_info
+            ;;
+        sys|system|runtime|build)
+            get_system_info
+            ;;
+        ram|mem|memory)
+            get_ram_info
+            ;;
+        rom|storage|disk)
+            get_rom_info
+            ;;
+        display|screen|disp)
+            get_display_info
+            ;;
+        battery|bat|power)
+            get_battery_info
+            ;;
+        net|network|wifi)
+            get_network_info
+            ;;
+        -h|--help|help)
+            show_usage
+            ;;
+        *)
+            log_err "未知参数: $target"
+            echo ""
+            show_usage
+            return 1
+            ;;
+    esac
 }
 
 main "$@"

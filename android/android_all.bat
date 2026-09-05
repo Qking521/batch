@@ -39,6 +39,7 @@ if /i "%cmd%"=="bugreport" goto :bugreport
 if /i "%cmd%"=="clear"     goto :clear_log
 if /i "%cmd%"=="dev"       goto :developer
 if /i "%cmd%"=="di"        goto :device_info
+if /i "%cmd%"=="device"    goto :device_info
 if /i "%cmd%"=="search"    goto :android_search
 if /i "%cmd%"=="monkey"    goto :monkey
 if /i "%cmd%"=="enable"    goto :package_toggle
@@ -69,7 +70,7 @@ echo   kill [process_name]      - Kill target process by name
 echo   bugreport [tag]          - Capture/Extract bugreport log
 echo   clear                    - Clear logcat and dmesg logs
 echo   dev [on/off]             - Toggle developer touches / pointer location
-echo   di                       - Show device hardware and system info
+echo   di / device [category]   - Show device info (all/hw/soc/sys/ram/rom/display/battery/net)
 echo   search [keyword]         - Search Settings and Properties
 echo   watch [interval]         - Watch Settings, getprop, audio volume ^& status
 echo   monkey [pkg/kill/num]    - Run or stop Monkey test
@@ -85,6 +86,9 @@ echo.
 echo Examples:
 echo   ad top
 echo   ad bind
+echo   ad device
+echo   ad device hw
+echo   ad device soc
 echo   ad dev on
 echo   ad watch
 echo   ad watch 1
@@ -166,7 +170,7 @@ exit /b 0
         echo [ERROR] Script not found: %SH_SCRIPT%
         exit /b 1
     )
-    adb shell "sh -s" < "%SH_SCRIPT%"
+    adb shell "sh -s %param1%" < "%SH_SCRIPT%"
     exit /b %ERRORLEVEL%
 
 :android_search
