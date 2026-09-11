@@ -18,6 +18,7 @@ if /i "%cmd%"=="" goto show_help
 if /i "%cmd%"=="usbip" goto usbip
 if /i "%cmd%"=="cli" goto command_line
 if /i "%cmd%"=="de" goto decompile_apk
+if /i "%cmd%"=="open" goto open_program
 
 :show_help
 echo Available commands:
@@ -42,4 +43,8 @@ exit /b
 
 :decompile_apk
     call %SCRIPT_DIR%windows_decompile.bat %*
+    exit /b
+
+:open_program
+    call %SCRIPT_DIR%windows_open_program.bat %*
     exit /b
