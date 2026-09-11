@@ -24,6 +24,7 @@ if /i "%cmd%"=="wmp" goto wheres_my_power
 if /i "%cmd%"=="fd" goto fast_discharge
 if /i "%cmd%"=="moto" goto moto_tools
 if /i "%cmd%"=="cell" goto cellular
+if /i "%cmd%"=="pm" goto playmusic
 
 echo [错误]: 未知工具指令: %cmd%
 goto :usage
@@ -41,6 +42,7 @@ echo   gl       - 安装并配置 webGL 测试GPU性能的工具.
 echo   wt       - 安装并配置 WhatsTemp 温度监控工具.
 echo   wmp      - 安装并配置 WheresMyPower 功耗分析工具.
 echo   fd       - 安装并配置 fastDischarge 快速耗电工具.
+echo   pm       - 安装并配置 playmusic 音乐播放工具.
 echo   moto     - 安装并配置 和moto项目相关的自动化测试工具.
 echo   moto     - 安装并配置 cellular 查看通讯网络信息工具.
 echo.
@@ -106,7 +108,7 @@ exit /b 0
     adb shell "appops set %WMP_PACKAGE% ACCESS_RESTRICTED_SETTINGS allow"
     adb shell "am force-stop %WMP_PACKAGE%"
     adb shell "am start -a android.intent.action.VIEW -n %WMP_PACKAGE%/.SettingsActivity"
-exit /b 0
+    exit /b 0
 
 :fast_discharge
     ::fastdischarge verison:1.2
@@ -114,16 +116,20 @@ exit /b 0
     set fastDischarge_FILE_PATH=%APKS_DIR%\fastDischarge.apk
     adb install --bypass-low-target-sdk-block %fastDischarge_FILE_PATH%
     call :grant_permission %FD_PACKAGE%
-exit /b 0
+    exit /b 0
 
 :moto_tools
     adb install -r %APKS_DIR%\nonrootchina-debug.apk
     adb install -r %APKS_DIR%\nonrootchina-debug-androidTest.apk
-exit /b 0
+    exit /b 0
 
 :cellular
     adb install -r %APKS_DIR%\cellular-Z.apk
-exit /b 0
+    exit /b 0
+
+:playmusic
+    adb install --bypass-low-target-sdk-block -r %APKS_DIR%\PlayMusic.apk
+    exit /b 0
 
 :grant_permission
     set "package_name=%~1"
@@ -132,4 +138,4 @@ exit /b 0
     adb shell pm grant --user %user% %package_name% android.permission.POST_NOTIFICATIONS
     adb shell pm grant --user %user% %package_name% android.permission.WRITE_EXTERNAL_STORAGE
     adb shell dumpsys deviceidle whitelist +%package_name%
-exit /b 0
+    exit /b 0
