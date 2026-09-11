@@ -43,6 +43,7 @@ if /i "%cmd%"=="eet"       goto :eet_test
 if /i "%cmd%"=="spm"       goto :spm
 if /i "%cmd%"=="trace"     goto :trace
 if /i "%cmd%"=="sql"       goto :sql
+if /i "%cmd%"=="set"       goto :power_set
 
 echo [ERROR] Unknown command: %cmd%
 goto :usage
@@ -64,12 +65,14 @@ echo   eet [policy] [freq]          - EET CPU fixed frequency test
 echo   spm [data_file]              - Parse MediaTek SPM state data
 echo   trace [ui/ui-enhance/sh]     - Perfetto trace collection and analysis
 echo   sql [tag/statement] [zip]    - Query power info via SQL from bugreport
+echo   set [res]                    - Power settings and resource management
 echo   -h / help                    - Show help info
 echo.
 echo Examples:
 echo   power standby
 echo   power info
 echo   power wallpaper black set
+echo   power set res
 echo.
 exit /b 0
 
@@ -110,6 +113,8 @@ adb shell dumpsys batterystats --reset
 adb shell dumpsys batterystats --enable full-wake-history
 adb shell dumpsys alarm --reset >nul
 adb shell dumpsys alarm log on >nul
+adb shell "dumpsys usagestats --reset" >nul
+adb shell "rm -rf /data/system/dropbox/*" >nul
 echo [OK] Battery stats reset and logs cleared.
 exit /b 0
 
@@ -166,3 +171,8 @@ exit /b %ERRORLEVEL%
 :sql
 call "%SCRIPT_DIR%power_sql.bat" %*
 exit /b %ERRORLEVEL%
+
+:power_set
+call "%SCRIPT_DIR%power_set.bat" %*
+exit /b %ERRORLEVEL%
+
