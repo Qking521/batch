@@ -20,6 +20,7 @@ if /i "%param1%"=="help" goto show_help
 if /i "%param1%"=="ltr" goto long_trace_record
 if /i "%param1%"=="ltra" goto long_trace_record_advance
 if /i "%param1%"=="ft6" goto flashtool
+if /i "%param1%"=="odin" goto odin
 
 :show_help
 echo.
@@ -29,6 +30,7 @@ echo Available parmas:
 echo   ltr              - mtk long trace record tool
 echo   ltra             - mtk long trace record tool with lmode
 echo   ft               - mtk flash tool
+echo   odin             - samsung flash tool
 echo   -h               - Show help (alias: help).
 echo.
 echo Examples:
@@ -37,19 +39,25 @@ echo.
 exit /b
 
 :long_trace_record
-    echo 111
+    echo "不管是程序还是文件都不能包含任何中文字符"
     set "PROGRAM_PATH=D:\tools\LTR2_Lite\LTR2.exe"
-    start "" /D "D:\tools\LTR2_Lite_advance" %PROGRAM_PATH%
+    for %%P in ("!PROGRAM_PATH!") do start "" /D "%%~dpP" "!PROGRAM_PATH!"
     exit /b
 
 :long_trace_record_advance
+    echo "不管是程序还是文件都不能包含任何中文字符"
     set "PROGRAM_PATH=D:\tools\LTR2_Lite_advance\LTR2.exe"
-    start "" /D "D:\tools\LTR2_Lite_advance" %PROGRAM_PATH%
+    for %%P in ("!PROGRAM_PATH!") do start "" /D "%%~dpP" "!PROGRAM_PATH!"
     exit /b
 
 :flashtool
     set "PROGRAM_PATH=D:\tools\SP_Flash_Tool_V6\SPFlashToolV6.exe"
-    start "" /D "D:\tools\LTR2_Lite_advance" %PROGRAM_PATH%
+    for %%P in ("!PROGRAM_PATH!") do start "" /D "%%~dpP" "!PROGRAM_PATH!"
+    exit /b
+
+:odin
+    set "PROGRAM_PATH=D:\tools\odin4v_windows_2.6\odin4v.exe"
+    for %%P in ("!PROGRAM_PATH!") do start "" /D "%%~dpP" "!PROGRAM_PATH!"
     exit /b
 
 

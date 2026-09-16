@@ -8,6 +8,7 @@
 # Actions:
 #   info              - 查看 CPU 大小核、频点、当前频率、online 状态
 #   freq              - 查看各簇可用频率列表
+#   max          [policy]        - 查看各 policy 最大频点（硬件最大 Fmax 与当前上限）
 #   online            - 查看各核 online 状态
 #   set-online   <cpu_id> <0|1>  - 上下线指定核（cpu0 不可下线）
 #   fix-freq     <policy> <khz>  - 定频指定 policy (支持 0, 4, policy0, cpu4 等，单位 KHz)
@@ -271,6 +272,59 @@ freq)
             mhz=$((f / 1000))
             echo "    ${f} KHz  (${mhz} MHz)"
         done
+    done
+    ;;
+
+# ---- 最大频点信息 ----
+max)
+    raw_policy="$PARAM1"
+    if [ -n "$raw_policy" ] && [ "$raw_policy" != "all" ]; then
+        policy=$(resolve_policy "$raw_policy")
+        if [ -z "$policy" ]; then
+            echo "[ERROR] 找不到对应的 policy: $raw_policy"
+            echo "  当前设备可用 policy: $(list_policies | tr '\n' ' ')"
+            exit 1
+        fi
+        policies="$policy"
+    else
+        policies=$(list_policies)
+    fi
+
+    echo "========================================================================================="
+    echo " CPU Policy 最大频点信息"
+    echo "========================================================================================="
+    printf '%-10s %-14s %-20s %-20s %-20s %s\n' \
+        'POLICY' 'CPUS' 'HW_MAX(Fmax)' 'SCALING_MAX' 'CURRENT' 'THROTTLE?'
+    echo "-----------------------------------------------------------------------------------------"
+    for policy in $policies; do
+        pdir="/sys/devices/system/cpu/cpufreq/$policy"
+        affected=$(read_node "$pdir/affected_cpus")
+        hw_max=$(read_node   "$pdir/cpuinfo_max_freq")
+        cur_max=$(read_node  "$pdir/scaling_max_freq")
+        cur_freq=$(read_node "$pdir/scaling_cur_freq")
+
+        hw_max_str="N/A"
+        if [ "$hw_max" != "N/A" ]; then
+            hw_max_str="${hw_max} ($((hw_max / 1000))MHz)"
+        fi
+
+        cur_max_str="N/A"
+        if [ "$cur_max" != "N/A" ]; then
+            cur_max_str="${cur_max} ($((cur_max / 1000))MHz)"
+        fi
+
+        cur_str="N/A"
+        if [ "$cur_freq" != "N/A" ]; then
+            cur_str="${cur_freq} ($((cur_freq / 1000))MHz)"
+        fi
+
+        throttle="no"
+        if [ "$cur_max" != "N/A" ] && [ "$hw_max" != "N/A" ]; then
+            [ "$cur_max" -lt "$hw_max" ] 2>/dev/null && throttle="[YES] ${cur_max} < ${hw_max}"
+        fi
+
+        printf '%-10s %-14s %-20s %-20s %-20s %s\n' \
+            "$policy" "$affected" "$hw_max_str" "$cur_max_str" "$cur_str" "$throttle"
     done
     ;;
 
@@ -583,6 +637,7 @@ uncap)
     echo "可用命令:"
     echo "  info                          - CPU 总览（大小核、频率、governor）"
     echo "  freq                          - 各 policy 可用频率列表"
+    echo "  max          [policy]         - 查看各 policy 最大频点（HW Fmax 与上限）"
     echo "  online                        - 各核 online 状态"
     echo "  platform                      - 检测芯片平台"
     echo "  set-online   <cpu_id> <0|1>   - 上下线指定核"

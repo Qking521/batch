@@ -42,7 +42,7 @@ echo 命令:
 echo   sf                               - SurfaceFlinger 性能信息
 echo   trace [cmd/online/cfg/ui/sh]    - Perfetto 性能抓取及打开 Trace
 echo   sql [tag/sql] [trace_path]       - 使用 SQL 查询性能 Trace
-echo   cpu [info/freq/online/...]       - CPU 调控
+echo   cpu [info/freq/max/online/...]   - CPU 调控
 echo   gpu                              - GPU 性能抓取 (等同 trace)
 echo   ds                               - Dhrystone 操作
 echo   flame [record/parse]             - 火焰图抓取与解析 (simpleperf)
@@ -54,6 +54,7 @@ echo   perf trace ui
 echo   perf sql cpu_usage
 echo   perf sql "SELECT name, dur FROM slice LIMIT 10"
 echo   perf cpu info
+echo   perf cpu max
 echo   perf flame record
 echo   perf flame record com.android.settings
 echo   perf flame parse

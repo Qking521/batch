@@ -124,32 +124,40 @@ exit /b 0
     exit /b 0
 
 :do_config
-    set "duration_ms=5000"
-    set "file_write_period_ms=1000"
-    set "flush_period_ms=1000"
+    :: 去除可能的 s/S 后缀，确保 record_time 为纯数字
+    if defined record_time (
+        set "record_time=!record_time:s=!"
+        set "record_time=!record_time:S=!"
+    )
+    if "!record_time!"=="" set "record_time=5"
 
-    if %record_time% GEQ 5 (
+    :: 动态计算毫秒时长，不再固化分档
+    set /a duration_ms=record_time * 1000
+    if !duration_ms! leq 0 (
+        set "record_time=5"
         set "duration_ms=5000"
-        set "file_write_period_ms=1000"
-        set "flush_period_ms=1000"
     )
-    if %record_time% GEQ 10 (
-        set "duration_ms=10000"
-        set "file_write_period_ms=2000"
-        set "flush_period_ms=2000"
-    )
-    if %record_time% GEQ 30 (
-        set "duration_ms=30000"
-        set "file_write_period_ms=2000"
-        set "flush_period_ms=2000"
-    )
-    echo duration_ms=%duration_ms%
-    echo file_write_period_ms=%file_write_period_ms%
-    echo flush_period_ms=%flush_period_ms%
 
-    set "PERFETTO_CONFIG=%SCRIPT_DIR%archive\perf_perfetto_config.pbtxt"
+    :: 时长 >= 10s 时适度增大写入周期，减少频繁 I/O
+    set "file_write_period_ms=1000"
+    if !record_time! geq 10 set "file_write_period_ms=2500"
+    set "flush_period_ms=!file_write_period_ms!"
+
+    echo [INFO] Trace 目标时长: !record_time!s (!duration_ms!ms), 写入周期: !file_write_period_ms!ms
+
+    :: 定位配置文件：优先 perfetto_tools 目录，兼顾 archive 目录
+    set "PERFETTO_CONFIG=%SCRIPT_DIR%perfetto_tools\perf_perfetto_config.pbtxt"
+    if not exist "!PERFETTO_CONFIG!" (
+        echo [ERROR] 找不到 perfetto 配置文件: %SCRIPT_DIR%perfetto_tools\perf_perfetto_config.pbtxt
+        exit /b 1
+    )
+
+    :: 确保输出目录存在
+    if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
+
+    :: 替换占位符并生成临时配置文件
     set "TMP_PERFETTO_CONFIG=%MODULE_OUT_DIR%\perf_perfetto_config.pbtxt"
-    (for /f "delims=" %%L in ('type "%PERFETTO_CONFIG%" 2^>nul') do (
+    (for /f "usebackq delims=" %%L in ("!PERFETTO_CONFIG!") do (
         set "line=%%L"
         setlocal enabledelayedexpansion
         set "line=!line:__duration_ms__=%duration_ms%!"
@@ -157,13 +165,43 @@ exit /b 0
         set "line=!line:__flush_period_ms__=%flush_period_ms%!"
         echo(!line!
         endlocal
-    )) > "%TMP_PERFETTO_CONFIG%"
+    )) > "!TMP_PERFETTO_CONFIG!"
 
-    echo ********************** start recording trace %record_time%s **********************
-    type "%TMP_PERFETTO_CONFIG%" | adb shell perfetto -c - --txt -o /data/misc/perfetto-traces/trace_file.perfetto-trace
-    adb pull /data/misc/perfetto-traces/trace_file.perfetto-trace "%OUT_TRACE_FILE%" > nul 2>&1
-    call :open_trace
-    exit /b 0
+    :: 校验临时配置文件非空
+    for %%F in ("!TMP_PERFETTO_CONFIG!") do (
+        if %%~zF equ 0 (
+            echo [ERROR] 生成的临时配置文件为空: !TMP_PERFETTO_CONFIG!
+            exit /b 1
+        )
+    )
+
+    :: 清除设备端历史 trace，防止误拉旧数据
+    set "REMOTE_TRACE=/data/misc/perfetto-traces/trace_file.perfetto-trace"
+    adb shell "rm -f !REMOTE_TRACE!" >nul 2>&1
+
+    echo ********************** start recording trace !record_time!s **********************
+    type "!TMP_PERFETTO_CONFIG!" | adb shell perfetto -c - --txt -o "!REMOTE_TRACE!"
+    if !errorlevel! neq 0 (
+        echo [ERROR] Perfetto 录制执行失败
+        exit /b 1
+    )
+
+    echo [INFO] 正在拉取 Trace 文件到: %OUT_TRACE_FILE%
+    adb pull "!REMOTE_TRACE!" "%OUT_TRACE_FILE%" >nul 2>&1
+    if !errorlevel! neq 0 (
+        echo [ERROR] 拉取 Trace 文件失败
+        exit /b 1
+    )
+
+    if not exist "%OUT_TRACE_FILE%" (
+        echo [ERROR] 本地未找到拉取的 Trace 文件: %OUT_TRACE_FILE%
+        exit /b 1
+    )
+
+    echo [OK] Trace 录制完成: %OUT_TRACE_FILE%
+    call :open_trace "%OUT_TRACE_FILE%"
+    exit /b %ERRORLEVEL%
+
 
 :do_tool
     curl -L -f -o "%GOOGLE_OPEN_TRACE_FILE%" https://raw.githubusercontent.com/google/perfetto/main/tools/open_trace_in_ui
@@ -206,5 +244,20 @@ exit /b 0
     exit /b 0
 
 :open_trace
-    python "%GOOGLE_OPEN_TRACE_FILE%" -i "%OUT_TRACE_FILE%"
+    set "TRACE_TARGET=%~1"
+    if "!TRACE_TARGET!"=="" set "TRACE_TARGET=%OUT_TRACE_FILE%"
+
+    if not exist "!TRACE_TARGET!" (
+        echo [ERROR] Trace 文件不存在: !TRACE_TARGET!
+        exit /b 1
+    )
+
+    if not exist "%GOOGLE_OPEN_TRACE_FILE%" (
+        echo [ERROR] 找不到打开工具: %GOOGLE_OPEN_TRACE_FILE%
+        echo [INFO] 请先执行 'perf trace tool' 下载工具
+        exit /b 1
+    )
+
+    echo [INFO] 正在启动 Perfetto UI 打开: !TRACE_TARGET!
+    python "%GOOGLE_OPEN_TRACE_FILE%" -i "!TRACE_TARGET!"
     exit /b 0

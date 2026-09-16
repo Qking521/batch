@@ -38,7 +38,7 @@ Pending Wakeup Sources|Wake lock|blocked by|prevent_suspend_time|PM: suspend ret
 26M_off_pct|AP suspend ratio
 
 # 5. 温升分析 (温升触发事件、thermal-engine 限频、温控策略执行)
-DexOptimizer|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:
+DexOptimizer|Cpu load|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:
 
 # 6. 系统异常与稳定性 (Java Exception、Native Crash、ANR 无响应、Tombstone)
 FATAL EXCEPTION|ANR in|CRASH:|backtrace:|Build fingerprint:|Tombstone
