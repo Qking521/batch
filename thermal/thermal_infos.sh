@@ -24,6 +24,7 @@ show_tz_usage() {
     cat <<EOF
 Usage:
   therm tz [info]           - 查看所有 Thermal Zone 信息 (默认)
+  therm tz watch [sec]      - 实时监听 Thermal Zone 温度变化 (默认 5s 刷新, Ctrl+C 退出)
   therm tz dis|disable      - 禁用所有已开启的 Thermal Zone
   therm tz en|enable        - 恢复被禁用的 Thermal Zone
   therm tz fake <type> <temp_c> - 对指定 zone 写入模拟温度 (emul_temp)
@@ -101,12 +102,47 @@ show_zone_detail() {
     echo "========================================"
 }
 
+# ---- 输出所有 Thermal Zone 信息表 ----
+tz_info() {
+    printf '%-3s %-25s %-10s %-12s %-8s\n' 'ID' 'TYPE' 'TEMP(C)' 'POLICY' 'MODE'
+    echo "--------------------------------------------------------------------"
+    for d in $(ls -d /sys/class/thermal/thermal_zone[0-9]* 2>/dev/null | sort -V); do
+        id=${d##*zone}
+        type="unknown"; read -r type < "$d/type" 2>/dev/null
+        raw_temp=""; read -r raw_temp < "$d/temp" 2>/dev/null
+
+        if [ -z "$raw_temp" ]; then
+            temp='N/A'
+        elif [ "$raw_temp" -gt 1000 ] 2>/dev/null || [ "$raw_temp" -lt -1000 ] 2>/dev/null; then
+            temp="$(( raw_temp / 1000 )).$(( (raw_temp % 1000) / 100 ))"
+        else
+            temp="$raw_temp"
+        fi
+
+        policy="N/A"; read -r policy < "$d/policy" 2>/dev/null
+        mode="N/A"; read -r mode < "$d/mode" 2>/dev/null
+
+        printf '%-3s %-25s %-10s %-12s %-8s\n' "$id" "$type" "$temp" "$policy" "$mode"
+    done
+}
+
 # 1. Thermal Zone 模块处理
 handle_tz() {
     shift 1 # 移除 'tz' 参数
     local action="$1"
 
     case "$action" in
+        "watch")
+            local interval="${2:-5}"
+            trap 'echo ""; echo "[Thermal Watch 已退出]"; exit 0' INT TERM
+            while true; do
+                clear 2>/dev/null || printf '\033[2J\033[H'
+                echo "更新时间: $(date '+%Y-%m-%d %H:%M:%S')  (按 Ctrl+C 停止监听, 刷新间隔: ${interval}s)"
+                tz_info
+                sleep "$interval"
+            done
+            ;;
+
         "fake")
             local zone_type="$2"
             local temp_c="$3"
@@ -183,26 +219,7 @@ handle_tz() {
 
         "info"|"")
             echo "正在获取温度传感器信息..."
-            printf '%-3s %-25s %-10s %-12s %-8s\n' 'ID' 'TYPE' 'TEMP(C)' 'POLICY' 'MODE'
-            echo "--------------------------------------------------------------------"
-            for d in $(ls -d /sys/class/thermal/thermal_zone* 2>/dev/null | sort -V); do
-                id=${d##*zone}
-                type=$(cat "$d/type" 2>/dev/null || echo 'unknown')
-                raw_temp=$(cat "$d/temp" 2>/dev/null)
-
-                if [ -z "$raw_temp" ]; then
-                    temp='N/A'
-                elif [ "$raw_temp" -gt 1000 ] 2>/dev/null || [ "$raw_temp" -lt -1000 ] 2>/dev/null; then
-                    temp="$(( raw_temp / 1000 )).$(( (raw_temp % 1000) / 100 ))"
-                else
-                    temp="$raw_temp"
-                fi
-
-                policy=$(cat "$d/policy" 2>/dev/null || echo 'N/A')
-                mode=$(cat "$d/mode" 2>/dev/null || echo 'N/A')
-
-                printf '%-3s %-25s %-10s %-12s %-8s\n' "$id" "$type" "$temp" "$policy" "$mode"
-            done
+            tz_info
             ;;
 
         *)

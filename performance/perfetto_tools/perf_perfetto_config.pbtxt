@@ -27,16 +27,16 @@ data_sources: {
             ftrace_events: "sched/sched_process_free"
             ftrace_events: "task/task_newtask"
             ftrace_events: "task/task_rename"
-            
+
             # CPU 频点与休眠
             ftrace_events: "power/cpu_frequency"
             ftrace_events: "power/cpu_idle"
-            
+
             # 内存回收与 LMK
             ftrace_events: "lowmemorykiller/lowmemory_kill"
             ftrace_events: "oom/oom_score_adj_update"
             ftrace_events: "ftrace/print"
-            
+
             # 指定抓取 lmkd 的自定义 Trace
             atrace_apps: "lmkd"
 

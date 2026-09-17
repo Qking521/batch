@@ -40,24 +40,29 @@ exit /b
 
 :long_trace_record
     echo "不管是程序还是文件都不能包含任何中文字符"
-    set "PROGRAM_PATH=D:\tools\LTR2_Lite\LTR2.exe"
-    for %%P in ("!PROGRAM_PATH!") do start "" /D "%%~dpP" "!PROGRAM_PATH!"
-    exit /b
+    set "PROGRAM_PATH=%TOOLS_ROOT_PATH%\LTR2_Lite\LTR2.exe"
+    goto launch
 
 :long_trace_record_advance
     echo "不管是程序还是文件都不能包含任何中文字符"
-    set "PROGRAM_PATH=D:\tools\LTR2_Lite_advance\LTR2.exe"
-    for %%P in ("!PROGRAM_PATH!") do start "" /D "%%~dpP" "!PROGRAM_PATH!"
-    exit /b
+    set "PROGRAM_PATH=%TOOLS_ROOT_PATH%\LTR2_Lite_advance\LTR2.exe"
+    goto launch
 
 :flashtool
-    set "PROGRAM_PATH=D:\tools\SP_Flash_Tool_V6\SPFlashToolV6.exe"
+    set "PROGRAM_PATH=%TOOLS_ROOT_PATH%\SP_Flash_Tool_V6\SPFlashToolV6.exe"
+    goto launch
+
+:odin
+    set "PROGRAM_PATH=%TOOLS_ROOT_PATH%\odin4v_windows_2.6\odin4v.exe"
+    goto launch
+
+:launch
+    if not exist "!PROGRAM_PATH!" (
+        echo [ERROR] 文件未找到: !PROGRAM_PATH!
+        exit /b 1
+    )
     for %%P in ("!PROGRAM_PATH!") do start "" /D "%%~dpP" "!PROGRAM_PATH!"
     exit /b
 
-:odin
-    set "PROGRAM_PATH=D:\tools\odin4v_windows_2.6\odin4v.exe"
-    for %%P in ("!PROGRAM_PATH!") do start "" /D "%%~dpP" "!PROGRAM_PATH!"
-    exit /b
 
 

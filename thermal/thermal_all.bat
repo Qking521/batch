@@ -32,6 +32,7 @@ if %ERRORLEVEL% neq 0 (
 if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
 
 :: 5. Command dispatcher
+if /i "%cmd%"=="watch"  goto :thermal_watch
 if /i "%cmd%"=="tz"     goto :thermal_infos
 if /i "%cmd%"=="cd"     goto :thermal_infos
 if /i "%cmd%"=="hm"     goto :thermal_infos
@@ -47,7 +48,8 @@ echo.
 echo Usage: therm [command] [options]
 echo.
 echo Available commands:
-echo   tz [dis/en]          - Query / Disable / Restore Thermal Zones
+echo   watch [interval_sec] - Monitor Thermal Zone temperature changes (default 5s)
+echo   tz [watch/dis/en]    - Query / Watch / Disable / Restore Thermal Zones
 echo   cd                   - Show Cooling Devices status
 echo   hm                   - Show Hardware Monitors (hwmon) status
 echo   fake [zone] [temp_c] - Write emul_temp to simulate thermal zone temperature
@@ -56,7 +58,10 @@ echo   config [push/pull]   - Thermal config operations
 echo   -h / help            - Show help info
 echo.
 echo Examples:
+echo   therm watch
+echo   therm watch 2
 echo   therm tz
+echo   therm tz watch
 echo   therm tz dis
 echo   therm tz en
 echo   therm cd
@@ -64,6 +69,15 @@ echo   therm hm
 echo   therm wt
 echo.
 exit /b 0
+
+:thermal_watch
+set "SH_SCRIPT=%SCRIPT_DIR%thermal_infos.sh"
+if not exist "%SH_SCRIPT%" (
+    echo [ERROR] Shell script not found: %SH_SCRIPT%
+    exit /b 1
+)
+adb shell "sh -s tz watch %param1%" < "%SH_SCRIPT%"
+exit /b %ERRORLEVEL%
 
 :thermal_infos
 set "SH_SCRIPT=%SCRIPT_DIR%thermal_infos.sh"

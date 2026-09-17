@@ -7,6 +7,7 @@
 #
 # Actions:
 #   info              - 查看 CPU 大小核、频点、当前频率、online 状态
+#   watch        [sec]- 内部监听实现（由 perf watch 调度复用，不对用户开放）
 #   freq              - 查看各簇可用频率列表
 #   max          [policy]        - 查看各 policy 最大频点（硬件最大 Fmax 与当前上限）
 #   online            - 查看各核 online 状态
@@ -140,24 +141,8 @@ unisoc_boost() {
     [ -f "$node" ] && write_node "$node" "$val" || echo "[WARN] 未找到 UNISOC boost 节点"
 }
 
-# ============================================================
-# ACTION 分发
-# ============================================================
-
-case "$ACTION" in
-
-# ---- 平台检测 ----
-platform)
-    plat=$(detect_platform)
-    board=$(getprop ro.product.board 2>/dev/null)
-    soc=$(getprop ro.board.platform 2>/dev/null)
-    echo "平台:   $plat"
-    echo "Board:  $board"
-    echo "SoC:    $soc"
-    ;;
-
-# ---- CPU 总览 ----
-info)
+# ---- 输出 CPU 核心与频率、温度信息总览 ----
+cpu_info() {
     plat=$(detect_platform)
     echo "=========================================================="
     echo " CPU 信息总览  [平台: $plat]"
@@ -194,41 +179,55 @@ info)
     echo "--- CPU 核心信息状态 ---"
     printf '%-8s %-12s %-16s %-10s\n' 'CPU' 'STATUS' 'CUR_FREQ(KHz)' 'TEMP'
     echo "----------------------------------------------------"
+
+    # 预先一次性筛选所有与 CPU/core 相关的 thermal zone，格式为 "zone_dir:zone_type"
+    # 使用单次 grep 批量读取所有 type 文件，避免数十次子进程/系统调用
+    cpu_thermal_zones=""
+    for entry in $(grep -s -H '' /sys/class/thermal/thermal_zone*/type 2>/dev/null); do
+        case "$entry" in
+            *cpu*|*core*)
+                file="${entry%%:*}"
+                tz_type="${entry#*:}"
+                cpu_thermal_zones="$cpu_thermal_zones ${file%/type}:$tz_type"
+                ;;
+        esac
+    done
+
     for cpu_dir in /sys/devices/system/cpu/cpu[0-9]*; do
         cpuid=${cpu_dir##*/}
         
         # 1. 在线状态
         node="$cpu_dir/online"
         if [ -f "$node" ]; then
-            state=$(read_node "$node")
+            state=$(cat "$node" 2>/dev/null)
             [ "$state" = "1" ] && status="online" || status="offline"
         else
             status="online(固定)"
         fi
 
         # 2. 当前 CPU 频率
-        cur_freq=$(read_node "$cpu_dir/cpufreq/scaling_cur_freq")
+        cur_freq=$(cat "$cpu_dir/cpufreq/scaling_cur_freq" 2>/dev/null)
+        [ -z "$cur_freq" ] && cur_freq="N/A"
 
-        # 3. CPU 核心温度 (针对大核等有多个传感器节点的场景，提取属于该 CPU 的传感器最大值)
+        # 3. CPU 核心温度 (从预筛选的 CPU thermal zone 中匹配该核的传感器温度)
         max_temp_mC=-999000
         cpu_num=${cpuid#cpu}
+        big_idx=""
+        [ "$cpu_num" -ge 4 ] 2>/dev/null && big_idx=$(( cpu_num - 4 ))
         
-        # 确定匹配模式：小核通常为 little/cpuX，大核通常为 big-coreX / coreX
-        for tz in /sys/class/thermal/thermal_zone*; do
-            [ -d "$tz" ] || continue
-            type=$(cat "$tz/type" 2>/dev/null)
+        for item in $cpu_thermal_zones; do
+            tz="${item%%:*}"
+            type="${item#*:}"
             matched=0
             case "$type" in
                 *cpu*little*${cpu_num}*|*cpu-${cpu_num}*|*little-core${cpu_num}*)
                     matched=1 ;;
                 *cpu*big*core${cpu_num}*|*big-core${cpu_num}*|*core${cpu_num}*)
-                    # 针对大核编号映射（例如 8 核设备中 cpu4->big-core0, cpu5->big-core1 等，或直连数字）
                     matched=1 ;;
             esac
 
             # 兼容 8 核中大核编号的物理序号换算 (例如 4~7 对应 big-core0~3)
-            if [ "$matched" -eq 0 ] && [ "$cpu_num" -ge 4 ] 2>/dev/null; then
-                big_idx=$(( cpu_num - 4 ))
+            if [ "$matched" -eq 0 ] && [ -n "$big_idx" ]; then
                 case "$type" in
                     *big-core${big_idx}*|*big_core${big_idx}*)
                         matched=1 ;;
@@ -255,6 +254,52 @@ info)
 
         printf '%-8s %-12s %-16s %-10s\n' "$cpuid" "$status" "$cur_freq" "$temp_str"
     done
+}
+
+# ---- 实时监听 CPU 变化（承接 watch 复用；若同时加载了 GPU 模块则联动输出） ----
+cpu_watch() {
+    interval="${1:-5}"
+    trap 'echo ""; echo "[Watch 已退出]"; exit 0' INT TERM
+    while true; do
+        clear 2>/dev/null || printf '\033[2J\033[H'
+        echo "更新时间: $(date '+%Y-%m-%d %H:%M:%S')  (按 Ctrl+C 停止监听, 刷新间隔: ${interval}s)"
+        cpu_info
+        if type cmd_info >/dev/null 2>&1; then
+            echo ""
+            [ -z "$GPU_TYPE" ] || [ "$GPU_TYPE" = "none" ] && resolve_gpu
+            cmd_info
+        fi
+        sleep "$interval"
+    done
+}
+
+# ============================================================
+# ACTION 分发
+# ============================================================
+
+# 若设置 PERF_LIB_ONLY，仅加载函数定义供外部调用，不执行命令分发
+if [ -z "$PERF_LIB_ONLY" ]; then
+
+case "$ACTION" in
+
+# ---- 平台检测 ----
+platform)
+    plat=$(detect_platform)
+    board=$(getprop ro.product.board 2>/dev/null)
+    soc=$(getprop ro.board.platform 2>/dev/null)
+    echo "平台:   $plat"
+    echo "Board:  $board"
+    echo "SoC:    $soc"
+    ;;
+
+# ---- CPU 总览 ----
+info)
+    cpu_info
+    ;;
+
+# ---- 监听 CPU 变化 ----
+watch)
+    cpu_watch "$PARAM1"
     ;;
 
 # ---- 频率列表 ----
@@ -630,29 +675,50 @@ uncap)
     write_node "$pdir/scaling_max_freq" "$max"
     ;;
 
-# ---- 未知命令 ----
-*)
-    echo "[ERROR] 未知命令: $ACTION"
-    echo ""
-    echo "可用命令:"
-    echo "  info                          - CPU 总览（大小核、频率、governor）"
-    echo "  freq                          - 各 policy 可用频率列表"
-    echo "  max          [policy]         - 查看各 policy 最大频点（HW Fmax 与上限）"
-    echo "  online                        - 各核 online 状态"
-    echo "  platform                      - 检测芯片平台"
-    echo "  set-online   <cpu_id> <0|1>   - 上下线指定核"
-    echo "  fix-freq     [policy] <khz>   - 定频指定 policy（单参数如 1800000 默认定频所有 policy）"
-    echo "  unfix-freq   [policy]         - 解除定频（无参数默认解除所有 policy）"
-    echo "  fix-freq-all <khz>            - 所有 policy 统一定频"
-    echo "  unfix-all                     - 解除所有 policy 定频"
-    echo "  boost        <0|1>            - CPU boost 开关（平台自适应）"
-    echo "  affinity     <pid> <mask>     - 绑核（taskset hex mask）"
-    echo "  gov          [policy] <gov>   - 切换 governor（单参数默认切换所有 policy）"
-    echo "  gov-all      <gov>            - 所有 policy 统一切换 governor"
-    echo "  cap          [policy] <khz>   - 限制最大频率（单参数如 2400000 默认限制所有 policy）"
-    echo "  uncap        [policy]         - 解除最大频率限制（无参数默认解除所有 policy）"
-    exit 1
-    ;;
+# ---- 帮助与未知命令 ----
+    ""|-h|help)
+        echo "可用命令:"
+        echo "  info                          - CPU 总览（大小核、频率、governor）"
+        echo "  freq                          - 各 policy 可用频率列表"
+        echo "  max          [policy]         - 查看各 policy 最大频点（HW Fmax 与上限）"
+        echo "  online                        - 各核 online 状态"
+        echo "  platform                      - 检测芯片平台"
+        echo "  set-online   <cpu_id> <0|1>   - 上下线指定核"
+        echo "  fix-freq     [policy] <khz>   - 定频指定 policy（单参数如 1800000 默认定频所有 policy）"
+        echo "  unfix-freq   [policy]         - 解除定频（无参数默认解除所有 policy）"
+        echo "  fix-freq-all <khz>            - 所有 policy 统一定频"
+        echo "  unfix-all                     - 解除所有 policy 定频"
+        echo "  boost        <0|1>            - CPU boost 开关（平台自适应）"
+        echo "  affinity     <pid> <mask>     - 绑核（taskset hex mask）"
+        echo "  gov          [policy] <gov>   - 切换 governor（单参数默认切换所有 policy）"
+        echo "  gov-all      <gov>            - 所有 policy 统一切换 governor"
+        echo "  cap          [policy] <khz>   - 限制最大频率（单参数如 2400000 默认限制所有 policy）"
+        echo "  uncap        [policy]         - 解除最大频率限制（无参数默认解除所有 policy）"
+        exit 0
+        ;;
+    *)
+        echo "[ERROR] 未知命令: $ACTION"
+        echo ""
+        echo "可用命令:"
+        echo "  info                          - CPU 总览（大小核、频率、governor）"
+        echo "  freq                          - 各 policy 可用频率列表"
+        echo "  max          [policy]         - 查看各 policy 最大频点（HW Fmax 与上限）"
+        echo "  online                        - 各核 online 状态"
+        echo "  platform                      - 检测芯片平台"
+        echo "  set-online   <cpu_id> <0|1>   - 上下线指定核"
+        echo "  fix-freq     [policy] <khz>   - 定频指定 policy（单参数如 1800000 默认定频所有 policy）"
+        echo "  unfix-freq   [policy]         - 解除定频（无参数默认解除所有 policy）"
+        echo "  fix-freq-all <khz>            - 所有 policy 统一定频"
+        echo "  unfix-all                     - 解除所有 policy 定频"
+        echo "  boost        <0|1>            - CPU boost 开关（平台自适应）"
+        echo "  affinity     <pid> <mask>     - 绑核（taskset hex mask）"
+        echo "  gov          [policy] <gov>   - 切换 governor（单参数默认切换所有 policy）"
+        echo "  gov-all      <gov>            - 所有 policy 统一切换 governor"
+        echo "  cap          [policy] <khz>   - 限制最大频率（单参数如 2400000 默认限制所有 policy）"
+        echo "  uncap        [policy]         - 解除最大频率限制（无参数默认解除所有 policy）"
+        exit 1
+        ;;
 esac
 
 exit 0
+fi

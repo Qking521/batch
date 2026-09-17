@@ -10,6 +10,7 @@
 #
 # Actions:
 #   info                    - GPU 总览
+#   watch        [sec]      - 内部监听实现（由 perf watch 调度复用，不对用户开放）
 #   freq                    - 查看可用频率/opp dump
 #   gov          <governor> - 切换GPU governor（仅Qualcomm支持）
 #   fix-freq     <freq>     - 定频（单位 Hz）
@@ -345,6 +346,29 @@ cmd_trace() {
     write_node "$node" "$val"
 }
 
+# 实时监听 GPU 状态变化
+cmd_watch() {
+    interval="${1:-5}"
+    [ -z "$GPU_TYPE" ] || [ "$GPU_TYPE" = "none" ] && resolve_gpu
+    trap 'echo ""; echo "[Watch 已退出]"; exit 0' INT TERM
+    while true; do
+        clear 2>/dev/null || printf '\033[2J\033[H'
+        echo "更新时间: $(date '+%Y-%m-%d %H:%M:%S')  (按 Ctrl+C 停止监听, 刷新间隔: ${interval}s)"
+        cmd_info
+        sleep "$interval"
+    done
+}
+
+# 导出通用命名方法，方便统一调用
+gpu_info() {
+    [ -z "$GPU_TYPE" ] || [ "$GPU_TYPE" = "none" ] && resolve_gpu
+    cmd_info "$@"
+}
+
+gpu_watch() {
+    cmd_watch "$@"
+}
+
 cmd_usage() {
     echo "可用命令:"
     echo "  info                     - GPU 总览"
@@ -364,26 +388,34 @@ cmd_usage() {
 # ACTION 分发：只做路由，全部转发给上面的 cmd_xxx 函数
 # ============================================================
 
-[ -n "$ACTION" ] && resolve_gpu
+# 若设置 PERF_LIB_ONLY，仅加载函数定义供外部调用，不执行命令分发
+if [ -z "$PERF_LIB_ONLY" ]; then
+    [ -n "$ACTION" ] && resolve_gpu
 
-case "$ACTION" in
-    info)         cmd_info ;;
-    freq)         cmd_freq ;;
-    gov)          cmd_gov "$PARAM1" ;;
-    fix-freq)     cmd_fix_freq "$PARAM1" ;;
-    unfix-freq)   cmd_unfix_freq ;;
-    cap)          cmd_cap "$PARAM1" ;;
-    uncap)        cmd_uncap ;;
-    busy)         cmd_busy ;;
-    power)        cmd_power ;;
-    idle-policy)  cmd_idle_policy "$PARAM1" ;;
-    trace)        cmd_trace "$PARAM1" ;;
-    *)
-        echo "[ERROR] 未知命令: $ACTION"
-        echo ""
-        cmd_usage
-        exit 1
-        ;;
-esac
+    case "$ACTION" in
+        info)         cmd_info ;;
+        watch)        cmd_watch "$PARAM1" ;;
+        freq)         cmd_freq ;;
+        gov)          cmd_gov "$PARAM1" ;;
+        fix-freq)     cmd_fix_freq "$PARAM1" ;;
+        unfix-freq)   cmd_unfix_freq ;;
+        cap)          cmd_cap "$PARAM1" ;;
+        uncap)        cmd_uncap ;;
+        busy)         cmd_busy ;;
+        power)        cmd_power ;;
+        idle-policy)  cmd_idle_policy "$PARAM1" ;;
+        trace)        cmd_trace "$PARAM1" ;;
+        ""|-h|help)
+            cmd_usage
+            exit 0
+            ;;
+        *)
+            echo "[ERROR] 未知命令: $ACTION"
+            echo ""
+            cmd_usage
+            exit 1
+            ;;
+    esac
 
-exit 0
+    exit 0
+fi

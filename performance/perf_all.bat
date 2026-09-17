@@ -6,6 +6,7 @@ set "cmd=%~1"
 set "param1=%~2"
 set "param2=%~3"
 set "param3=%~4"
+set "param4=%~5"
 
 call %INIT_BAT% %~dp0
 :: 调用基础脚本检查ADB和设备（使用完整路径，传入当前子命令）
@@ -22,6 +23,7 @@ if not exist %MODULE_OUT_DIR% (
 if /i "%cmd%"=="" goto :usage
 if /i "%cmd%"=="-h" goto :usage
 if /i "%cmd%"=="help" goto :usage
+if /i "%cmd%"=="watch" goto watch
 if /i "%cmd%"=="sf" goto surface_flinger
 if /i "%cmd%"=="trace" goto trace
 if /i "%cmd%"=="cpu" goto cpu
@@ -39,22 +41,29 @@ echo.
 echo 用法: perf ^<命令^> [参数]
 echo.
 echo 命令:
+echo   watch [cpu^|gpu^|all] [interval_sec] - 实时动态监听 CPU/GPU 状态变化 (默认 all 5s)
 echo   sf                               - SurfaceFlinger 性能信息
 echo   trace [cmd/online/cfg/ui/sh]    - Perfetto 性能抓取及打开 Trace
 echo   sql [tag/sql] [trace_path]       - 使用 SQL 查询性能 Trace
 echo   cpu [info/freq/max/online/...]   - CPU 调控
-echo   gpu                              - GPU 性能抓取 (等同 trace)
+echo   gpu [info/freq/fix-freq/...]     - GPU 调控
 echo   ds                               - Dhrystone 操作
 echo   flame [record/parse]             - 火焰图抓取与解析 (simpleperf)
 echo   help / -h                        - 显示此帮助信息
 echo.
 echo 示例:
+echo   perf watch
+echo   perf watch 2
+echo   perf watch cpu
+echo   perf watch cpu 2
+echo   perf watch gpu 3
 echo   perf trace cmd 5
 echo   perf trace ui
 echo   perf sql cpu_usage
 echo   perf sql "SELECT name, dur FROM slice LIMIT 10"
 echo   perf cpu info
 echo   perf cpu max
+echo   perf gpu info
 echo   perf flame record
 echo   perf flame record com.android.settings
 echo   perf flame parse
@@ -69,13 +78,17 @@ exit /b 0
     call %SCRIPT_DIR%perf_traces.bat %*
     exit /b
 
+:watch
+    call %SCRIPT_DIR%perf_watch.bat %param1% %param2%
+    exit /b
+
 :cpu
     set "SH_SCRIPT=%SCRIPT_DIR%perf_cpu.sh"
     if not exist "%SH_SCRIPT%" (
         echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
         exit /b 1
     )
-    adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
+    adb shell "sh -s %param1% %param2% %param3% %param4%" < "%SH_SCRIPT%"
     exit /b
 
 :gpu
@@ -84,7 +97,7 @@ exit /b 0
         echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
         exit /b 1
     )
-    adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
+    adb shell "sh -s %param1% %param2% %param3% %param4%" < "%SH_SCRIPT%"
     exit /b
 
 
