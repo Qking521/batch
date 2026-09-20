@@ -25,29 +25,24 @@ show_log_info() {
 # [LOG 模块] Logcat / Dmesg 日志分析关键字
 # ============================================================
 
-# 1. 查看唤醒锁和唤醒原因 (内核锁、应用 Partial 锁、屏幕点亮原因)
-All kernel wake locks|All partial wake locks|All wakeup reasons|All screen wake reasons
+# 1. 功耗模块
+唤醒锁：All kernel wake locks|All partial wake locks|All wakeup reasons|All screen wake reasons
+系统不待机：Pending Wakeup Sources|Wake lock|blocked by|prevent_suspend_time|PM: suspend returned|aborting suspend|active wakeup source
+系统待机被唤醒：suspend entry|suspend exit|suspend wake up by|Resume caused by|caused by IRQ|\d+ alarms:|Alarm.*type [2|4] origWhen
+子系统不待机：26M_off_pct|AP suspend ratio
 
-# 2. 查看系统待机及唤醒 (进出 suspend 时间点、唤醒中断/Alarm 来源)
-suspend entry|suspend exit|suspend wake up by|Resume caused by|caused by IRQ|set alarm :
-
-# 3. 系统无法 suspend (休眠失败、被持锁源打断或阻止 suspend)
-Pending Wakeup Sources|Wake lock|blocked by|prevent_suspend_time|PM: suspend returned|aborting suspend|active wakeup source
-
-# 4. 系统 suspend 但子系统仍在工作 (AP 待机时 26M 时钟及子系统睡眠比率)
-26M_off_pct|AP suspend ratio
-
-# 5. 温升分析 (温升触发事件、thermal-engine 限频、温控策略执行)
+# 2. 温升模块
 DexOptimizer|Cpu load|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:
 
-# 6. 系统异常与稳定性 (Java Exception、Native Crash、ANR 无响应、Tombstone)
+# 3. 系统异常与稳定性 (Java Exception、Native Crash、ANR 无响应、Tombstone)
 FATAL EXCEPTION|ANR in|CRASH:|backtrace:|Build fingerprint:|Tombstone
 
-# 7. 性能与掉帧卡顿 (主线程耗时、Choreographer 丢帧、慢 Handler 消息)
+# 4. 性能与掉帧卡顿 (主线程耗时、Choreographer 丢帧、慢 Handler 消息)
 Skipped [0-9]+ frames|Choreographer|Slow Looper|Slow delivery:|Slow dispatch:|am_anr
 
-# 8. 其它未分类 (屏幕开关事件、关机重启属性、对齐唤醒、传感器常驻)
+# 5. 其它未分类 (屏幕开关事件、关机重启属性、对齐唤醒、传感器常驻)
 screen_toggled|sys.powerctl|AlarmManager: Adjust deliver|sensorservice
+
 EOF
 }
 
@@ -127,17 +122,6 @@ adb shell "cat /sys/kernel/debug/wakeup_sources"
 # 4. 查看框架层持锁 (Framework Wake Locks)
 adb shell "dumpsys power | grep -A 20 'Wake Locks'"
 
-# 5. 查看唤醒锁和唤醒原因关键字
-All kernel wake locks|All partial wake locks|All wakeup reasons|All screen wake reasons
-
-# 6. 查看系统无法休眠关键字 (休眠失败、被持锁源打断或阻止)
-Pending Wakeup Sources|Wake lock|blocked by|prevent_suspend_time|PM: suspend returned|aborting suspend|active wakeup source
-
-# 7. 查看系统待机及唤醒关键字 (进出 suspend 时间点、唤醒中断/Alarm 来源)
-suspend entry|suspend exit|suspend wake up by|Resume caused by|caused by IRQ|\d+ alarms:
-
-# 8. 系统 suspend 但子系统仍在工作关键字
-26M_off_pct|AP suspend ratio
 EOF
 }
 
@@ -160,7 +144,9 @@ adb shell "dumpsys display | grep mScreenState"
 adb shell "dumpsys power | grep 'mWakefulness='"
 
 # 4. 其它未分类通用系统日志关键字 (屏幕开关、关机重启属性、Alarm 调控、传感器)
-screen_toggled|sys.powerctl|AlarmManager: Adjust deliver|sensorservice
+60Hz：adb shell "service call SurfaceFlinger 1035 i32 2 >/dev/null"
+90Hz：adb shell "service call SurfaceFlinger 1035 i32 1 >/dev/null"
+120Hz：adb shell "service call SurfaceFlinger 1035 i32 0 >/dev/null"
 EOF
 }
 
