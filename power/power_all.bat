@@ -36,7 +36,7 @@ if /i "%cmd%"=="ps"        goto :power_supply
 if /i "%cmd%"=="wallpaper" goto :wallpaper
 if /i "%cmd%"=="profile"   goto :power_profile
 if /i "%cmd%"=="reset"     goto :reset
-if /i "%cmd%"=="wakelock"  goto :wakelock
+if /i "%cmd%"=="wl"  goto :wakelock
 if /i "%cmd%"=="regu"      goto :regulator
 if /i "%cmd%"=="info"      goto :power_info
 if /i "%cmd%"=="eet"       goto :eet_test
@@ -60,7 +60,7 @@ echo   ps                           - Show power supply info
 echo   wallpaper [color] [action]   - Create / Set / Preview wallpaper
 echo   profile                      - Display power profile data
 echo   reset                        - Reset battery stats and clear logs
-echo   wakelock                     - Show system wake lock status
+echo   wakelock [set/unset/dump]    - Manage kernel/framework wake locks
 echo   regu                         - Show regulator information
 echo   info                         - Display device info related to power
 echo   eet [policy] [freq]          - EET CPU fixed frequency test
@@ -124,15 +124,14 @@ echo [OK] Battery stats reset and logs cleared.
 exit /b 0
 
 :wakelock
-echo [INFO] Kernel Wake Locks:
-adb shell cat /sys/power/wake_lock 2>nul
-echo.
-echo [INFO] Framework Wake Locks (Dumpsys Power):
-adb shell dumpsys power | grep -A 20 "Wake Locks"
-echo.
-echo [INFO] Battery History Wake Locks:
-adb shell dumpsys batterystats | grep -A 10 "Wake lock"
-exit /b 0
+set "SH_SCRIPT=%SCRIPT_DIR%power_wakelock.sh"
+if not exist "%SH_SCRIPT%" (
+    echo [ERROR] Script not found: %SH_SCRIPT%
+    exit /b 1
+)
+adb shell "sh -s %param1%" < "%SH_SCRIPT%"
+exit /b %ERRORLEVEL%
+
 
 :eet_test
 set "SH_SCRIPT=%SCRIPT_DIR%power_eet.sh"
