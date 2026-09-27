@@ -64,8 +64,10 @@ adb shell "for tz in /sys/class/thermal/thermal_zone*; do echo \"$(basename $tz)
 # 3. 查看冷却设备状态 (Cooling Devices 档位与最大值)
 adb shell "for cd in /sys/class/thermal/cooling_device*; do echo \"$(basename $cd): $(cat $cd/type 2>/dev/null) = cur:$(cat $cd/cur_state 2>/dev/null) / max:$(cat $cd/max_state 2>/dev/null)\"; done"
 
-# 4. 温升分析关键字 (温升触发事件、thermal-engine 限频、温控策略执行)
-DexOptimizer|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:
+# 4. 查看温升策略
+当前thermal policy: adb shell "cat /data/vendor/thermal/.current_tp"
+持久thermal policy: adb shell "cat /data/vendor/thermal/.permanent_tp"
+切换thermal policy: adb shell "thermal_intf apply disable_thermal.conf"
 EOF
 }
 

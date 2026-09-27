@@ -40,6 +40,7 @@ if /i "%cmd%"=="wakelock"  goto :wakelock
 if /i "%cmd%"=="regu"      goto :regulator
 if /i "%cmd%"=="info"      goto :power_info
 if /i "%cmd%"=="eet"       goto :eet_test
+if /i "%cmd%"=="eet-gen"   goto :eet_gen
 if /i "%cmd%"=="spm"       goto :spm
 if /i "%cmd%"=="trace"     goto :trace
 if /i "%cmd%"=="sql"       goto :sql
@@ -63,6 +64,7 @@ echo   wakelock                     - Show system wake lock status
 echo   regu                         - Show regulator information
 echo   info                         - Display device info related to power
 echo   eet [policy] [freq]          - EET CPU fixed frequency test
+echo   eet-gen                      - Generate manual EET CPU frequency test scripts
 echo   spm [data_file]              - Parse MediaTek SPM state data
 echo   trace [ui/ui-enhance/sh]     - Perfetto trace collection and analysis
 echo   sql [tag/statement] [zip]    - Query power info via SQL from bugreport
@@ -80,8 +82,8 @@ echo.
 exit /b 0
 
 :standby
-call "%SCRIPT_DIR%power_standby.bat" %param1%
-exit /b %ERRORLEVEL%
+    call "%SCRIPT_DIR%power_standby.bat" %param1%
+    exit /b %ERRORLEVEL%
 
 :power_info
 set "SH_SCRIPT=%SCRIPT_DIR%power_info.sh"
@@ -140,6 +142,10 @@ if not exist "%SH_SCRIPT%" (
 )
 ::param1传policy的值，param2传policy的频点值
 adb shell "sh -s %param1% %param2%" < "%SH_SCRIPT%"
+exit /b %ERRORLEVEL%
+
+:eet_gen
+python "%SCRIPT_DIR%power_eet_gen.py"
 exit /b %ERRORLEVEL%
 
 :spm

@@ -18,7 +18,8 @@ if not exist "%SH_SCRIPT%" (
 )
 
 :: 设置文件名
-set "RECORD_FILE=record_%FORMAT_TIME%.mp4"
+for /f "delims= " %%a in ('adb shell getprop ro.product.device') do set device=%%a
+set "RECORD_FILE=record_%device%_%FORMAT_TIME%.mp4"
 
 echo screenrecording， Press any key to stop recording...
 
@@ -45,7 +46,7 @@ for /f "tokens=1" %%p in ('adb shell "pidof screenrecord" 2^>nul') do (
 
 :: 拉取录屏文件
 if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
-set "OUT_RECORD_FILE=%MODULE_OUT_DIR%%RECORD_FILE%"
+set "OUT_RECORD_FILE=%MODULE_OUT_DIR%\%RECORD_FILE%"
 if exist "%OUT_RECORD_FILE%" del /f "%OUT_RECORD_FILE%"
 
 echo Pulling record file to local: %OUT_RECORD_FILE%
@@ -54,6 +55,7 @@ adb shell "rm -f /sdcard/%RECORD_FILE%"
 
 if exist "%OUT_RECORD_FILE%" (
     echo [OK] Record file extracted successfully!
+    start "" "%MODULE_OUT_DIR%
     start "" "%OUT_RECORD_FILE%"
 ) else (
     echo [ERROR] Failed to pull record file.
