@@ -26,10 +26,10 @@ show_log_info() {
 # ============================================================
 
 # 1. 功耗模块
-唤醒锁：All kernel wake locks|All partial wake locks|All wakeup reasons|All screen wake reasons
-系统不待机：Pending Wakeup Sources|Wake lock|blocked by|prevent_suspend_time|PM: suspend returned|aborting suspend|active wakeup source
-系统待机被唤醒：suspend entry|suspend exit|suspend wake up by|Resume caused by|caused by IRQ|\d+ alarms:|Alarm.*type [2|4] origWhen
-子系统不待机：26M_off_pct|AP suspend ratio
+唤醒锁:All kernel wake locks|All partial wake locks|All wakeup reasons|All screen wake reasons
+系统不待机:Pending Wakeup Sources|Wake lock|blocked by|prevent_suspend_time|PM: suspend returned|aborting suspend|active wakeup source
+系统待机被唤醒:suspend entry|suspend exit|suspend wake up by|Resume caused by|caused by IRQ|\d+ alarms:|Alarm.*type [2|4] origWhen
+子系统不待机:26M_off_pct|AP suspend ratio
 
 # 2. 温升模块
 DexOptimizer|Cpu load|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:

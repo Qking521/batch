@@ -54,7 +54,7 @@ exit /b 0
     set "GOOGLE_OPEN_TRACE_FILE=%SCRIPT_DIR%..\performance\perfetto_tools\open_trace_in_ui"
     set "TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%..\performance\perfetto_tools\trace_processor_shell.exe"
     set "GOOGLE_RECORD_TRACE_FILE=%SCRIPT_DIR%..\performance\perfetto_tools\record_android_trace"
-    set "SQL_DIR=%SCRIPT_DIR%power_sql"
+    set "SQL_DIR=%SCRIPT_DIR%power_sqls"
 
     if not exist "%TRACE_PROCESSOR_SHELL%" (
         echo [WARN] trace_processor_shell.exe not found: %TRACE_PROCESSOR_SHELL%
@@ -115,7 +115,7 @@ exit /b 0
     if errorlevel 1 exit /b 1
 
     echo [INFO] Starting trace_processor_shell interactive shell...
-    pushd "%SQL_DIR%"
-    "%TRACE_PROCESSOR_SHELL%" -i "%TARGET_BUGREPORT%"
-    popd
+    echo [INFO] SQL dir: %SQL_DIR%
+    echo [INFO] Tip: use .read filename.sql (e.g. .read dcr.sql)
+    cmd /C "cd /D "%SQL_DIR%" && "%TRACE_PROCESSOR_SHELL%" -i "%TARGET_BUGREPORT%""
     exit /b 0

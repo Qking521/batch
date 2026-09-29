@@ -36,7 +36,7 @@ if /i "%cmd%"=="ps"        goto :power_supply
 if /i "%cmd%"=="wallpaper" goto :wallpaper
 if /i "%cmd%"=="profile"   goto :power_profile
 if /i "%cmd%"=="reset"     goto :reset
-if /i "%cmd%"=="wl"  goto :wakelock
+if /i "%cmd%"=="wl"        goto :wakelock
 if /i "%cmd%"=="regu"      goto :regulator
 if /i "%cmd%"=="info"      goto :power_info
 if /i "%cmd%"=="eet"       goto :eet_test

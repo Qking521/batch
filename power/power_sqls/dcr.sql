@@ -36,7 +36,6 @@ SELECT
   pct AS battery_pct,
   charge_uah AS charge_value_uah,
   delta_uah / NULLIF(delta_s, 0) AS raw_rate_uah_per_s,
-  (delta_uah / NULLIF(delta_s, 0)) * 3600 / 1000 AS rate_mah_per_h,
-  (delta_uah / NULLIF(delta_s, 0)) * 3600 / 1000 / __BATTERY_CAP__ * 100 AS rate_pct_per_h
+  (delta_uah / NULLIF(delta_s, 0)) * 3600 / 1000 AS rate_mah_per_h
 FROM rate
 ORDER BY ts;

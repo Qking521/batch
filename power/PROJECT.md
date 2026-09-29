@@ -62,7 +62,7 @@ git config core.autocrlf true
 power/
   power_sql.bat          # bat 调度脚本（必须 CRLF）
   PROJECT.md             # 本规范文档
-  power_sql/
+  power_sqls/
     battery.sql          # tag: battery  查看电量/电压时间线
     power.sql            # tag: power    Power Rails 分轨道能耗
     dcr.sql              # tag: dcr      电池耗电速率分析（含 __BATTERY_CAP__ 占位符）
@@ -72,8 +72,8 @@ power/
 
 ## SQL 标签机制
 
-- **标签 = 文件名**：`power_sql\<tag名>.sql` 即为一个可用标签
-- **新增标签**：在 `power_sql\` 目录下新建 `.sql` 文件即可，无需修改 bat
+- **标签 = 文件名**：`power_sqls\<tag名>.sql` 即为一个可用标签
+- **新增标签**：在 `power_sqls\` 目录下新建 `.sql` 文件即可，无需修改 bat
 - **直接执行**：`.sql` 文件可直接在任何 SQL 工具中打开执行
 
 ## SQL 占位符
