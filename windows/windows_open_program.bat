@@ -29,7 +29,7 @@ echo.
 echo Available parmas:
 echo   ltr              - mtk long trace record tool
 echo   ltra             - mtk long trace record tool with lmode
-echo   ft               - mtk flash tool
+echo   ft6              - mtk flash tool for V6
 echo   odin             - samsung flash tool
 echo   -h               - Show help (alias: help).
 echo.

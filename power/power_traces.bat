@@ -4,7 +4,7 @@ chcp 65001 >nul
 :: Author: WangQiang
 :: Date:   2026-08-25
 :: Desc:   Perfetto Trace 追踪与 Bugreport 分析辅助
-:: Usage:  power trace <ui|ui-enhance|sh> [bugreport_path]
+:: Usage:  power trace <ui|uix|sh> [bugreport_path]
 :: ============================================================
 setlocal EnableDelayedExpansion
 
@@ -22,7 +22,7 @@ call :evn_init
 if errorlevel 1 exit /b 1
 
 if /i "%cmd%"=="ui"         goto :do_ui
-if /i "%cmd%"=="ui-enhance" goto :do_ui_enhance
+if /i "%cmd%"=="uix"        goto :do_ui_enhance
 if /i "%cmd%"=="sh"         goto :do_shell
 
 echo [ERROR] Unknown command: %cmd%
@@ -30,17 +30,17 @@ goto :usage
 
 :usage
 echo.
-echo Usage: power trace ^<ui^|ui-enhance^|sh^> [bugreport_path]
+echo Usage: power trace ^<ui^|uix^|sh^> [bugreport_path]
 echo.
 echo Commands:
 echo   ui [bugreport_path]          - Open target / latest bugreport zip via Perfetto Web UI
-echo   ui-enhance [bugreport_path]  - Launch local trace_processor_shell acceleration and open in UI
+echo   uix [bugreport_path]  - Launch local trace_processor_shell acceleration and open in UI
 echo   sh [bugreport_path]          - Launch trace_processor_shell interactive SQL CLI
 echo   help / -h                    - Show this help info
 echo.
 echo Examples:
 echo   power trace ui
-echo   power trace ui-enhance
+echo   power trace uix
 echo   power trace sh "OUT\android\bugreport_0825-1000.zip"
 echo.
 exit /b 0
@@ -104,10 +104,13 @@ exit /b 0
     call :find_target_bugreport "%param1%"
     if errorlevel 1 exit /b 1
 
-    echo [INFO] Starting local Trace Processor Server...
+    echo [INFO] 正在启动本地 Trace Processor 服务，加速 trace 解析...
+    "%TRACE_PROCESSOR_SHELL%" --version
+
     start "Trace Processor Server" "%TRACE_PROCESSOR_SHELL%" --httpd "%TARGET_BUGREPORT%"
     timeout /t 2 /nobreak >nul
-    python "%GOOGLE_OPEN_TRACE_FILE%" -i "%TARGET_BUGREPORT%"
+    start "" "https://ui.perfetto.dev"
+    ::python "%GOOGLE_OPEN_TRACE_FILE%" -i "%TARGET_BUGREPORT%"
     exit /b %ERRORLEVEL%
 
 :do_shell

@@ -100,12 +100,6 @@ exit /b 0
     adb shell "sh -s %param1% %param2% %param3% %param4%" < "%SH_SCRIPT%"
     exit /b
 
-
-:origin
-    rem "" 是窗口标题
-    start "" %USERPROFILE%\"batScript\performance\perfettoCaptureTools_original"
-    exit /b
-
 :flame
     call %SCRIPT_DIR%perf_simpleperf.bat %*
     exit /b

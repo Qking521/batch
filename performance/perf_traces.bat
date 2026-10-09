@@ -14,11 +14,12 @@ if /i "%cmd%"=="-h" goto show_help
 if /i "%cmd%"=="help" goto show_help
 if /i "%cmd%"=="cmd" goto do_command
 if /i "%cmd%"=="online" goto do_online
+if /i "%cmd%"=="file" goto do_open_file
 if /i "%cmd%"=="cfg" goto do_config
 if /i "%cmd%"=="ui" goto do_ui
-if /i "%cmd%"=="ui-enhance" goto do_ui_enhance
+if /i "%cmd%"=="uix" goto do_ui_enhance
 if /i "%cmd%"=="sh" goto do_shell
-if /i "%cmd%"=="tool" goto do_tool
+if /i "%cmd%"=="dl" goto do_download
 
 echo [ERROR] 未知命令: %cmd%
 goto show_help
@@ -34,17 +35,17 @@ echo   cfg [时长(s)]                    - 使用 trace 配置文件抓取 trac
 echo.
 echo 打开 Trace 命令:
 echo   ui [trace_path]                  - 使用 perfetto 打开指定的或 OUT 目录下最新的 trace 文件
-echo   ui-enhance [trace_path]          - 使用 perfetto 本地服务打开指定的或 OUT 目录下最新的 trace 文件
+echo   uix [trace_path]                 - 使用 perfetto 本地服务打开指定的或 OUT 目录下最新的 trace 文件
 echo   sh [trace_path]                  - 使用本地 trace_processor_shell 打开指定的或 OUT 目录下最新的 trace 文件
 echo.
 echo 其他命令:
-echo   tool                             - 下载更新 trace 相关工具
+echo   dl                               - 下载或更新 trace 相关工具
 echo   help / -h                        - 显示此帮助信息
 echo.
 echo 示例:
 echo   perf trace cmd 5
 echo   perf trace ui
-echo   perf trace ui-enhance trace_oaklan_0813-2027.perfetto
+echo   perf trace uix trace_oaklan_0813-2027.perfetto
 echo   perf trace sh
 echo.
 exit /b 0
@@ -58,6 +59,7 @@ exit /b 0
     set "GOOGLE_OPEN_TRACE_FILE=%SCRIPT_DIR%perfetto_tools\open_trace_in_ui"
     set "TRACE_PROCESSOR_SHELL=%SCRIPT_DIR%perfetto_tools\trace_processor_shell.exe"
     set "GOOGLE_RECORD_TRACE_FILE=%SCRIPT_DIR%perfetto_tools\record_android_trace"
+    set "MANUAL_TRACE_DIR=%SCRIPT_DIR%perf_trace_files"
 
     set "SQL_DIR=%SCRIPT_DIR%perf_sql"
 
@@ -202,8 +204,12 @@ exit /b 0
     call :open_trace "%OUT_TRACE_FILE%"
     exit /b %ERRORLEVEL%
 
+:do_open_file
+    rem "" 是窗口标题
+    start "" %MANUAL_TRACE_DIR%"
+    exit /b
 
-:do_tool
+:do_download
     curl -L -f -o "%GOOGLE_OPEN_TRACE_FILE%" https://raw.githubusercontent.com/google/perfetto/main/tools/open_trace_in_ui
     if %errorlevel% neq 0 (
         echo [WARN] 下载 open_trace_in_ui 失败！请检查网络/代理设置。
@@ -225,10 +231,16 @@ exit /b 0
 :do_ui_enhance
     call :find_target_trace "%param1%"
     if errorlevel 1 exit /b 1
+    for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":9001 " ^| findstr LISTENING') do (
+        taskkill /PID %%a /F
+    )
     echo [INFO] 正在启动本地 Trace Processor 服务，加速 trace 解析...
-    "%TRACE_PROCESSOR_SHELL%" --httpd "%TARGET_TRACE%"
+    "%TRACE_PROCESSOR_SHELL%" --version
+    start "trace_processor" "%TRACE_PROCESSOR_SHELL%" --httpd "%TARGET_TRACE%"
 
-    python "%GOOGLE_OPEN_TRACE_FILE%" -i "%TARGET_TRACE%"
+    timeout /t 3 >nul
+
+    start "" "https://ui.perfetto.dev"
     exit /b 0
 
 :do_shell

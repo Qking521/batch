@@ -32,7 +32,7 @@ show_log_info() {
 子系统不待机:26M_off_pct|AP suspend ratio
 
 # 2. 温升模块
-DexOptimizer|Cpu load|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:
+DexOptimizer|dex2oat|Cpu load|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:
 
 # 3. 系统异常与稳定性 (Java Exception、Native Crash、ANR 无响应、Tombstone)
 FATAL EXCEPTION|ANR in|CRASH:|backtrace:|Build fingerprint:|Tombstone
@@ -42,6 +42,9 @@ Skipped [0-9]+ frames|Choreographer|Slow Looper|Slow delivery:|Slow dispatch:|am
 
 # 5. 其它未分类 (屏幕开关事件、关机重启属性、对齐唤醒、传感器常驻)
 screen_toggled|sys.powerctl|AlarmManager: Adjust deliver|sensorservice
+
+# 6. 充电模块
+charger_thread|
 
 EOF
 }

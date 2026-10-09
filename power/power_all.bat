@@ -66,7 +66,7 @@ echo   info                         - Display device info related to power
 echo   eet [policy] [freq]          - EET CPU fixed frequency test
 echo   eet-gen                      - Generate manual EET CPU frequency test scripts
 echo   spm [data_file]              - Parse MediaTek SPM state data
-echo   trace [ui/ui-enhance/sh]     - Perfetto trace collection and analysis
+echo   trace [ui/uix/sh]     - Perfetto trace collection and analysis
 echo   sql [tag/statement] [zip]    - Query power info via SQL from bugreport
 echo   set [res]                    - Power settings and resource management
 echo   pm2bh [csv_file]             - Convert PowerMonitor CSV to Battery Historian format
