@@ -1,1 +1,3 @@
 /OUT
+__pycache__/
+*.pyc

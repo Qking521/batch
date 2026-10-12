@@ -36,7 +36,7 @@ for %%F in ("!param1!") do set "CSV_NAME=%%~nxF"
 pushd "%MODULE_OUT_DIR%"
 
 echo 正在转换中
-python "%PY_SCRIPT%" "!CSV_FULL!" >nul
+python "%PY_SCRIPT%" "!CSV_FULL!"
 set "_ERR=%ERRORLEVEL%"
 
 popd
