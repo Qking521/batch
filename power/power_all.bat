@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 :: ============================================================
 :: Author: WangQiang
 :: Date:   2026-08-25
@@ -158,7 +158,7 @@ if "%param1%"=="" (
     echo [ERROR] Please specify data file path.
     exit /b 1
 )
-python "%SCRIPT_DIR%power_spm.py" "%SPM_CONFIG%" "%param1%"
+python "%SCRIPT_DIR%power_spm.py" "%SPM_CONFIG%" "%param1%" "%model%"
 exit /b %ERRORLEVEL%
 
 :regulator

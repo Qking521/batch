@@ -11,6 +11,8 @@ import re
 import csv
 import sys
 import os
+import json
+from datetime import datetime
 from pathlib import Path
 import pandas as pd
 from openpyxl import Workbook, load_workbook
@@ -22,33 +24,96 @@ from openpyxl.styles import Font
 
 RAW_DATA_PATH = sys.argv[2]          # 原始采集数据文件 (.csv 或 .xlsx)
 CONFIG_PATH = sys.argv[1]             # 模块/网络配置表
+PRODUCT_NAME = sys.argv[3] if len(sys.argv) > 3 else ""  # 产品名（如 ro.product.board），用于区分 module_map 文件
 CONFIG_SHEET = None                     # 配置表要用哪个sheet, None=用第一个
 CONFIG_MODULE_COL = "模块"               # 配置表里"模块"列的表头文字
 CONFIG_NET_COL = "输入网络"               # 配置表里"网络"列的表头文字(带_P后缀)
 
-OUTPUT_FILE_NAME = "功耗汇总表.xlsx"
+_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+_suffix = f"_{PRODUCT_NAME}" if PRODUCT_NAME else ""
+OUTPUT_FILE_NAME = f"功耗汇总表{_suffix}_{_ts}.xlsx"
 
 TEST_SHEET_NAME = "测试数据"
 CONV_SHEET_NAME = "功耗折算表"
 SUMMARY_SHEET_NAME = "功耗汇总表"
 
-# Sub-Module -> Module大类映射，没写到的一律归入 Others，不要瞎猜
-MODULE_MAP = {
-    "CPU": "1_BB",
-    "DDR": "2_MEMORY", "UFS": "2_MEMORY", "SD": "2_MEMORY",
-    "OLED": "3_LCM",
-    "MAIN CAM": "5_CAMERA", "FRONT CAM": "5_CAMERA", "WIDE 8M": "5_CAMERA", "FLASH": "5_CAMERA",
-    "WCN": "8_WIFI_NFC_BT", "NFC": "8_WIFI_NFC_BT",
-    "SIM": "10_SIM_T_MOTOR", "TP": "10_SIM_T_MOTOR", "VIB": "10_SIM_T_MOTOR",
-}
-MODULE_ORDER = ["1_BB", "2_MEMORY", "3_LCM", "5_CAMERA", "8_WIFI_NFC_BT", "10_SIM_T_MOTOR", "Others"]
-MODULE_LABELS = {
-    "1_BB": "CPU", "2_MEMORY": "DDR", "3_LCM": "屏幕",
-    "5_CAMERA": "camera", "8_WIFI_NFC_BT": "WCN", "10_SIM_T_MOTOR": "SIM",
-}
+# module_map.json 的文件名（放在 CONFIG_PATH 同级目录），带 product 名前缀
+# 格式：{PRODUCT_NAME}_module_map.json，无 product 名时退化为 module_map.json
+MODULE_MAP_FILE = f"{PRODUCT_NAME}_module_map.json" if PRODUCT_NAME else "module_map.json"
 
 # 单个Sub-Module电流超过这个阈值(mA)就提示可能是异常数据，不代表一定错，仅供人工复核
 ANOMALY_THRESHOLD_MA = 1000
+
+# ============================================================
+# MODULE_MAP 加载 / 自动生成
+#
+# module_map.json 格式：
+# {
+#   "Sub-Module名": { "group": "归属大类名", "label": "显示标签" },
+#   ...
+# }
+# group 默认等于 Sub-Module 名，用户可手动修改实现归类。
+# label 默认为空，可填写汇总表中该大类的显示名称。
+# ============================================================
+
+def _module_map_path(config_path):
+    """返回 module_map.json 的绝对路径（CONFIG_PATH 同级目录）"""
+    return Path(config_path).parent / MODULE_MAP_FILE
+
+
+def _generate_module_map(config_path):
+    """
+    从 CONFIG_PATH 的 CONFIG_MODULE_COL 列读取所有模块名，
+    按字母排序、去重，生成默认 module_map（group=key, label=""），
+    保存到 CONFIG_PATH 同级目录，并返回字典。
+    """
+    cfg_wb = load_workbook(config_path, data_only=True)
+    cfg = cfg_wb[CONFIG_SHEET] if CONFIG_SHEET else cfg_wb[cfg_wb.sheetnames[0]]
+
+    # 找到 CONFIG_MODULE_COL 所在列
+    mod_col = None
+    for c in range(1, cfg.max_column + 1):
+        if cfg.cell(row=1, column=c).value == CONFIG_MODULE_COL:
+            mod_col = c
+            break
+    if mod_col is None:
+        raise ValueError(f"配置表里没找到列 '{CONFIG_MODULE_COL}'，请检查表头文字是否一致")
+
+    # 读取所有模块名，去除空值，去重，按字母排序
+    names = set()
+    for r in range(2, cfg.max_row + 1):
+        val = cfg.cell(row=r, column=mod_col).value
+        if val is not None:
+            names.add(str(val).strip())
+    sorted_names = sorted(names, key=lambda x: x.upper())
+
+    module_map = {name: {"group": name, "label": ""} for name in sorted_names}
+
+    # 写入 JSON 文件
+    out_path = _module_map_path(config_path)
+    with open(out_path, "w", encoding="utf-8") as f:
+        json.dump(module_map, f, ensure_ascii=False, indent=4)
+    print(f"[MODULE_MAP] 已从配置表自动生成并保存到：{out_path}")
+    print(f"[MODULE_MAP] 共 {len(module_map)} 个 Sub-Module，可手动编辑 group/label 实现归类")
+    return module_map
+
+
+def load_module_map(config_path):
+    """
+    优先从 CONFIG_PATH 同级目录的 module_map.json 加载；
+    若文件不存在，则自动从配置表生成并保存。
+    """
+    map_path = _module_map_path(config_path)
+    if map_path.exists():
+        with open(map_path, encoding="utf-8") as f:
+            module_map = json.load(f)
+        print(f"[MODULE_MAP] 已从文件加载：{map_path}，共 {len(module_map)} 项")
+        return module_map
+    else:
+        print(f"[MODULE_MAP] 未找到 {map_path}，自动从配置表生成...")
+        return _generate_module_map(config_path)
+
+
 
 # ============================================================
 # 第一步：读原始数据，自动定位表头行，算出每列平均值
@@ -155,28 +220,57 @@ def build_conversion_table(config_path, averages):
 # 第三步：按 MODULE_MAP 归类汇总，Others兜底
 # ============================================================
 
-def build_summary_table(conv_df):
-    sub_to_module = conv_df["Sub-Module"].map(MODULE_MAP).fillna("Others")
-    grouped = conv_df.groupby(sub_to_module)["Iavg(mA)"].sum()
+def build_summary_table(conv_df, module_map):
+    """
+    按 module_map 把 Sub-Module 映射到 group（大类），对 Pavg(mW) 分组求和后除以 4V，
+    得到每个大类折算到电池侧的等效电流（4V Bat Current(mA)）。
+    module_map 格式: { "Sub-Module名": {"group": "大类名", "label": "显示标签"} }
+    没有映射到的 Sub-Module 自动归入 "Others"。
+    """
+    # Sub-Module -> group
+    def _to_group(sub):
+        entry = module_map.get(sub)
+        return entry["group"] if entry and entry.get("group") else "Others"
 
-    total = conv_df["Iavg(mA)"].sum()
-    rows_out = [{"Module": "0_BAT", "4V Bat Current(mA)": total, "Label": "电池"}]
+    conv_df = conv_df.copy()
+    conv_df["Group"] = conv_df["Sub-Module"].map(_to_group)
 
-    categorized_sum = 0.0
-    for mod in MODULE_ORDER:
-        if mod == "Others":
-            continue
-        val = grouped.get(mod, 0.0)
-        categorized_sum += val
-        rows_out.append({"Module": mod, "4V Bat Current(mA)": val, "Label": MODULE_LABELS.get(mod, "")})
+    # 按 group 对 Pavg(mW) 求和，再除以 4V，得到 4V 电池侧等效电流(mA)
+    # 公式：I(mA) = P(mW) / V(V) = P(mW) / 4
+    grouped_p = conv_df.groupby("Group")["Pavg(mW)"].sum()
+    grouped_i = grouped_p / 4.0  # mW / 4V = mA
 
-    others_val = total - categorized_sum  # Others = 总合计 - 已归类项，不手动枚举剩余Sub-Module
-    rows_out.append({"Module": "Others", "4V Bat Current(mA)": others_val, "Label": ""})
+    total_p = conv_df["Pavg(mW)"].sum()
+    total_i = total_p / 4.0  # mW / 4V = mA
+
+
+    rows_out = [{"Module": "BAT", "4V Bat Current(mA)": round(total_i, 4), "Label": "电池"}]
+
+    # 按 group 字母顺序输出（Others 最后）
+    sorted_groups = sorted(g for g in grouped_i.index if g != "Others")
+    for grp in sorted_groups:
+        label = next(
+            (v["label"] for v in module_map.values() if v.get("group") == grp),
+            ""
+        )
+        rows_out.append({
+            "Module": grp,
+            "4V Bat Current(mA)": round(grouped_i[grp], 4),
+            "Label": label
+        })
+
+    others_i = grouped_i.get("Others", 0.0)
+    rows_out.append({"Module": "Others", "4V Bat Current(mA)": round(others_i, 4), "Label": ""})
 
     summary_df = pd.DataFrame(rows_out)
-    print(f"[功耗汇总表] 0_BAT={total:.2f}mA, 分类相加={categorized_sum + others_val:.2f}mA "
-          f"({'一致 ✓' if abs(total - (categorized_sum + others_val)) < 1e-6 else '不一致 ✗'})")
+    # groups+Others 之和应等于 BAT（允许四舍五入带来的微小误差，通常 < 0.01mA）
+    groups_sum = summary_df.loc[summary_df["Module"] != "BAT", "4V Bat Current(mA)"].sum()
+    diff = abs(groups_sum - total_i)
+    is_consistent = diff < 0.01  # 精度容差设为 0.01mA
+    print(f"[功耗汇总表] BAT={total_i:.2f}mA (ΣPavg/{4.0}V) | 分类累加={groups_sum:.2f}mA  "
+          f"({'一致 ✓' if is_consistent else f'不一致 ✗ (差异: {diff:.4f}mA)'})")
     return summary_df
+
 
 
 # ============================================================
@@ -236,7 +330,8 @@ def write_output(header, df_raw, conv_df, summary_df, output_file):
 def main():
     header, averages, df_raw = load_raw_averages(RAW_DATA_PATH)
     conv_df = build_conversion_table(CONFIG_PATH, averages)
-    summary_df = build_summary_table(conv_df)
+    module_map = load_module_map(CONFIG_PATH)
+    summary_df = build_summary_table(conv_df, module_map)
     check_anomalies(conv_df)
     SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
     BASE_DIR = os.path.dirname(SCRIPT_DIR)

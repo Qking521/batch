@@ -1,0 +1,154 @@
+{
+    "2G PA": {
+        "group": "2G PA",
+        "label": "PA"
+    },
+    "A+G SENSOR": {
+        "group": "A+G SENSOR",
+        "label": "传感器"
+    },
+    "ALS+PS": {
+        "group": "ALS+PS",
+        "label": "传感器"
+    },
+    "APT": {
+        "group": "APT",
+        "label": "RF"
+    },
+    "BOB": {
+        "group": "BOB",
+        "label": "BOB"
+    },
+    "CODEC": {
+        "group": "CODEC",
+        "label": "编解码"
+    },
+    "CPU": {
+        "group": "CPU",
+        "label": "SOC"
+    },
+    "DDR": {
+        "group": "DDR",
+        "label": "存储"
+    },
+    "FLASH": {
+        "group": "FLASH",
+        "label": "存储"
+    },
+    "Flicker": {
+        "group": "Flicker",
+        "label": "传感器"
+    },
+    "FP": {
+        "group": "FP",
+        "label": "FP"
+    },
+    "FRONT CAM": {
+        "group": "FRONT CAM",
+        "label": "Camera"
+    },
+    "HAC PA": {
+        "group": "HAC PA",
+        "label": "PA"
+    },
+    "MAIN CAM": {
+        "group": "MAIN CAM",
+        "label": "Camera"
+    },
+    "MT6369": {
+        "group": "MT6369",
+        "label": "PMIC"
+    },
+    "MT6685": {
+        "group": "MT6685",
+        "label": ""
+    },
+    "MT6720": {
+        "group": "MT6720",
+        "label": "充电"
+    },
+    "N77 78 79 TRX": {
+        "group": "N77 78 79 TRX",
+        "label": "PMIC"
+    },
+    "NFC": {
+        "group": "NFC",
+        "label": "NFC"
+    },
+    "OLED": {
+        "group": "OLED",
+        "label": ""
+    },
+    "PMIC": {
+        "group": "PMIC",
+        "label": "PMIC"
+    },
+    "PMIC_NOP": {
+        "group": "PMIC_NOP",
+        "label": "PMIC"
+    },
+    "PRX & DRX": {
+        "group": "PRX & DRX",
+        "label": "RF"
+    },
+    "REV": {
+        "group": "REV",
+        "label": "RF"
+    },
+    "RF OTHERS": {
+        "group": "RF OTHERS",
+        "label": "RF"
+    },
+    "SAR": {
+        "group": "SAR",
+        "label": "SAR"
+    },
+    "SD": {
+        "group": "SD",
+        "label": "存储"
+    },
+    "SIM": {
+        "group": "SIM",
+        "label": "SIM"
+    },
+    "SPK": {
+        "group": "SPK",
+        "label": "SPK"
+    },
+    "SUB": {
+        "group": "SUB",
+        "label": ""
+    },
+    "TP": {
+        "group": "TP",
+        "label": "TP"
+    },
+    "Transceiver": {
+        "group": "Transceiver",
+        "label": "Transceiver"
+    },
+    "TX0_PA": {
+        "group": "TX0_PA",
+        "label": "PA"
+    },
+    "TX1_PA": {
+        "group": "TX1_PA",
+        "label": "PA"
+    },
+    "UFS": {
+        "group": "UFS",
+        "label": "存储"
+    },
+    "VIB": {
+        "group": "VIB",
+        "label": ""
+    },
+    "WCN": {
+        "group": "WCN",
+        "label": "短距"
+    },
+    "WIDE 8M": {
+        "group": "WIDE 8M",
+        "label": "Camera"
+    }
+}
