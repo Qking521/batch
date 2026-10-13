@@ -24,3 +24,15 @@ done
 getprop | grep -i "$PATTERN" | while IFS= read -r line; do
     echo "[prop] $line"
 done
+
+# ---- 搜索 moto扩展的settings 三库 ----
+if [ "$(getprop ro.product.brand)" = "motorola" ]; then
+    for db in secure global system; do
+        content query --uri "content://com.motorola.android.providers.settings/$db" 2>/dev/null \
+            | sed -n 's/.*name=\([^,]*\), value=\(.*\)$/\1=\2/p' \
+            | grep -i "$PATTERN" \
+            | while IFS= read -r line; do
+                echo "[moto_$db] $line"
+            done
+    done
+fi
