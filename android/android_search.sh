@@ -36,3 +36,21 @@ if [ "$(getprop ro.product.brand)" = "motorola" ]; then
             done
     done
 fi
+
+# ---- 查找resource信息 ----
+names=$(strings /system/framework/framework-res.apk 2>/dev/null \
+    | grep -i "$PATTERN" \
+    | grep -v '/' \
+    | sed 's/^[^A-Za-z0-9_.]*//' \
+    | grep -E '^[A-Za-z_][A-Za-z0-9_.]*$' \
+    | sort -u)
+
+if [ ! -z "$names" ]; then
+    echo "$names" | while IFS= read -r name; do
+        for type in string bool integer; do
+            if val=$(cmd overlay lookup android "android:$type/$name" 2>/dev/null); then
+                echo "[res_$type] $name = $val"
+            fi
+        done
+    done
+fi
