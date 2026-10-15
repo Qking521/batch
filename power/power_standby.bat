@@ -102,4 +102,6 @@ exit /b 0
 
     echo [INFO] 正在恢复待机原始配置...
     adb shell "sh -s restore" < "%SH_SCRIPT%"
+    :: 恢复后同时执行删除文件操作，下一次重新生成
+    del /f /q !LOCAL_CONF!
     exit /b %ERRORLEVEL%
