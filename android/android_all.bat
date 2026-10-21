@@ -53,6 +53,7 @@ if /i "%cmd%"=="adbd"      goto :adb_helper
 if /i "%cmd%"=="qs"        goto :quick_search
 if /i "%cmd%"=="watch"     goto :watch_changes
 if /i "%cmd%"=="bind"      goto :bind
+if /i "%cmd%"=="st"        goto :sync_time
 
 echo [ERROR] Unknown command: %cmd%
 goto :usage
@@ -81,6 +82,7 @@ echo   skip                     - Skip setup wizard
 echo   install [toolname]       - Install perf / thermal / power apk tools
 echo   adbd [category/keyword]  - ADB helper command dictionary
 echo   qs [category]            - Quick raw commands ^& log keywords (log/therm/perf/power/sys/all)
+echo   sync_time [timze zone]   - sync pc time to device via adb
 echo   -h / help                - Show help info
 echo.
 echo Examples:
@@ -302,4 +304,8 @@ exit /b 0
     title %SERIAL%
     echo [OK] ANDROID_SERIAL=%SERIAL%
     endlocal & set "ANDROID_SERIAL=%SERIAL%"
+    exit /b 0
+
+:sync_time
+    call "%SCRIPT_DIR%android_sync_time.bat" %param1%
     exit /b 0
