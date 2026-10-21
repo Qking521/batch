@@ -32,7 +32,8 @@ show_log_info() {
 子系统不待机:26M_off_pct|AP suspend ratio
 
 # 2. 温升模块
-DexOptimizer|dex2oat|Cpu load|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:
+MTK:DexOptimizer|dex2oat|Cpu load|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:
+QCOM:DexOptimizer|dex2oat|Cpu load|Therm ADC|Therm Reading
 
 # 3. 系统异常与稳定性 (Java Exception、Native Crash、ANR 无响应、Tombstone)
 FATAL EXCEPTION|ANR in|CRASH:|backtrace:|Build fingerprint:|Tombstone
@@ -41,7 +42,7 @@ FATAL EXCEPTION|ANR in|CRASH:|backtrace:|Build fingerprint:|Tombstone
 Skipped [0-9]+ frames|Choreographer|Slow Looper|Slow delivery:|Slow dispatch:|am_anr
 
 # 5. 其它未分类 (屏幕开关事件、关机重启属性、对齐唤醒、传感器常驻)
-screen_toggled|sys.powerctl|AlarmManager: Adjust deliver|sensorservice
+screen_toggled|sys.powerctl|AlarmManager: Adjust deliver|sensorservice|Trustonic TEE
 
 # 6. 充电模块
 charger_thread|
@@ -144,6 +145,7 @@ adb shell "dumpsys window | grep mCurrentFocus"
 
 # 2. 查看屏幕显示状态 (Display State)
 adb shell "dumpsys display | grep mScreenState"
+设置屏幕亮度: adb shell settings put system screen_brightness  92
 
 # 3. 查看电源休眠状态 (Wakefulness)
 adb shell "dumpsys power | grep 'mWakefulness='"
@@ -152,6 +154,7 @@ adb shell "dumpsys power | grep 'mWakefulness='"
 60Hz：adb shell "service call SurfaceFlinger 1035 i32 2 >/dev/null"
 90Hz：adb shell "service call SurfaceFlinger 1035 i32 1 >/dev/null"
 120Hz：adb shell "service call SurfaceFlinger 1035 i32 0 >/dev/null"
+
 EOF
 }
 

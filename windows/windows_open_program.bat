@@ -39,12 +39,12 @@ echo.
 exit /b
 
 :long_trace_record
-    echo "不管是程序还是文件都不能包含任何中文字符"
+    echo "不管是程序还是文件都不能包含任何中文和空格字符", convert mode解析的是trace开头.dat后缀的文件
     set "PROGRAM_PATH=%TOOLS_ROOT_PATH%\LTR2_Lite\LTR2.exe"
     goto launch
 
 :long_trace_record_advance
-    echo "不管是程序还是文件都不能包含任何中文字符"
+    echo "不管是程序还是文件都不能包含任何中文和空格字符"
     set "PROGRAM_PATH=%TOOLS_ROOT_PATH%\LTR2_Lite_advance\LTR2.exe"
     goto launch
 

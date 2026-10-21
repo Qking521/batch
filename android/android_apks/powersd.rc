@@ -1,0 +1,10 @@
+service powersd /system/bin/powersd
+    # root + su domain: the Mali GED nodes (/sys/kernel/ged/hal/*, type
+    # sysfs_ged) are readable only by the su domain (the shell domain is
+    # denied), so the daemon runs as root in su to dump them for the GPU
+    # card. su also writes /data/local/tmp and runs dumpsys, covering the
+    # sensor dump as well — replacing the earlier shell-domain setup.
+    user root
+    group shell
+    class main
+    seclabel u:r:su:s0

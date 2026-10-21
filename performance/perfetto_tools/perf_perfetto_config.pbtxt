@@ -110,3 +110,10 @@ data_sources: {
         }
     }
 }
+
+# 启用 FrameTimeline
+data_sources {
+    config {
+        name: "android.surfaceflinger.frametimeline"
+    }
+}
