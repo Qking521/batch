@@ -155,6 +155,9 @@ adb shell "dumpsys power | grep 'mWakefulness='"
 90Hz：adb shell "service call SurfaceFlinger 1035 i32 1 >/dev/null"
 120Hz：adb shell "service call SurfaceFlinger 1035 i32 0 >/dev/null"
 
+# 5. sensor操作
+限制：adb shell dumpsys sensorservice restrict .cts.
+使能：adb shell dumpsys sensorservice restrict enable
 EOF
 }
 

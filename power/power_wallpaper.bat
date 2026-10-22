@@ -74,7 +74,7 @@ if not exist "!local_wallpaper!" (
 :: ============================================================
 :push_and_set
 :: ============================================================
-	set "remote_path=/sdcard/!wallpaper!"
+	set "remote_path=/data/local/tmp/!wallpaper!"
 
 	echo [INFO] 正在推送壁纸到设备: !remote_path!
 	adb push "!local_wallpaper!" "!remote_path!" >nul 2>&1

@@ -33,7 +33,7 @@ if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
 :: 5. Command dispatcher
 if /i "%cmd%"=="standby"   goto :standby
 if /i "%cmd%"=="ps"        goto :power_supply
-if /i "%cmd%"=="wallpaper" goto :wallpaper
+if /i "%cmd%"=="wp"        goto :wallpaper
 if /i "%cmd%"=="profile"   goto :power_profile
 if /i "%cmd%"=="reset"     goto :reset
 if /i "%cmd%"=="wl"        goto :wakelock
