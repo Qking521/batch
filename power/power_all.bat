@@ -55,7 +55,7 @@ echo.
 echo Usage: power [command] [args...]
 echo.
 echo Available commands:
-echo   standby                      - Power base current settings
+echo   standby [apply/restore/archive/cmd] - Power base current settings
 echo   ps                           - Show power supply info
 echo   wallpaper [color] [action]   - Create / Set / Preview wallpaper
 echo   profile                      - Display power profile data

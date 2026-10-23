@@ -3,7 +3,7 @@
 # Author: WangQiang
 # Date:   2026-08-06
 # Desc:   Android 待机基准环境配置与恢复脚本
-# Usage:  adb shell "sh -s <apply|restore|get_default>" < power_standby.sh
+# Usage:  adb shell "sh -s <apply|restore|archive|cmd>" < power_standby.sh
 # ============================================================
 
 ACTION="$1"
@@ -12,8 +12,12 @@ ACTION="$1"
 DEVICE_NAME=$(getprop ro.product.device 2>/dev/null | tr -d '\r\n')
 [ -z "$DEVICE_NAME" ] && DEVICE_NAME="unknown"
 
-DEF_DIR="/data/local/tmp/power_archive"
-DEF_FILE="${DEF_DIR}/${DEVICE_NAME}_standby_default.conf"
+ARCHIVE_DIR="/data/local/tmp/power_archive"
+ARCHIVE_FILE="${ARCHIVE_DIR}/${DEVICE_NAME}_standby_default.conf"
+
+# moto 扩展 SettingsProvider URI
+MOTO_SETTINGS_URI="content://com.motorola.android.providers.settings"
+MOTO_ACTIONS_URI="content://com.motorola.actions.settings.provider/actionscontainer"
 
 log() {
     echo "[INFO] $*"
@@ -41,8 +45,7 @@ get_setting() {
     namespace="$1"
     key="$2"
     val=$(settings get "$namespace" "$key" 2>/dev/null)
-    # 处理 null 情况
-    [ "$val" = "null" ] || [ -z "$val" ] && val=""
+    { [ "$val" = "null" ] || [ -z "$val" ]; } && val=""
     echo "$val"
 }
 
@@ -51,8 +54,7 @@ run_moto_setting() {
     namespace="$1"
     key="$2"
     value="$3"
-    content="content://com.motorola.android.providers.settings"
-    content call --uri $content/$namespace --method PUT_$namespace --arg $key --extra value:s:$value --extra _user:i:0 >/dev/null 2>&1
+    content call --uri "$MOTO_SETTINGS_URI/$namespace" --method "PUT_$namespace" --arg "$key" --extra "value:s:$value" --extra _user:i:0 >/dev/null 2>&1
     if [ $? -eq 0 ]; then
         log "moto settings $namespace $key = $value"
     else
@@ -65,10 +67,8 @@ get_moto_setting() {
     namespace="$1"
     key="$2"
     def_val="$3"
-    content="content://com.motorola.android.providers.settings"
-    val=$(content query --uri $content/$namespace/$key --projection value | sed -n 's/.*value=//p' 2>/dev/null)
-    # 处理 null 情况
-    [ "$val" = "null" ] || [ "$val" = "NULL" ] || [ -z "$val" ] && val="$def_val"
+    val=$(content query --uri "$MOTO_SETTINGS_URI/$namespace/$key" --projection value 2>/dev/null | sed -n 's/.*value=//p')
+    { [ "$val" = "null" ] || [ "$val" = "NULL" ] || [ -z "$val" ]; } && val="$def_val"
     echo "$val"
 }
 
@@ -76,8 +76,7 @@ get_moto_setting() {
 run_moto_actions_setting() {
     key="$1"
     value="$2"
-    content="content://com.motorola.actions.settings.provider/actionscontainer"
-    content update --uri $content/$key --bind ENABLED:b:$value 2>/dev/null
+    content update --uri "$MOTO_ACTIONS_URI/$key" --bind ENABLED:b:$value 2>/dev/null
     if [ $? -eq 0 ]; then
         log "moto actions settings $key = $value"
     else
@@ -85,14 +84,11 @@ run_moto_actions_setting() {
     fi
 }
 
-# 写入 Moto Actions Settings 并打印结果
+# 读取 Moto Actions Settings 值
 get_moto_actions_setting() {
     key="$1"
-    value="$2"
-    content="content://com.motorola.actions.settings.provider/actionscontainer"
-    val=$(content query --uri $content/$key --projection VALUE | sed -n 's/.*VALUE=//p' 2>/dev/null)
-    # 处理 null 情况
-    [ "$val" = "null" ] || [ -z "$val" ] && val=""
+    val=$(content query --uri "$MOTO_ACTIONS_URI/$key" --projection VALUE 2>/dev/null | sed -n 's/.*VALUE=//p')
+    { [ "$val" = "null" ] || [ -z "$val" ]; } && val=""
     [ "$val" = "1" ] && val=true || val=false
     echo "$val"
 }
@@ -107,70 +103,101 @@ run_svc() {
     fi
 }
 
+# ---- 配置键清单（单一数据源）----
+# 每行格式: namespace|key|default
+# 新增/删除配置只需在此清单增减一行，get / 存档 / restore 三处自动同步
+settings_keys() {
+    cat <<'EOF'
+global|airplane_mode_on|0
+secure|location_mode|0
+system|accelerometer_rotation|1
+system|screen_brightness_mode|1
+system|screen_brightness|102
+system|screen_off_timeout|60000
+global|wifi_on|0
+global|bluetooth_on|0
+global|nfc_on|0
+EOF
+}
+
+# moto 扩展 settings: namespace|key|default
+moto_settings_keys() {
+    cat <<'EOF'
+secure|doze_always_on|0
+secure|is_tap_to_wake_enable|0
+secure|lift_phone_to_wake|1
+global|put_display_to_sleep|0
+EOF
+}
+
+# moto actions: key|default
+moto_actions_keys() {
+    cat <<'EOF'
+split_screen|false
+quick_screenshot|false
+tap_tap|false
+quick_capture|false
+flash_on_chop|false
+lift_to_silence|false
+flip_to_mute|false
+EOF
+}
+
+# 从配置文件读取指定键的值
+conf_get() {
+    grep "^$2=" "$1" 2>/dev/null | cut -d'=' -f2-
+}
+
+# 生成所有配置项的完整 adb 命令清单（数字默认 0，bool 默认 false）
+do_cmd() {
+    log ">>> 生成完整 adb 命令清单（数字默认 0，bool 默认 false）..."
+
+    echo "[SETTINGS]"
+    settings_keys | while IFS='|' read -r ns key def; do
+        echo "adb shell settings put $ns $key 0"
+    done
+
+    echo "[MOTO_SETTINGS]"
+    moto_settings_keys | while IFS='|' read -r ns key def; do
+        echo "adb shell content call --uri $MOTO_SETTINGS_URI/$ns --method PUT_$ns --arg $key --extra value:s:0 --extra _user:i:0"
+    done
+
+    echo "[MOTO_ACTIONS]"
+    moto_actions_keys | while IFS='|' read -r key def; do
+        echo "adb shell content update --uri $MOTO_ACTIONS_URI/$key --bind ENABLED:b:false"
+    done
+}
+
 # 备份系统当前设置到本地 power_archive 目录
-do_get_default() {
+do_archive() {
     log ">>> 开始获取并保存系统默认待机配置 (设备: $DEVICE_NAME)..."
 
-    # 获取 settings 配置
-    air_mode=$(get_setting global airplane_mode_on)
-    loc_mode=$(get_setting secure location_mode)
-    rot_mode=$(get_setting system accelerometer_rotation)
-    bright_mode=$(get_setting system screen_brightness_mode)
-    bright_val=$(get_setting system screen_brightness)
-    timeout_val=$(get_setting system screen_off_timeout)
-    # 原样获取网络/开关原始值
-    wifi_val=$(get_setting global wifi_on)
-    bt_val=$(get_setting global bluetooth_on)
-    nfc_val=$(get_setting global nfc_on)
-    #获取moto setting的值
-    doze_always_on=$(get_moto_setting secure doze_always_on 0)
-    is_tap_to_wake_enable=$(get_moto_setting secure is_tap_to_wake_enable)
-    lift_phone_to_wake=$(get_moto_setting secure lift_phone_to_wake 1)
-    put_display_to_sleep=$(get_moto_setting global put_display_to_sleep)
-    # 获取moto 手势action setting值
-    split_screen=$(get_moto_actions_setting split_screen)
-    quick_screenshot=$(get_moto_actions_setting quick_screenshot)
-    tap_tap=$(get_moto_actions_setting tap_tap)
-    quick_capture=$(get_moto_actions_setting quick_capture)
-    flash_on_chop=$(get_moto_actions_setting flash_on_chop)
-    lift_to_silence=$(get_moto_actions_setting lift_to_silence)
-    flip_to_mute=$(get_moto_actions_setting flip_to_mute)
+    mkdir -p "$ARCHIVE_DIR"
+    : > "$ARCHIVE_FILE"
 
-    # 创建 power_archive 目录
-    mkdir -p "$DEF_DIR"
+    settings_keys | while IFS='|' read -r ns key def; do
+        val=$(get_setting "$ns" "$key")
+        echo "${key}=${val:-${def}}" >> "$ARCHIVE_FILE"
+    done
 
-    # 写入配置文件 (格式: key=value)
-    cat <<EOF > "$DEF_FILE"
-airplane_mode_on=${air_mode:-0}
-location_mode=${loc_mode:-0}
-accelerometer_rotation=${rot_mode:-1}
-screen_brightness_mode=${bright_mode:-1}
-screen_brightness=${bright_val:-102}
-screen_off_timeout=${timeout_val:-60000}
-wifi_on=${wifi_val:-0}
-bluetooth_on=${bt_val:-0}
-nfc_on=${nfc_val:-0}
-doze_always_on=${doze_always_on:-0}
-is_tap_to_wake_enable=${is_tap_to_wake_enable:-0}
-lift_phone_to_wake=${lift_phone_to_wake:-0}
-put_display_to_sleep=${put_display_to_sleep:-0}
-split_screen=${split_screen:-0}
-quick_screenshot=${quick_screenshot:-0}
-tap_tap=${tap_tap:-0}
-quick_capture=${quick_capture:-0}
-flash_on_chop=${flash_on_chop:-0}
-lift_to_silence=${lift_to_silence:-0}
-flip_to_mute=${flip_to_mute:-0}
-EOF
+    moto_settings_keys | while IFS='|' read -r ns key def; do
+        val=$(get_moto_setting "$ns" "$key" "$def")
+        echo "${key}=${val:-${def}}" >> "$ARCHIVE_FILE"
+    done
 
-    if [ -f "$DEF_FILE" ]; then
-        log "默认配置已成功保存至 $DEF_FILE:"
-        cat "$DEF_FILE" | while read -r line; do
+    moto_actions_keys | while IFS='|' read -r key def; do
+        val=$(get_moto_actions_setting "$key")
+        echo "${key}=${val:-${def}}" >> "$ARCHIVE_FILE"
+    done
+
+    if [ -f "$ARCHIVE_FILE" ]; then
+        log "默认配置已成功保存至 $ARCHIVE_FILE:"
+        while IFS= read -r line; do
             log "  $line"
-        done
+        done < "$ARCHIVE_FILE"
         return 0
     else
-        err "保存默认配置失败: $DEF_FILE"
+        err "保存默认配置失败: $ARCHIVE_FILE"
         return 1
     fi
 }
@@ -179,38 +206,41 @@ standby_for_moto() {
     pm disable-user com.motorola.bug2go >/dev/null 2>&1 && \
         log "已禁用 com.motorola.bug2go" || \
         err "禁用 com.motorola.bug2go 失败"
+
+    # moto 扩展 setting 写入：串行 content 命令 Java 冷启动开销大, 改为并发后台执行再统一 wait
     # 关闭息屏显示
-    run_moto_setting secure doze_always_on 0
+    run_moto_setting secure doze_always_on 0 &
     # 关闭双击唤醒
-    run_moto_setting secure is_tap_to_wake_enable 0
+    run_moto_setting secure is_tap_to_wake_enable 0 &
     # 关闭抬起唤醒
-    run_moto_setting secure lift_phone_to_wake 0
+    run_moto_setting secure lift_phone_to_wake 0 &
     # 关闭双击息屏
-    run_moto_setting global put_display_to_sleep 0
+    run_moto_setting global put_display_to_sleep 0 &
     # 关闭手势-三指上滑分屏
-    run_moto_actions_setting split_screen false
+    run_moto_actions_setting split_screen false &
     # 关闭手势-三指上滑截图
-    run_moto_actions_setting quick_screenshot false
+    run_moto_actions_setting quick_screenshot false &
     # 关闭手势-双击背部
-    run_moto_actions_setting tap_tap false
+    run_moto_actions_setting tap_tap false &
     # 关闭手势-转腕开相机
-    run_moto_actions_setting quick_capture false
+    run_moto_actions_setting quick_capture false &
     # 关闭手势-快速手电筒
-    run_moto_actions_setting flash_on_chop false
+    run_moto_actions_setting flash_on_chop false &
     # 关闭手势-拿起解锁 当前先忽略
     # run_moto_actions_setting lift_to_unlock false
     # 关闭手势-拿起静音
-    run_moto_actions_setting lift_to_silence false
+    run_moto_actions_setting lift_to_silence false &
     # 关闭手势-翻转免打扰
-    run_moto_actions_setting flip_to_mute false
+    run_moto_actions_setting flip_to_mute false &
+    wait
 }
 
 # 配置待机基准环境
 do_standby() {
     # 如果默认配置文件不存在，先自动执行获取默认配置操作
-    if [ ! -f "$DEF_FILE" ]; then
-        log "在 $DEF_DIR 中未检测到设备 $DEVICE_NAME 的默认配置文件，先执行获取默认配置操作..."
-        do_get_default
+    if [ ! -f "$ARCHIVE_FILE" ]; then
+        log "在 $ARCHIVE_DIR 中未检测到设备 $DEVICE_NAME 的默认配置文件，先执行获取默认配置操作..."
+        do_archive
     fi
     log ">>> 开始配置待机基准环境 (设备: $DEVICE_NAME)..."
     # 开启飞行模式
@@ -247,111 +277,63 @@ do_standby() {
     log ">>> 待机基准环境配置完成。"
 }
 
-restore_for_moto() {
-    DEF_FILE=$1
-
-    pm enable com.motorola.bug2go >/dev/null 2>&1 && \
-    log "已重新启用 com.motorola.bug2go"
-
-    doze_always_on=$(grep '^doze_always_on=' "$DEF_FILE" | cut -d'=' -f2)
-    [ -n "$doze_always_on" ] && run_moto_setting secure doze_always_on "$doze_always_on"
-
-    is_tap_to_wake_enable=$(grep '^is_tap_to_wake_enable=' "$DEF_FILE" | cut -d'=' -f2)
-    [ -n "$is_tap_to_wake_enable" ] && run_moto_setting secure is_tap_to_wake_enable "$is_tap_to_wake_enable"
-
-    lift_phone_to_wake=$(grep '^lift_phone_to_wake=' "$DEF_FILE" | cut -d'=' -f2)
-    [ -n "$lift_phone_to_wake" ] && run_moto_setting secure lift_phone_to_wake "$lift_phone_to_wake"
-
-    put_display_to_sleep=$(grep '^put_display_to_sleep=' "$DEF_FILE" | cut -d'=' -f2)
-    [ -n "$put_display_to_sleep" ] && run_moto_setting global put_display_to_sleep "$put_display_to_sleep"
-
-    split_screen=$(grep '^split_screen=' "$DEF_FILE" | cut -d'=' -f2)
-    [ -n "$split_screen" ] && run_moto_actions_setting split_screen "$split_screen"
-
-    quick_screenshot=$(grep '^quick_screenshot=' "$DEF_FILE" | cut -d'=' -f2)
-    [ -n "$quick_screenshot" ] && run_moto_actions_setting quick_screenshot "$quick_screenshot"
-
-    tap_tap=$(grep '^tap_tap=' "$DEF_FILE" | cut -d'=' -f2)
-    [ -n "$tap_tap" ] && run_moto_actions_setting tap_tap "$tap_tap"
-
-    quick_capture=$(grep '^quick_capture=' "$DEF_FILE" | cut -d'=' -f2)
-    [ -n "$quick_capture" ] && run_moto_actions_setting quick_capture "$quick_capture"
-
-    flash_on_chop=$(grep '^flash_on_chop=' "$DEF_FILE" | cut -d'=' -f2)
-    [ -n "$flash_on_chop" ] && run_moto_actions_setting flash_on_chop "$flash_on_chop"
-
-    lift_to_silence=$(grep '^lift_to_silence=' "$DEF_FILE" | cut -d'=' -f2)
-    [ -n "$lift_to_silence" ] && run_moto_actions_setting lift_to_silence "$lift_to_silence"
-
-    flip_to_mute=$(grep '^flip_to_mute=' "$DEF_FILE" | cut -d'=' -f2)
-    [ -n "$flip_to_mute" ] && run_moto_actions_setting flip_to_mute "$flip_to_mute"
-}
-
 # 恢复默认配置
 do_restore() {
     log ">>> 开始恢复默认待机配置 (设备: $DEVICE_NAME)..."
 
-    # 如果恢复时发现没有默认值文件，也先自动做下获取操作
-    if [ ! -f "$DEF_FILE" ]; then
-        log "在 $DEF_DIR 中未检测到设备 $DEVICE_NAME 的默认配置文件，先执行获取默认配置操作..."
+    # 如果恢复时发现没有默认值文件（正常由 bat 层保证 push 基准档）
+    if [ ! -f "$ARCHIVE_FILE" ]; then
+        log "在 $ARCHIVE_DIR 中未检测到设备 $DEVICE_NAME 的默认配置文件..."
     fi
 
-    # 从备份文件读取并恢复配置
-    air_mode=$(grep '^airplane_mode_on=' "$DEF_FILE" | cut -d'=' -f2)
-    loc_mode=$(grep '^location_mode=' "$DEF_FILE" | cut -d'=' -f2)
-    rot_mode=$(grep '^accelerometer_rotation=' "$DEF_FILE" | cut -d'=' -f2)
-    bright_mode=$(grep '^screen_brightness_mode=' "$DEF_FILE" | cut -d'=' -f2)
-    bright_val=$(grep '^screen_brightness=' "$DEF_FILE" | cut -d'=' -f2)
-    timeout_val=$(grep '^screen_off_timeout=' "$DEF_FILE" | cut -d'=' -f2)
-    wifi_on=$(grep '^wifi_on=' "$DEF_FILE" | cut -d'=' -f2)
-    bt_on=$(grep '^bluetooth_on=' "$DEF_FILE" | cut -d'=' -f2)
-    nfc_on=$(grep '^nfc_on=' "$DEF_FILE" | cut -d'=' -f2)
+    # 标准 settings 项恢复
+    settings_keys | while IFS='|' read -r ns key def; do
+        val=$(conf_get "$ARCHIVE_FILE" "$key")
+        [ -z "$val" ] && continue
+        case "$key" in
+            wifi_on|bluetooth_on|nfc_on)
+                if [ "$val" -gt 0 ] 2>/dev/null; then
+                    run_svc "${key%_on}" enable
+                else
+                    run_svc "${key%_on}" disable
+                fi
+                ;;
+            airplane_mode_on)
+                run_setting "$ns" "$key" "$val"
+                [ "$val" = "1" ] && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true >/dev/null 2>&1
+                [ "$val" = "0" ] && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false >/dev/null 2>&1
+                ;;
+            *)
+                run_setting "$ns" "$key" "$val"
+                ;;
+        esac
+    done
 
-    [ -n "$air_mode" ] && run_setting global airplane_mode_on "$air_mode"
-    [ "$air_mode" = "1" ] && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true >/dev/null 2>&1
-    [ "$air_mode" = "0" ] && am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false >/dev/null 2>&1
-
-    [ -n "$loc_mode" ] && run_setting secure location_mode "$loc_mode"
-    [ -n "$rot_mode" ] && run_setting system accelerometer_rotation "$rot_mode"
-    [ -n "$bright_mode" ] && run_setting system screen_brightness_mode "$bright_mode"
-    [ -n "$bright_val" ] && run_setting system screen_brightness "$bright_val"
-    [ -n "$timeout_val" ] && run_setting system screen_off_timeout "$timeout_val"
-
-    # 恢复网络/开关：判断原始保存值是否大于 0
-    if [ -n "$wifi_on" ] && [ "$wifi_on" -gt 0 ] 2>/dev/null; then
-        run_svc wifi enable
-    else
-        run_svc wifi disable
-    fi
-
-    if [ -n "$bt_on" ] && [ "$bt_on" -gt 0 ] 2>/dev/null; then
-        run_svc bluetooth enable
-    else
-        run_svc bluetooth disable
-    fi
-
-    if [ -n "$nfc_on" ] && [ "$nfc_on" -gt 0 ] 2>/dev/null; then
-        run_svc nfc enable
-    else
-        run_svc nfc disable
-    fi
-
-    # 恢复moto的settingProvider值
-        # motorola 机型恢复处理
+    # motorola 机型恢复处理
     brand=$(getprop ro.product.brand)
     if [ "$brand" = "motorola" ]; then
-        restore_for_moto $DEF_FILE
+        pm enable com.motorola.bug2go >/dev/null 2>&1 && \
+            log "已重新启用 com.motorola.bug2go"
+        moto_settings_keys | while IFS='|' read -r ns key def; do
+            val=$(conf_get "$ARCHIVE_FILE" "$key")
+            [ -n "$val" ] && run_moto_setting "$ns" "$key" "$val"
+        done
+        moto_actions_keys | while IFS='|' read -r key def; do
+            val=$(conf_get "$ARCHIVE_FILE" "$key")
+            [ -n "$val" ] && run_moto_actions_setting "$key" "$val"
+        done
     fi
 
     log ">>> 恢复默认待机配置完成。"
 }
 
 case "$ACTION" in
-    standby) do_standby ;;
+    apply)   do_standby ;;
     restore) do_restore ;;
-    default) do_get_default ;;
+    archive) do_archive ;;
+    cmd)     do_cmd ;;
     *)
-    # 默认无参数或未知参数时执行 standby
+    # 默认无参数或未知参数时执行 apply
     do_standby
     ;;
 esac
