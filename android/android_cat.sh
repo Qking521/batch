@@ -26,17 +26,28 @@ do_wakelock() {
     dumpsys power 2>/dev/null | grep -A 10 "Wake Locks:"
 }
 
+# 查看 GPIO 状态
+do_gpio() {
+    echo "===== [GPIO Status] ====="
+    mount -t debugfs debugfs /sys/kernel/debug
+    # legacy cmd: cat /sys/kernel/debug/gpio 2>/dev/null
+    gpiodetect
+    gpioinfo
+}
+
 case "$ACTION" in
     top) do_top ;;
     wl)  do_wakelock ;;
+    gpio) do_gpio ;;
     -h|--help|help)
         echo "Usage:"
         echo "  ad cat top   Show current focus"
         echo "  ad cat wl    Show wake locks"
+        echo "  ad cat gpio  Show GPIO status"
         ;;
     *)
         echo "[ERROR] 未知参数: $ACTION" >&2
-        echo "Usage: ad cat <top|wl>"
+        echo "Usage: ad cat <top|wl|gpio>"
         exit 1
         ;;
 esac
