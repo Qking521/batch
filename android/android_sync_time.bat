@@ -14,10 +14,27 @@ set "timezone=%~1"
 if /i "%~1"=="help" goto :usage
 if /i "%~1"=="-h"   goto :usage
 
-:: 3. 读取电脑本地时间 (PowerShell 提供与系统区域设置无关的稳定格式)
-for /f "delims=" %%i in ('powershell -NoProfile -Command "Get-Date -Format yyyy-MM-dd"') do set "PC_DATE=%%i"
-for /f "delims=" %%i in ('powershell -NoProfile -Command "Get-Date -Format HH:mm:ss"') do set "PC_TIME=%%i"
-for /f "delims=" %%i in ('powershell -NoProfile -Command "Get-Date -Format MMddHHmmyyyy.ss"') do set "SETSTR=%%i"
+:: 3. 读取电脑本地时间 (纯 cmd 原生变量, 不依赖 PowerShell)
+::    日期形如: 周一 2026/10/26 ; 时间形如: 14:05:42.94
+for /f "tokens=2-4 delims=/ " %%a in ("%date%") do (
+    set "PC_YYYY=%%a"
+    set "PC_MM=%%b"
+    set "PC_DD=%%c"
+)
+
+:: 小时可能带前导空格 (如 " 9:05:42.94"), 先替换为 0
+set "T=%time: =0%"
+for /f "tokens=1-4 delims=:." %%a in ("%T%") do (
+    set "PC_HH=%%a"
+    set "PC_MN=%%b"
+    set "PC_SS=%%c"
+    set "PC_MS=%%d"
+)
+
+set "PC_DATE=%PC_YYYY%-%PC_MM%-%PC_DD%"
+set "PC_TIME=%PC_HH%:%PC_MN%:%PC_SS%"
+:: toybox date 写入格式: MMDDhhmm[[CC]YY][.ss]
+set "SETSTR=%PC_MM%%PC_DD%%PC_HH%%PC_MN%%PC_YYYY%.%PC_SS%"
 
 :: 4. 读取手机当前时间
 for /f "delims=" %%i in ('adb shell date') do set "DEV_BEFORE=%%i"
@@ -40,13 +57,21 @@ if errorlevel 1 (
     exit /b 1
 )
 
-:: 7. 可选: 同步时区
+:: 7. 将系统时间写回硬件时钟 RTC, 确保重启后时间依然生效
+adb shell "hwclock -w"
+if errorlevel 1 (
+    echo [WARN] 写 RTC 硬件时钟失败, 重启后时间可能不保持
+) else (
+    echo [OK] 系统时间已写入 RTC 硬件时钟
+)
+
+:: 8. 可选: 同步时区
 if not "%timezone%"=="" (
     adb shell "setprop persist.sys.timezone %timezone%" >nul 2>&1
     echo [INFO] 设备时区已设置为: %timezone%
 )
 
-:: 8. 校验
+:: 9. 校验
 for /f "delims=" %%i in ('adb shell date') do set "DEV_AFTER=%%i"
 echo [OK] 手机 时间(后): %DEV_AFTER%
 exit /b 0

@@ -82,7 +82,7 @@ echo   skip                     - Skip setup wizard
 echo   install [toolname]       - Install perf / thermal / power apk tools
 echo   adbd [category/keyword]  - ADB helper command dictionary
 echo   qs [category]            - Quick raw commands ^& log keywords (log/therm/perf/power/sys/all)
-echo   sync_time [timze zone]   - sync pc time to device via adb
+echo   st [timze zone]          - sync pc time to device via adb
 echo   -h / help                - Show help info
 echo.
 echo Examples:
