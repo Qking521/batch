@@ -37,6 +37,7 @@ if /i "%cmd%"=="wp"        goto :wallpaper
 if /i "%cmd%"=="profile"   goto :power_profile
 if /i "%cmd%"=="reset"     goto :reset
 if /i "%cmd%"=="wl"        goto :wakelock
+if /i "%cmd%"=="cat"       goto :cat
 if /i "%cmd%"=="regu"      goto :regulator
 if /i "%cmd%"=="info"      goto :power_info
 if /i "%cmd%"=="eet"       goto :eet_test
@@ -61,6 +62,7 @@ echo   wallpaper [color] [action]   - Create / Set / Preview wallpaper
 echo   profile                      - Display power profile data
 echo   reset                        - Reset battery stats and clear logs
 echo   wakelock [set/unset/dump]    - Manage kernel/framework wake locks
+echo   cat [wl/gpio/ws/irq]         - Show wake locks / GPIO / save wakeup sources / interrupts
 echo   regu                         - Show regulator information
 echo   info                         - Display device info related to power
 echo   eet [policy] [freq]          - EET CPU fixed frequency test
@@ -130,6 +132,32 @@ if not exist "%SH_SCRIPT%" (
     exit /b 1
 )
 adb shell "sh -s %param1%" < "%SH_SCRIPT%"
+exit /b %ERRORLEVEL%
+
+:cat
+set "SH_SCRIPT=%SCRIPT_DIR%power_cat.sh"
+if not exist "%SH_SCRIPT%" (
+    echo [ERROR] Script not found: %SH_SCRIPT%
+    exit /b 1
+)
+:: 规范化 help 参数：-h/--help 以 - 开头会被 sh 当作自身选项吞掉，统一映射为 help
+set "CAT_ACTION=%param1%"
+if /i "%CAT_ACTION%"=="-h"     set "CAT_ACTION=help"
+if /i "%CAT_ACTION%"=="--help" set "CAT_ACTION=help"
+
+:: ws 落盘为 CSV，irq 解析为 xlsx 到 out 目录并自动打开，其余直显
+if /i "%CAT_ACTION%"=="ws" (
+    adb shell "sh -s ws" < "%SH_SCRIPT%" > "%MODULE_OUT_DIR%\wakeup_sources_%FORMAT_TIME%.csv"
+    echo [OK] wakeup sources saved: %MODULE_OUT_DIR%\wakeup_sources_%FORMAT_TIME%.csv
+    start "" "%MODULE_OUT_DIR%\wakeup_sources_%FORMAT_TIME%.csv"
+) else if /i "%CAT_ACTION%"=="irq" (
+    adb shell cat /proc/interrupts > "%MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.txt"
+    python "%SCRIPT_DIR%power_cat_parse.py" irq "%MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.txt" "%MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.xlsx"
+    echo [OK] interrupts saved: %MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.xlsx
+    start "" "%MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.xlsx"
+) else (
+    adb shell "sh -s %CAT_ACTION%" < "%SH_SCRIPT%"
+)
 exit /b %ERRORLEVEL%
 
 

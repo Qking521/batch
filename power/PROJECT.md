@@ -56,6 +56,59 @@ git config core.autocrlf true
 
 ---
 
+## [规则-002] SH 脚本必须把 usage 独立成函数，且无参数时调用 usage
+
+### 问题描述
+
+`.sh` 脚本（经 `adb shell "sh -s <args>" < xxx.sh` 调用）里若 help/usage 文本直接内联在
+`case` 分支中，容易重复、遗漏，且调用方传入 `-h/--help` 时行为不一致。
+
+### 规范要求
+
+1. **usage 必须独立成函数**：用 `usage() { ... }` 定义，内容统一打印用法与示例。
+2. **无参数（空串）必须进 usage**：`case "$ACTION" in ... "") usage ;;`。
+3. **`-h/--help` 也进 usage**：`case` 分支里 `-h|--help|help|usage|"") usage ;;`。
+4. **未知参数**：打印错误到 stderr 后仍调用 usage 并 `exit 1`。
+
+### 参考模板
+
+```sh
+ACTION="$1"
+
+usage() {
+    echo "Usage:"
+    echo "  power cat wl     Show wake locks"
+    echo "  power cat gpio   Show GPIO status"
+}
+
+case "$ACTION" in
+    wl)   do_wakelock ;;
+    gpio) do_gpio ;;
+    -h|--help|help|usage|"")
+        usage
+        ;;
+    *)
+        echo "[ERROR] 未知参数: $ACTION" >&2
+        usage
+        exit 1
+        ;;
+esac
+```
+
+### 为什么 `-h` 不能直接传进 sh
+
+`adb shell "sh -s -h"` 里 `-h` 以 `-` 开头，会被设备上的 sh（toybox）当作 sh 自身的选项吞掉，
+导致脚本 `$1` 为空。**必须**在 bat 层先把 `-h/--help` 规范化为 `help`（不含 `-`）再传给 sh：
+
+```bat
+set "CAT_ACTION=%param1%"
+if /i "%CAT_ACTION%"=="-h"     set "CAT_ACTION=help"
+if /i "%CAT_ACTION%"=="--help" set "CAT_ACTION=help"
+adb shell "sh -s %CAT_ACTION%" < "%SH_SCRIPT%"
+```
+
+---
+
 ## 目录结构
 
 ```
