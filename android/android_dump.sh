@@ -50,7 +50,28 @@ do_dump() {
         exit 1
     fi
 
+    # SF 特殊处理：dump 前设置，dump 后恢复
+    restore_enforce=0
+    case "$service" in
+        SurfaceFlinger)
+            setprop vendor.debug.bq.dump "@surface"
+            if [ "$(cat /sys/fs/selinux/enforce 2>/dev/null)" = "1" ]; then
+                setenforce 0
+                restore_enforce=1
+            fi
+            ;;
+    esac
+
     dumpsys "$service" "$@"
+
+    case "$service" in
+        SurfaceFlinger)
+            setprop vendor.debug.bq.dump ""
+            if [ "$restore_enforce" = "1" ]; then
+                setenforce 1
+            fi
+            ;;
+    esac
 }
 
 case "$ACTION" in

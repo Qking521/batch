@@ -24,8 +24,8 @@ if /i "%cmd%"=="" goto :usage
 if /i "%cmd%"=="-h" goto :usage
 if /i "%cmd%"=="help" goto :usage
 if /i "%cmd%"=="watch" goto watch
-if /i "%cmd%"=="sf" goto surface_flinger
 if /i "%cmd%"=="trace" goto trace
+if /i "%cmd%"=="cat" goto cat
 if /i "%cmd%"=="cpu" goto cpu
 if /i "%cmd%"=="gpu" goto gpu
 if /i "%cmd%"=="flame" goto flame
@@ -42,8 +42,8 @@ echo 用法: perf ^<命令^> [参数]
 echo.
 echo 命令:
 echo   watch [cpu^|gpu^|all] [interval_sec] - 实时动态监听 CPU/GPU 状态变化 (默认 all 5s)
-echo   sf                               - SurfaceFlinger 性能信息
 echo   trace [cmd/online/cfg/ui/sh]    - Perfetto 性能抓取及打开 Trace
+echo   cat [gov]                       - 查看 CPU governor / 原始命令
 echo   sql [tag/sql] [trace_path]       - 使用 SQL 查询性能 Trace
 echo   cpu [info/freq/max/online/...]   - CPU 调控
 echo   gpu [info/freq/fix-freq/...]     - GPU 调控
@@ -70,13 +70,22 @@ echo   perf flame parse
 echo.
 exit /b 0
 
-:surface_flinger
-    call %SCRIPT_DIR%surface_flinger.bat %2
-    exit /b
-
 :trace
     call %SCRIPT_DIR%perf_traces.bat %*
     exit /b
+
+:cat
+    set "SH_SCRIPT=%SCRIPT_DIR%perf_cat.sh"
+    if not exist "%SH_SCRIPT%" (
+        echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
+        exit /b 1
+    )
+    :: 规范化 help 参数：-h/--help 以 - 开头会被 sh 当作自身选项吞掉，统一映射为 help
+    set "CAT_ACTION=%param1%"
+    if /i "%CAT_ACTION%"=="-h"     set "CAT_ACTION=help"
+    if /i "%CAT_ACTION%"=="--help" set "CAT_ACTION=help"
+    adb shell "sh -s %CAT_ACTION%" < "%SH_SCRIPT%"
+    exit /b %ERRORLEVEL%
 
 :watch
     call %SCRIPT_DIR%perf_watch.bat %param1% %param2%

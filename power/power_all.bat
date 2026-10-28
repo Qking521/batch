@@ -32,13 +32,11 @@ if not exist "%MODULE_OUT_DIR%" mkdir "%MODULE_OUT_DIR%"
 
 :: 5. Command dispatcher
 if /i "%cmd%"=="standby"   goto :standby
-if /i "%cmd%"=="ps"        goto :power_supply
 if /i "%cmd%"=="wp"        goto :wallpaper
 if /i "%cmd%"=="profile"   goto :power_profile
 if /i "%cmd%"=="reset"     goto :reset
 if /i "%cmd%"=="wl"        goto :wakelock
 if /i "%cmd%"=="cat"       goto :cat
-if /i "%cmd%"=="regu"      goto :regulator
 if /i "%cmd%"=="info"      goto :power_info
 if /i "%cmd%"=="eet"       goto :eet_test
 if /i "%cmd%"=="eet-gen"   goto :eet_gen
@@ -57,13 +55,11 @@ echo Usage: power [command] [args...]
 echo.
 echo Available commands:
 echo   standby [apply/restore/archive/cmd] - Power base current settings
-echo   ps                           - Show power supply info
 echo   wallpaper [color] [action]   - Create / Set / Preview wallpaper
 echo   profile                      - Display power profile data
 echo   reset                        - Reset battery stats and clear logs
 echo   wakelock [set/unset/dump]    - Manage kernel/framework wake locks
-echo   cat [wl/gpio/ws/irq]         - Show wake locks / GPIO / save wakeup sources / interrupts
-echo   regu                         - Show regulator information
+echo   cat [wl/gpio/ws/ps/regu/clk/irq] - Show wake locks / GPIO / wakeup sources / power supply / regulator / clock / interrupts
 echo   info                         - Display device info related to power
 echo   eet [policy] [freq]          - EET CPU fixed frequency test
 echo   eet-gen                      - Generate manual EET CPU frequency test scripts
@@ -89,15 +85,6 @@ exit /b 0
 
 :power_info
 set "SH_SCRIPT=%SCRIPT_DIR%power_info.sh"
-if not exist "%SH_SCRIPT%" (
-    echo [ERROR] Script not found: %SH_SCRIPT%
-    exit /b 1
-)
-adb shell "sh -s" < "%SH_SCRIPT%"
-exit /b %ERRORLEVEL%
-
-:power_supply
-set "SH_SCRIPT=%SCRIPT_DIR%power_supply.sh"
 if not exist "%SH_SCRIPT%" (
     echo [ERROR] Script not found: %SH_SCRIPT%
     exit /b 1
@@ -145,11 +132,16 @@ set "CAT_ACTION=%param1%"
 if /i "%CAT_ACTION%"=="-h"     set "CAT_ACTION=help"
 if /i "%CAT_ACTION%"=="--help" set "CAT_ACTION=help"
 
-:: ws 落盘为 CSV，irq 解析为 xlsx 到 out 目录并自动打开，其余直显
+:: ws / clk 落盘为 CSV，irq 解析为 xlsx 到 out 目录并自动打开，其余直显
 if /i "%CAT_ACTION%"=="ws" (
     adb shell "sh -s ws" < "%SH_SCRIPT%" > "%MODULE_OUT_DIR%\wakeup_sources_%FORMAT_TIME%.csv"
     echo [OK] wakeup sources saved: %MODULE_OUT_DIR%\wakeup_sources_%FORMAT_TIME%.csv
     start "" "%MODULE_OUT_DIR%\wakeup_sources_%FORMAT_TIME%.csv"
+) else if /i "%CAT_ACTION%"=="clk" (
+    adb shell "sh -s clk" < "%SH_SCRIPT%" > "%MODULE_OUT_DIR%\clk_summary_%FORMAT_TIME%.txt"
+    python "%SCRIPT_DIR%power_cat_parse.py" clk "%MODULE_OUT_DIR%\clk_summary_%FORMAT_TIME%.txt" "%MODULE_OUT_DIR%\clk_summary_%FORMAT_TIME%.xlsx"
+    echo [OK] clock summary saved: %MODULE_OUT_DIR%\clk_summary_%FORMAT_TIME%.xlsx
+    start "" "%MODULE_OUT_DIR%\clk_summary_%FORMAT_TIME%.xlsx"
 ) else if /i "%CAT_ACTION%"=="irq" (
     adb shell cat /proc/interrupts > "%MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.txt"
     python "%SCRIPT_DIR%power_cat_parse.py" irq "%MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.txt" "%MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.xlsx"
@@ -187,15 +179,6 @@ if "%param1%"=="" (
     exit /b 1
 )
 python "%SCRIPT_DIR%power_spm.py" "%SPM_CONFIG%" "%param1%" "%model%"
-exit /b %ERRORLEVEL%
-
-:regulator
-set "SH_SCRIPT=%SCRIPT_DIR%power_regulator.sh"
-if not exist "%SH_SCRIPT%" (
-    echo [ERROR] Script not found: %SH_SCRIPT%
-    exit /b 1
-)
-adb shell "sh -s" < "%SH_SCRIPT%"
 exit /b %ERRORLEVEL%
 
 :trace

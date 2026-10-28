@@ -86,8 +86,51 @@ def parse_irq(in_path, out_path):
     _write_xlsx(out_path, rows, widths, footer=footer)
 
 
+def parse_clk(in_path, out_path):
+    """解析 /sys/kernel/debug/clk/clk_summary 为 xlsx。
+
+    原始格式为固定列宽文本，共 11 列：
+      clock enable_count prepare_count protect_count rate accuracy phase duty_cycle hardware_enable consumer id
+    clock/consumer/id 可能跨多行（续行只填 consumer/id），解析时合并到同一行。
+    """
+    header = ['时钟名', '启用计数', '准备计数', '保护计数', '频率', '精度',
+              '相位', '占空比', '硬件使能', '消费者', '连接ID']
+    rows = [header]
+
+    with open(in_path, 'r', encoding='utf-8', errors='replace') as f:
+        lines = [ln.rstrip('\n').rstrip('\r') for ln in f]
+
+    # 跳到分隔线之后：主数据行有 11 个空白分隔字段，续行只有 2 个（consumer + id）
+    start = 0
+    for i, ln in enumerate(lines):
+        if ln.strip() and set(ln.strip()) <= {'-'}:
+            start = i + 1
+            break
+
+    data_rows = []
+    for ln in lines[start:]:
+        parts = ln.split()
+        if not parts:
+            continue
+        if len(parts) == 11:
+            # 单个 consumer/id 可能带下划线，保持不变
+            data_rows.append(parts)
+        elif len(parts) == 2 and data_rows:
+            prev = data_rows[-1]
+            if parts[0]:
+                prev[9] = (prev[9] + '; ' + parts[0]).strip('; ')
+            if parts[1]:
+                prev[10] = (prev[10] + '; ' + parts[1]).strip('; ')
+
+    rows.extend(data_rows)
+
+    widths = [26, 10, 10, 10, 14, 10, 10, 10, 10, 34, 30]
+    _write_xlsx(out_path, rows, widths)
+
+
 PARSERS = {
     'irq': parse_irq,
+    'clk': parse_clk,
 }
 
 

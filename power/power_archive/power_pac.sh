@@ -1,5 +1,6 @@
 #!/bin/bash
 #!/usr/bin/env bash
+# chromebook的功耗测试脚本
 set -euo pipefail
 set -u # 即使开启了 strict mode 也能安全运行
 
