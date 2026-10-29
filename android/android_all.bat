@@ -299,12 +299,18 @@ exit /b 0
     )
     adb push "%SH_SCRIPT%" /data/local/tmp/android_watch.sh >nul 2>&1
     adb shell "chmod +x /data/local/tmp/android_watch.sh" >nul 2>&1
-    :: -t: 强制为远程命令分配伪终端 (PTY)。
-    :: 作用:
-    :: 1. 确保在 Windows 终端按 Ctrl+C 时，SIGINT/SIGHUP 中断信号能即时透传至手机端脚本，触发 trap 优雅清理并退出。
-    :: 2. 保证终端支持 ANSI 彩色高亮输出。
-    adb shell -t "sh /data/local/tmp/android_watch.sh %param1%"
-    adb shell "if [ -f /data/local/tmp/.ad_watch.pid ]; then kill -9 $(cat /data/local/tmp/.ad_watch.pid 2>/dev/null) 2>/dev/null; rm -f /data/local/tmp/.ad_watch* 2>/dev/null; fi" >nul 2>&1
+
+    rem 提取除第一个参数(watch)之外的所有模块/间隔参数
+    for /f "tokens=1*" %%a in ("%*") do set "WATCH_ARGS=%%b"
+
+    rem 未指定任何模块/间隔时，默认显示帮助
+    if not defined WATCH_ARGS set "WATCH_ARGS=help"
+
+    rem -t 强制分配伪终端 (PTY)：Ctrl+C 时 SIGINT 能即时透传到手机端，并保留 ANSI 彩色
+    adb shell -t "sh /data/local/tmp/android_watch.sh %WATCH_ARGS%"
+
+    rem 兜底清理：杀掉遗留实例并删除临时文件（正常情况下由手机端 trap 完成）
+    adb shell "if [ -f /data/local/tmp/.ad_watch.pid ]; then kill -9 $(cat /data/local/tmp/.ad_watch.pid 2>/dev/null) 2>/dev/null; fi; rm -f /data/local/tmp/.ad_watch.pid /data/local/tmp/.ad_watch_prev_* /data/local/tmp/.ad_watch_curr_*" >nul 2>&1
     exit /b 0
 
 :bind

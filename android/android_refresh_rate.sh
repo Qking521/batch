@@ -11,10 +11,29 @@ usage() {
   60               设置刷新率为60Hz
   90               设置刷新率为90Hz
   120              设置刷新率为120Hz
+  cmd              打印全部原始 adb 命令
 EOF
     exit 1
 }
  
+# 打印全部原始 adb 命令，每条上方附作用注释
+print_cmd() {
+    echo "# 打开刷新率显示"
+    echo "adb shell service call SurfaceFlinger 1034 i32 1"
+    echo ""
+    echo "# 关闭刷新率显示"
+    echo "adb shell service call SurfaceFlinger 1034 i32 0"
+    echo ""
+    echo "# 设置刷新率为 60Hz"
+    echo "adb shell service call SurfaceFlinger 1035 i32 2"
+    echo ""
+    echo "# 设置刷新率为 90Hz"
+    echo "adb shell service call SurfaceFlinger 1035 i32 1"
+    echo ""
+    echo "# 设置刷新率为 120Hz"
+    echo "adb shell service call SurfaceFlinger 1035 i32 0"
+}
+
 open_refresh_rate_display()     { service call SurfaceFlinger 1034 i32 1 >/dev/null; }
 close_refresh_rate_display()     { service call SurfaceFlinger 1034 i32 0 >/dev/null; }
 fixed_refresh_rate_60()     { service call SurfaceFlinger 1035 i32 2 >/dev/null; }
@@ -31,6 +50,7 @@ route() {
         60)        fixed_refresh_rate_60 ;;
         90)        fixed_refresh_rate_90 ;;
         120)       fixed_refresh_rate_120 ;;
+        cmd)       print_cmd ;;
         ""|-h|--help) usage ;;
         *)          err "未知子命令: '$cmd'"; usage ;;
     esac

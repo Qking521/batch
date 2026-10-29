@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ============================================================
-# Author: WangQiang
+# Author: wangqiang
 # Date:   2026-07-31
 # Desc:   CPU 信息查询与调控工具
 # Usage:  adb shell "sh -s <action> [param1] [param2]" < perf_cpu.sh
@@ -25,9 +25,12 @@
 #   platform                     - 检测当前平台（MTK/Qualcomm/UNISOC/Other）
 # ============================================================
 
-ACTION="$1"
-PARAM1="$2"
-PARAM2="$3"
+# ---- 参数解析 ----
+parse_args() {
+    ACTION="$1"
+    PARAM1="$2"
+    PARAM2="$3"
+}
 
 # ---- 工具函数 ----
 
@@ -139,6 +142,29 @@ unisoc_boost() {
     val="$1"
     node="/sys/module/sprd_cpu_debug/parameters/debug_enable"
     [ -f "$node" ] && write_node "$node" "$val" || echo "[WARN] 未找到 UNISOC boost 节点"
+}
+
+# ---- 帮助信息 ----
+usage() {
+    echo "用法: perf cpu <命令> [参数...]"
+    echo ""
+    echo "可用命令:"
+    echo "  info                          - CPU 总览（大小核、频率、governor）"
+    echo "  freq                          - 各 policy 可用频率列表"
+    echo "  max          [policy]         - 查看各 policy 最大频点（HW Fmax 与上限）"
+    echo "  online                        - 各核 online 状态"
+    echo "  platform                      - 检测芯片平台"
+    echo "  set-online   <cpu_id> <0|1>   - 上下线指定核"
+    echo "  fix-freq     [policy] <khz>   - 定频指定 policy（单参数如 1800000 默认定频所有 policy）"
+    echo "  unfix-freq   [policy]         - 解除定频（无参数默认解除所有 policy）"
+    echo "  fix-freq-all <khz>            - 所有 policy 统一定频"
+    echo "  unfix-all                     - 解除所有 policy 定频"
+    echo "  boost        <0|1>            - CPU boost 开关（平台自适应）"
+    echo "  affinity     <pid> <mask>     - 绑核（taskset hex mask）"
+    echo "  gov          [policy] <gov>   - 切换 governor（单参数默认切换所有 policy）"
+    echo "  gov-all      <gov>            - 所有 policy 统一切换 governor"
+    echo "  cap          [policy] <khz>   - 限制最大频率（单参数如 2400000 默认限制所有 policy）"
+    echo "  uncap        [policy]         - 解除最大频率限制（无参数默认解除所有 policy）"
 }
 
 # ---- 输出 CPU 核心与频率、温度信息总览 ----
@@ -274,36 +300,31 @@ cpu_watch() {
 }
 
 # ============================================================
-# ACTION 分发
+# 各 action 对应的实现函数
 # ============================================================
 
-# 若设置 PERF_LIB_ONLY，仅加载函数定义供外部调用，不执行命令分发
-if [ -z "$PERF_LIB_ONLY" ]; then
-
-case "$ACTION" in
-
 # ---- 平台检测 ----
-platform)
+do_platform() {
     plat=$(detect_platform)
     board=$(getprop ro.product.board 2>/dev/null)
     soc=$(getprop ro.board.platform 2>/dev/null)
     echo "平台:   $plat"
     echo "Board:  $board"
     echo "SoC:    $soc"
-    ;;
+}
 
 # ---- CPU 总览 ----
-info)
+do_info() {
     cpu_info
-    ;;
+}
 
 # ---- 监听 CPU 变化 ----
-watch)
+do_watch() {
     cpu_watch "$PARAM1"
-    ;;
+}
 
 # ---- 频率列表 ----
-freq)
+do_freq() {
     echo "=========================================="
     echo " 各 Policy 可用频率列表"
     echo "=========================================="
@@ -318,10 +339,10 @@ freq)
             echo "    ${f} KHz  (${mhz} MHz)"
         done
     done
-    ;;
+}
 
 # ---- 最大频点信息 ----
-max)
+do_max() {
     raw_policy="$PARAM1"
     if [ -n "$raw_policy" ] && [ "$raw_policy" != "all" ]; then
         policy=$(resolve_policy "$raw_policy")
@@ -371,10 +392,10 @@ max)
         printf '%-10s %-14s %-20s %-20s %-20s %s\n' \
             "$policy" "$affected" "$hw_max_str" "$cur_max_str" "$cur_str" "$throttle"
     done
-    ;;
+}
 
 # ---- online 状态查看 ----
-online)
+do_online() {
     echo "CPU online 状态:"
     for cpu in /sys/devices/system/cpu/cpu[0-9]*; do
         id=${cpu##*/}
@@ -387,10 +408,10 @@ online)
         fi
         echo "  $id $status"
     done
-    ;;
+}
 
 # ---- 上下线指定核 ----
-set-online)
+do_set_online() {
     cpu_id="$PARAM1"
     val="$PARAM2"
     if [ -z "$cpu_id" ] || [ -z "$val" ]; then
@@ -403,10 +424,10 @@ set-online)
         exit 1
     fi
     write_node "$node" "$val"
-    ;;
+}
 
 # ---- 定频指定 policy ----
-fix-freq)
+do_fix_freq() {
     # 单参数直接定频所有 policy (如 fix-freq 1800000)
     is_num=0
     case "$PARAM1" in
@@ -428,7 +449,7 @@ fix-freq)
                 write_node "$pdir/scaling_max_freq" "$freq"
             fi
         done
-        exit 0
+        return 0
     fi
 
     raw_policy="$PARAM1"
@@ -455,10 +476,10 @@ fix-freq)
         write_node "$pdir/scaling_min_freq" "$freq"
         write_node "$pdir/scaling_max_freq" "$freq"
     fi
-    ;;
+}
 
 # ---- 解除定频 ----
-unfix-freq)
+do_unfix_freq() {
     raw_policy="$PARAM1"
     # 无参数或传 all 时解除所有 policy 定频
     if [ -z "$raw_policy" ] || [ "$raw_policy" = "all" ]; then
@@ -470,7 +491,7 @@ unfix-freq)
             write_node "$pdir/scaling_max_freq" "$max"
         done
         echo "[OK] 所有 policy 已解除定频"
-        exit 0
+        return 0
     fi
     policy=$(resolve_policy "$raw_policy")
     if [ -z "$policy" ]; then
@@ -483,10 +504,10 @@ unfix-freq)
     max=$(read_node "$pdir/cpuinfo_max_freq")
     write_node "$pdir/scaling_min_freq" "$min"
     write_node "$pdir/scaling_max_freq" "$max"
-    ;;
+}
 
 # ---- 全部 policy 定频 ----
-fix-freq-all)
+do_fix_freq_all() {
     freq="$PARAM1"
     if [ -z "$freq" ]; then
         echo "[ERROR] 用法: fix-freq-all <freq_khz>  例如: fix-freq-all 1800000"
@@ -503,10 +524,10 @@ fix-freq-all)
             write_node "$pdir/scaling_max_freq" "$freq"
         fi
     done
-    ;;
+}
 
 # ---- 解除所有定频 ----
-unfix-all)
+do_unfix_all() {
     for policy in $(list_policies); do
         pdir="/sys/devices/system/cpu/cpufreq/$policy"
         min=$(read_node "$pdir/cpuinfo_min_freq")
@@ -515,10 +536,10 @@ unfix-all)
         write_node "$pdir/scaling_max_freq" "$max"
     done
     echo "[OK] 所有 policy 已解除定频"
-    ;;
+}
 
 # ---- CPU boost ----
-boost)
+do_boost() {
     val="$PARAM1"
     if [ "$val" != "0" ] && [ "$val" != "1" ]; then
         echo "[ERROR] 用法: boost <0|1>"
@@ -543,10 +564,10 @@ boost)
             [ "$found" = "0" ] && echo "[WARN] 未找到 boost 节点，平台可能不支持"
             ;;
     esac
-    ;;
+}
 
 # ---- 绑核（taskset）----
-affinity)
+do_affinity() {
     pid="$PARAM1"
     mask="$PARAM2"
     if [ -z "$pid" ] || [ -z "$mask" ]; then
@@ -556,10 +577,10 @@ affinity)
         exit 1
     fi
     taskset -p "$mask" "$pid" && echo "[OK] pid $pid 已绑核 mask=0x$mask" || echo "[ERROR] taskset 失败，请检查 pid 和权限"
-    ;;
+}
 
 # ---- 切换 governor ----
-gov)
+do_gov() {
     # 单参数直接切换所有 policy 的 governor (如 gov performance)
     if [ -n "$PARAM1" ] && [ -z "$PARAM2" ]; then
         governor="$PARAM1"
@@ -567,7 +588,7 @@ gov)
             pdir="/sys/devices/system/cpu/cpufreq/$policy"
             write_node "$pdir/scaling_governor" "$governor"
         done
-        exit 0
+        return 0
     fi
 
     raw_policy="$PARAM1"
@@ -589,10 +610,10 @@ gov)
     avail=$(read_node "$pdir/scaling_available_governors")
     echo "可用 governor: $avail"
     write_node "$pdir/scaling_governor" "$governor"
-    ;;
+}
 
 # ---- 全部 policy 切换 governor ----
-gov-all)
+do_gov_all() {
     governor="$PARAM1"
     if [ -z "$governor" ]; then
         echo "[ERROR] 用法: gov-all <governor>"
@@ -602,10 +623,10 @@ gov-all)
         pdir="/sys/devices/system/cpu/cpufreq/$policy"
         write_node "$pdir/scaling_governor" "$governor"
     done
-    ;;
+}
 
 # ---- 限制最大频率（cap）----
-cap)
+do_cap() {
     # 单参数直接限制所有 policy 最大频率 (如 cap 2400000)
     is_num=0
     case "$PARAM1" in
@@ -624,7 +645,7 @@ cap)
             fi
             write_node "$pdir/scaling_max_freq" "$freq"
         done
-        exit 0
+        return 0
     fi
 
     raw_policy="$PARAM1"
@@ -648,10 +669,10 @@ cap)
         write_node "$pdir/scaling_min_freq" "$freq"
     fi
     write_node "$pdir/scaling_max_freq" "$freq"
-    ;;
+}
 
 # ---- 解除最大频率限制 ----
-uncap)
+do_uncap() {
     raw_policy="$PARAM1"
     # 无参数或传 all 时解除所有 policy 限制
     if [ -z "$raw_policy" ] || [ "$raw_policy" = "all" ]; then
@@ -661,7 +682,7 @@ uncap)
             write_node "$pdir/scaling_max_freq" "$max"
         done
         echo "[OK] 所有 policy 已解除最大频率限制"
-        exit 0
+        return 0
     fi
 
     policy=$(resolve_policy "$raw_policy")
@@ -673,52 +694,44 @@ uncap)
     pdir="/sys/devices/system/cpu/cpufreq/$policy"
     max=$(read_node "$pdir/cpuinfo_max_freq")
     write_node "$pdir/scaling_max_freq" "$max"
-    ;;
+}
 
-# ---- 帮助与未知命令 ----
-    ""|-h|help)
-        echo "可用命令:"
-        echo "  info                          - CPU 总览（大小核、频率、governor）"
-        echo "  freq                          - 各 policy 可用频率列表"
-        echo "  max          [policy]         - 查看各 policy 最大频点（HW Fmax 与上限）"
-        echo "  online                        - 各核 online 状态"
-        echo "  platform                      - 检测芯片平台"
-        echo "  set-online   <cpu_id> <0|1>   - 上下线指定核"
-        echo "  fix-freq     [policy] <khz>   - 定频指定 policy（单参数如 1800000 默认定频所有 policy）"
-        echo "  unfix-freq   [policy]         - 解除定频（无参数默认解除所有 policy）"
-        echo "  fix-freq-all <khz>            - 所有 policy 统一定频"
-        echo "  unfix-all                     - 解除所有 policy 定频"
-        echo "  boost        <0|1>            - CPU boost 开关（平台自适应）"
-        echo "  affinity     <pid> <mask>     - 绑核（taskset hex mask）"
-        echo "  gov          [policy] <gov>   - 切换 governor（单参数默认切换所有 policy）"
-        echo "  gov-all      <gov>            - 所有 policy 统一切换 governor"
-        echo "  cap          [policy] <khz>   - 限制最大频率（单参数如 2400000 默认限制所有 policy）"
-        echo "  uncap        [policy]         - 解除最大频率限制（无参数默认解除所有 policy）"
-        exit 0
-        ;;
-    *)
-        echo "[ERROR] 未知命令: $ACTION"
-        echo ""
-        echo "可用命令:"
-        echo "  info                          - CPU 总览（大小核、频率、governor）"
-        echo "  freq                          - 各 policy 可用频率列表"
-        echo "  max          [policy]         - 查看各 policy 最大频点（HW Fmax 与上限）"
-        echo "  online                        - 各核 online 状态"
-        echo "  platform                      - 检测芯片平台"
-        echo "  set-online   <cpu_id> <0|1>   - 上下线指定核"
-        echo "  fix-freq     [policy] <khz>   - 定频指定 policy（单参数如 1800000 默认定频所有 policy）"
-        echo "  unfix-freq   [policy]         - 解除定频（无参数默认解除所有 policy）"
-        echo "  fix-freq-all <khz>            - 所有 policy 统一定频"
-        echo "  unfix-all                     - 解除所有 policy 定频"
-        echo "  boost        <0|1>            - CPU boost 开关（平台自适应）"
-        echo "  affinity     <pid> <mask>     - 绑核（taskset hex mask）"
-        echo "  gov          [policy] <gov>   - 切换 governor（单参数默认切换所有 policy）"
-        echo "  gov-all      <gov>            - 所有 policy 统一切换 governor"
-        echo "  cap          [policy] <khz>   - 限制最大频率（单参数如 2400000 默认限制所有 policy）"
-        echo "  uncap        [policy]         - 解除最大频率限制（无参数默认解除所有 policy）"
-        exit 1
-        ;;
-esac
+# ============================================================
+# ACTION 分发：只做路由，全部转发给上面的 do_xxx 函数
+# ============================================================
 
-exit 0
+main() {
+    parse_args "$@"
+
+    case "$ACTION" in
+        platform)      do_platform ;;
+        info)          do_info ;;
+        watch)         do_watch ;;
+        freq)          do_freq ;;
+        max)           do_max ;;
+        online)        do_online ;;
+        set-online)    do_set_online ;;
+        fix-freq)      do_fix_freq ;;
+        unfix-freq)    do_unfix_freq ;;
+        fix-freq-all)  do_fix_freq_all ;;
+        unfix-all)     do_unfix_all ;;
+        boost)         do_boost ;;
+        affinity)      do_affinity ;;
+        gov)           do_gov ;;
+        gov-all)       do_gov_all ;;
+        cap)           do_cap ;;
+        uncap)         do_uncap ;;
+        ""|-h|--help|help|usage)
+            usage ;;
+        *)
+            echo "[ERROR] 未知命令: $ACTION" >&2
+            usage
+            exit 1
+            ;;
+    esac
+}
+
+# 若设置 PERF_LIB_ONLY，仅加载函数定义供外部调用，不执行命令分发
+if [ -z "$PERF_LIB_ONLY" ]; then
+    main "$@"
 fi

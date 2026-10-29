@@ -63,15 +63,27 @@ esac
 
 - **用函数封装复用逻辑**：将重复操作（sysfs 写入、状态检查等）抽成函数，不要每处手写一遍
 - **参数校验在 shell 内做**：包括参数合法性、目录/节点是否存在等，不依赖 bat 层重复校验
-- **路由分发单行紧凑规范**：Shell 业务层中的 `case "$ACTION" in` 命令分发分支，**必须尽量写成单行**（如 `apply) do_apply ;;`），使路由表一目了然，避免简单分支多行展开占用行数：
+- **统一入口函数 main()（强制）**：Shell 业务层的所有执行逻辑必须收敛到 `main()` 函数，脚本末尾以 `main "$@"` 调用，**严禁将业务逻辑直接裸写在脚本顶层**。`main()` 负责组装初始化顺序（参数解析 → 权限/节点检查 → 路由分发 → 业务调用），流程如下：
   ```sh
-  case "$ACTION" in
-      apply)   do_apply ;;
-      restore) do_restore ;;
-      info)    do_info ;;
-      *)       echo "[ERROR] 未知命令: $ACTION"; exit 1 ;;
-  esac
+  main() {
+      # 1. 参数解析与校验（含 usage()/exit）
+      parse_args "$@"
+
+      # 2. 前置检查（root、依赖节点等）
+
+      # 3. 命令路由分发
+      case "$ACTION" in
+          apply)   do_apply ;;
+          restore) do_restore ;;
+          info)    do_info ;;
+          *)       echo "[ERROR] 未知命令: $ACTION" >&2; usage; exit 1 ;;
+      esac
+  }
+
+  main "$@"
   ```
+  各业务动作实现为独立函数（如 `do_apply()`），`usage()` 独立成函数，`parse_args()` 负责解析并校验参数。
+- **路由分发单行紧凑规范**：Shell 业务层中的 `case "$ACTION" in` 命令分发分支，**必须尽量写成单行**（如 `apply) do_apply ;;`），使路由表一目了然，避免简单分支多行展开占用行数：
 
 ### 参考实现
 

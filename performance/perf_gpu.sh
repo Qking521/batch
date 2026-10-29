@@ -1,5 +1,7 @@
 #!/system/bin/sh
 # ============================================================
+# Author: wangqiang
+# Date:   2026-07-31
 # Desc:   GPU 信息查询与调控工具
 # Usage:  adb shell "sh -s <action> [param1] [param2]" < perf_gpu.sh
 #
@@ -23,9 +25,12 @@
 #   trace        <0|1>      - 开关GED perf trace（仅MTK）
 # ============================================================
 
-ACTION="$1"
-PARAM1="$2"
-PARAM2="$3"
+# ---- 参数解析 ----
+parse_args() {
+    ACTION="$1"
+    PARAM1="$2"
+    PARAM2="$3"
+}
 
 # ---- 通用工具函数 ----
 
@@ -369,7 +374,9 @@ gpu_watch() {
     cmd_watch "$@"
 }
 
-cmd_usage() {
+usage() {
+    echo "用法: perf gpu <命令> [参数...]"
+    echo ""
     echo "可用命令:"
     echo "  info                     - GPU 总览"
     echo "  freq                     - 可用频率/opp dump"
@@ -388,8 +395,8 @@ cmd_usage() {
 # ACTION 分发：只做路由，全部转发给上面的 cmd_xxx 函数
 # ============================================================
 
-# 若设置 PERF_LIB_ONLY，仅加载函数定义供外部调用，不执行命令分发
-if [ -z "$PERF_LIB_ONLY" ]; then
+main() {
+    parse_args "$@"
     [ -n "$ACTION" ] && resolve_gpu
 
     case "$ACTION" in
@@ -405,17 +412,17 @@ if [ -z "$PERF_LIB_ONLY" ]; then
         power)        cmd_power ;;
         idle-policy)  cmd_idle_policy "$PARAM1" ;;
         trace)        cmd_trace "$PARAM1" ;;
-        ""|-h|help)
-            cmd_usage
-            exit 0
-            ;;
+        ""|-h|--help|help|usage)
+            usage ;;
         *)
-            echo "[ERROR] 未知命令: $ACTION"
-            echo ""
-            cmd_usage
+            echo "[ERROR] 未知命令: $ACTION" >&2
+            usage
             exit 1
             ;;
     esac
+}
 
-    exit 0
+# 若设置 PERF_LIB_ONLY，仅加载函数定义供外部调用，不执行命令分发
+if [ -z "$PERF_LIB_ONLY" ]; then
+    main "$@"
 fi
