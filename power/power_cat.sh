@@ -42,22 +42,25 @@ do_gpio() {
     # 尝试挂载 debugfs（需 root），失败不中断后续逻辑
     mount -t debugfs debugfs /sys/kernel/debug 2>/dev/null
 
-    # 1) libgpiod 工具链（Android 较新版本自带）
+    found=0
+    # 1) 传统 debugfs gpio（优先，展示被申请引脚的全局号/方向/电平）
+    if [ -r /sys/kernel/debug/gpio ]; then
+        echo "--- /sys/kernel/debug/gpio ---"
+        cat /sys/kernel/debug/gpio
+        found=1
+    fi
+
+    # 2) libgpiod 工具链（展示全部 line 的静态配置）
     if command -v gpiodetect >/dev/null 2>&1; then
         echo "--- gpiodetect ---"
         gpiodetect
         echo "--- gpioinfo ---"
         gpioinfo
-    # 2) 传统 debugfs gpio
-    elif [ -r /sys/kernel/debug/gpio ]; then
-        echo "--- /sys/kernel/debug/gpio ---"
-        cat /sys/kernel/debug/gpio
-    # 3) 传统 sysfs gpio 目录列表
-    elif [ -d /sys/class/gpio ]; then
-        echo "--- /sys/class/gpio ---"
-        ls -1 /sys/class/gpio
-    else
-        echo "[WARN] 未找到可用的 GPIO 接口 (libgpiod / debugfs / sysfs)"
+        found=1
+    fi
+
+    if [ "$found" -eq 0 ]; then
+        echo "[WARN] 未找到可用的 GPIO 接口 (libgpiod / debugfs)"
     fi
 }
 
@@ -133,10 +136,9 @@ adb shell dumpsys power | grep -A 10 "Wake Locks:"
 
 [gpio] Show GPIO status
 adb shell mount -t debugfs debugfs /sys/kernel/debug
+adb shell cat /sys/kernel/debug/gpio
 adb shell gpiodetect
 adb shell gpioinfo
-adb shell cat /sys/kernel/debug/gpio
-adb shell ls -1 /sys/class/gpio
 
 [ws] Save wakeup sources to CSV
 adb shell mount -t debugfs debugfs /sys/kernel/debug

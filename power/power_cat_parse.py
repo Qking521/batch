@@ -11,15 +11,19 @@ Usage:
     irq   解析 /proc/interrupts
 """
 import sys
-import csv
+import re
 
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
 
 
-def _write_xlsx(out_path, rows, widths, footer=None):
-    """rows: 数据行（含表头）。footer: 末尾插入的说明文字（红色跨列）。"""
+def _write_xlsx(out_path, rows, widths, footer=None, auto_filter=True):
+    """rows: 数据行（含表头）。footer: 末尾插入的说明文字（红色跨列）。
+
+    auto_filter: 为 True 时对数据区启用 Excel 数据筛选（首行表头出现下拉箭头），
+    所有表格默认开启。
+    """
     wb = Workbook()
     ws = wb.active
 
@@ -31,6 +35,11 @@ def _write_xlsx(out_path, rows, widths, footer=None):
     for r, row in enumerate(rows[1:], start=2):
         for c, v in enumerate(row, 1):
             ws.cell(row=r, column=c, value=v)
+
+    # 启用数据筛选：范围只覆盖表头 + 数据区（排除下方 footer）
+    if auto_filter:
+        last_col = get_column_letter(len(header))
+        ws.auto_filter.ref = 'A1:%s%d' % (last_col, len(rows))
 
     # 列宽自适应（限制上下限，保证每个单元格内容充分显示）
     for c, w in enumerate(widths, 1):
@@ -47,6 +56,34 @@ def _write_xlsx(out_path, rows, widths, footer=None):
         nlines = str(footer).count('\n') + 1
         ws.row_dimensions[fr].height = 15 * nlines
 
+    wb.save(out_path)
+
+
+def _fill_sheet(ws, rows, widths):
+    """向工作表写入表头 + 数据，开启筛选并设置列宽。"""
+    header = rows[0]
+    for c, h in enumerate(header, 1):
+        cell = ws.cell(row=1, column=c, value=h)
+        cell.font = Font(bold=True)
+
+    for r, row in enumerate(rows[1:], start=2):
+        for c, v in enumerate(row, 1):
+            ws.cell(row=r, column=c, value=v)
+
+    last_col = get_column_letter(len(header))
+    ws.auto_filter.ref = 'A1:%s%d' % (last_col, len(rows))
+
+    for c, w in enumerate(widths, 1):
+        ws.column_dimensions[get_column_letter(c)].width = w
+
+
+def _write_xlsx_multi_sheet(out_path, sheets):
+    """sheets: [(sheet 标题, rows, widths), ...]，写入同一 xlsx 的不同 sheet。"""
+    wb = Workbook()
+    for i, (title, rows, widths) in enumerate(sheets):
+        ws = wb.active if i == 0 else wb.create_sheet()
+        ws.title = title
+        _fill_sheet(ws, rows, widths)
     wb.save(out_path)
 
 
@@ -128,9 +165,97 @@ def parse_clk(in_path, out_path):
     _write_xlsx(out_path, rows, widths)
 
 
+def parse_gpio(in_path, out_path):
+    """解析 GPIO 原始输出为 xlsx，debugfs 与 libgpiod 分属两个 sheet。
+
+    来源（由 sh 的 do_gpio 输出，两者都可能出现）：
+      1. debugfs ：/sys/kernel/debug/gpio 的 gpio-<N> (label) [in|out] [lo|hi] 行
+      2. libgpiod：gpiodetect 列出 chip，gpioinfo 列出每根 line 的方向/值
+    目标：两个节点各一张表，读原始内容不互相覆盖。
+    """
+    with open(in_path, 'r', encoding='utf-8', errors='replace') as f:
+        lines = [ln.rstrip('\n').rstrip('\r') for ln in f]
+
+    # debugfs 表：全局 GPIO 号 + 申请名 label + 方向 + 电平
+    debugfs_header = ['GPIO', '名称(label)', '方向', '值', '附加']
+    debugfs_rows = [debugfs_header]
+
+    # libgpiod 表：chip + 局部 offset + 静态名称/消费者/方向/active
+    lib_header = ['Chip', 'GPIO', '名称', '消费者', '方向', 'active', '附加']
+    lib_rows = [lib_header]
+
+    grp_detect_re = re.compile(r'^(gpiochip\d+)\s+\[(.*?)\]\s*\((\d+)\s+lines?\)')
+    grp_head_re = re.compile(r'^(gpiochip\d+)\s*-\s*(\d+)\s+lines?:')
+    grp_line_re = re.compile(r'^\s*line\s+(\d+):\s+(.*)$')
+    dbg_line_re = re.compile(r'^\s*gpio-(\d+)\s*\(([^)]*)\)\s*(.*)$')
+
+    cur_src = ''
+    cur_chip = ''
+
+    for line in lines:
+        # ---- 节标记（切换来源）----
+        if '--- /sys/kernel/debug/gpio ---' in line:
+            cur_src = 'debugfs'
+            continue
+        if '--- gpiodetect ---' in line:
+            cur_src = 'gpiodetect'
+            continue
+        if '--- gpioinfo ---' in line:
+            cur_src = 'gpioinfo'
+            continue
+
+        # ---- libgpiod：----
+        if cur_src in ('gpiodetect', 'gpioinfo'):
+            # chip 列表（gpiodetect）
+            m = grp_detect_re.match(line)
+            if m:
+                cur_chip = m.group(1)
+                lib_rows.append([cur_chip, '', '', '', '', '',
+                                 'label=%s lines=%s' % (m.group(2), m.group(3))])
+                continue
+            # chip 表头（gpioinfo）
+            m = grp_head_re.match(line)
+            if m:
+                cur_chip = m.group(1)
+                continue
+            # 单根 line（gpioinfo）
+            m = grp_line_re.match(line)
+            if m:
+                parts = m.group(2).split()
+                name = parts[0].strip('"') if parts else ''
+                consumer = parts[1] if len(parts) > 1 else ''
+                direction = parts[2] if len(parts) > 2 else ''
+                active = parts[3] if len(parts) > 3 else ''
+                extra = ' '.join(parts[4:]) if len(parts) > 4 else ''
+                lib_rows.append([cur_chip, m.group(1), name, consumer,
+                                 direction, active, extra])
+                continue
+
+        # ---- debugfs：----
+        if cur_src == 'debugfs':
+            m = dbg_line_re.match(line)
+            if m:
+                rest = m.group(3).split()
+                direction = rest[0] if len(rest) > 0 else ''
+                value = rest[1] if len(rest) > 1 else ''
+                extra = ' '.join(rest[2:]) if len(rest) > 2 else ''
+                debugfs_rows.append([m.group(1), m.group(2).strip(),
+                                     direction, value, extra])
+                continue
+
+        # 标题/空行等忽略
+
+    sheets = [
+        ('debugfs', debugfs_rows, [10, 24, 8, 8, 12]),
+        ('libgpiod', lib_rows, [14, 8, 16, 14, 10, 12, 30]),
+    ]
+    _write_xlsx_multi_sheet(out_path, sheets)
+
+
 PARSERS = {
     'irq': parse_irq,
     'clk': parse_clk,
+    'gpio': parse_gpio,
 }
 
 

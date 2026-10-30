@@ -147,6 +147,11 @@ if /i "%CAT_ACTION%"=="ws" (
     python "%SCRIPT_DIR%power_cat_parse.py" irq "%MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.txt" "%MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.xlsx"
     echo [OK] interrupts saved: %MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.xlsx
     start "" "%MODULE_OUT_DIR%\interrupts_%FORMAT_TIME%.xlsx"
+) else if /i "%CAT_ACTION%"=="gpio" (
+    adb shell "sh -s gpio" < "%SH_SCRIPT%" > "%MODULE_OUT_DIR%\gpio_%FORMAT_TIME%.txt"
+    python "%SCRIPT_DIR%power_cat_parse.py" gpio "%MODULE_OUT_DIR%\gpio_%FORMAT_TIME%.txt" "%MODULE_OUT_DIR%\gpio_%FORMAT_TIME%.xlsx"
+    echo [OK] gpio saved: %MODULE_OUT_DIR%\gpio_%FORMAT_TIME%.xlsx
+    start "" "%MODULE_OUT_DIR%\gpio_%FORMAT_TIME%.xlsx"
 ) else (
     adb shell "sh -s %CAT_ACTION%" < "%SH_SCRIPT%"
 )
