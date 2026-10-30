@@ -10,6 +10,7 @@ setlocal
 set "cmd=%~1"
 set "param1=%~2"
 
+set "SCRIPT_DIR=%~dp0"
 set "APKS_DIR=%SCRIPT_DIR%android_apks"
 echo APKS_DIR=%APKS_DIR%
 
