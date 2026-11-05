@@ -32,7 +32,7 @@ show_log_info() {
 子系统不待机:26M_off_pct|AP suspend ratio
 
 # 2. 温升模块
-MTK:DexOptimizer|dex2oat|Cpu load|ThermalInfo:|thermal_core|thermal IRQ|throttling|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:
+MTK:DexOptimizer|dex2oat|Cpu load|ThermalInfo:|thermal_core|thermal IRQ|throttlingStatus|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:
 QCOM:DexOptimizer|dex2oat|Cpu load|Therm ADC|Therm Reading
 
 # 3. 系统异常与稳定性 (Java Exception、Native Crash、ANR 无响应、Tombstone)

@@ -30,6 +30,7 @@ if /i "%cmd%"=="cpu" goto cpu
 if /i "%cmd%"=="gpu" goto gpu
 if /i "%cmd%"=="flame" goto flame
 if /i "%cmd%"=="ds" goto dhrystone
+if /i "%cmd%"=="bt" goto boot_time
 if /i "%cmd%"=="sql" goto sql
 
 echo [ERROR] 未知命令: %cmd%
@@ -45,6 +46,7 @@ echo   watch [cpu^|gpu^|all] [interval_sec] - 实时动态监听 CPU/GPU 状态�
 echo   trace [cmd/online/cfg/ui/sh]    - Perfetto 性能抓取及打开 Trace
 echo   cat [gov]                       - 查看 CPU governor / 原始命令
 echo   sql [tag/sql] [trace_path]       - 使用 SQL 查询性能 Trace
+echo   bt                                - 重启设备并抓取开机 bugreport
 echo   cpu [info/freq/max/online/...]   - CPU 调控
 echo   gpu [info/freq/fix-freq/...]     - GPU 调控
 echo   ds                               - Dhrystone 操作
@@ -125,4 +127,8 @@ exit /b 0
 
 :sql
     call "%SCRIPT_DIR%perf_sql.bat" %*
+    exit /b
+
+:boot_time
+    call "%SCRIPT_DIR%perf_boot_time.bat"
     exit /b
