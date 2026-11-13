@@ -28,16 +28,17 @@ adb root
 adb remount -R
 adb wait-for-device
 adb root
+adb remount -R
 adb wait-for-device
 
-echo Pushing powersd + powersd.rc...
+echo [4/6]Pushing powersd + powersd.rc...
 adb push "%~dp0powersd" /data/local/tmp/powersd || exit /b 1
 adb push "%~dp0powersd.rc" /data/local/tmp/powersd.rc || exit /b 1
 
-echo Installing binary + init service...
+echo [5/6]Installing binary + init service...
 adb shell "stop powersd 2>/dev/null; rm -f /system/bin/powersd /system/etc/init/powersd.rc; cp /data/local/tmp/powersd /system/bin/powersd; chmod 755 /system/bin/powersd; chcon u:object_r:shell_exec:s0 /system/bin/powersd; cp /data/local/tmp/powersd.rc /system/etc/init/powersd.rc; chmod 644 /system/etc/init/powersd.rc; chcon u:object_r:system_file:s0 /system/etc/init/powersd.rc" || exit /b 1
 
-echo Rebooting to register init service...
+echo [6/6]Rebooting to register init service...
 adb reboot
 adb wait-for-device
 adb root

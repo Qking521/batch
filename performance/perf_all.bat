@@ -42,16 +42,16 @@ echo.
 echo 用法: perf ^<命令^> [参数]
 echo.
 echo 命令:
-echo   watch [cpu^|gpu^|all] [interval_sec] - 实时动态监听 CPU/GPU 状态变化 (默认 all 5s)
-echo   trace [cmd/online/cfg/ui/sh]    - Perfetto 性能抓取及打开 Trace
-echo   cat [gov]                       - 查看 CPU governor / 原始命令
-echo   sql [tag/sql] [trace_path]       - 使用 SQL 查询性能 Trace
-echo   bt                                - 重启设备并抓取开机 bugreport
-echo   cpu [info/freq/max/online/...]   - CPU 调控
-echo   gpu [info/freq/fix-freq/...]     - GPU 调控
-echo   ds                               - Dhrystone 操作
-echo   flame [record/parse]             - 火焰图抓取与解析 (simpleperf)
-echo   help / -h                        - 显示此帮助信息
+echo   watch [cpu^|gpu^|all] [interval_sec]     - 实时动态监听 CPU/GPU 状态变化 (默认 all 5s)
+echo   trace [cmd/online/cfg/ui/sh]             - Perfetto 性能抓取及打开 Trace
+echo   cat [gov]                                - 查看 CPU governor / 原始命令
+echo   sql [tag/sql] [trace_path]               - 使用 SQL 查询性能 Trace
+echo   bt                                       - 重启设备并抓取开机 bugreport
+echo   cpu [info/freq/max/online/...]           - CPU 调控
+echo   gpu [info/freq/fix-freq/...]             - GPU 调控
+echo   ds                                       - Dhrystone 操作
+echo   flame [record/parse]                     - 火焰图抓取与解析 (simpleperf)
+echo   help / -h                                - 显示此帮助信息
 echo.
 echo 示例:
 echo   perf watch

@@ -21,6 +21,18 @@ get_prop_or_unk() {
     fi
 }
 
+# 依次尝试多个属性名，返回第一个非空值（兼容不同厂商属性名差异）
+get_first_prop() {
+    for p in "$@"; do
+        local v="$(getprop "$p" 2>/dev/null)"
+        if [ -n "$v" ]; then
+            echo "$v"
+            return 0
+        fi
+    done
+    return 1
+}
+
 # 1. 基础硬件与平台信息
 get_hardware_info() {
     log_info "=== 硬件与平台信息 ==="
@@ -589,7 +601,57 @@ get_battery_info() {
     fi
 }
 
-# 8. 网络与连接状态
+# 8. 指纹 (Fingerprint) 信息
+get_fingerprint_info() {
+    log_info "=== 指纹信息 ==="
+
+    # 指纹厂商：兼容不同厂商属性名差异，依次回退取值
+    local fp_vendor="$(get_first_prop \
+        persist.vendor.hardware.fingerprint \
+        persist.vendor.fingerprint \
+        persist.vendor.sys.fp.vendor \
+        ro.vendor.hardware.fingerprint \
+        ro.hardware.fingerprint)"
+    local fp_vendor_cn="UNKNOWN"
+    case "$(echo "$fp_vendor" | tr 'A-Z' 'a-z')" in
+        *goodix*)   fp_vendor_cn="汇顶科技 (Goodix)" ;;
+        *jiiov*)    fp_vendor_cn="极豪科技 (Jiiov)" ;;
+        *qualcomm*) fp_vendor_cn="高通 (Qualcomm)" ;;
+        *egis*)     fp_vendor_cn="神盾 (Egis)" ;;
+        *silead*)   fp_vendor_cn="思立微 (Silead)" ;;
+        *fpc*)      fp_vendor_cn="Fingerprint Cards (FPC)" ;;
+        "")         fp_vendor_cn="UNKNOWN" ;;
+        *)          fp_vendor_cn="$fp_vendor" ;;
+    esac
+
+    # 校准状态 (1=校准 OK，非 1=未校准)
+    local fp_cali="$(get_first_prop \
+        vendor.fingerprint.cali \
+        persist.vendor.fingerprint.cali \
+        persist.vendor.sys.fp.cali)"
+    local fp_cali_str="UNKNOWN"
+    if [ -n "$fp_cali" ]; then
+        if [ "$fp_cali" = "1" ]; then
+            fp_cali_str="已校准 (OK)"
+        else
+            fp_cali_str="未校准 (${fp_cali})"
+        fi
+    fi
+
+    # 指纹状态
+    local fp_status="$(get_first_prop \
+        vendor.hw.fingerprint.status \
+        persist.vendor.hw.fingerprint.status \
+        init.svc.vendor.fingerprint)"
+    [ "$fp_status" = "running" ] && fp_status="running (服务运行中)"
+
+    echo "  指纹厂商:      ${fp_vendor_cn}"
+    echo "  厂商代号:      ${fp_vendor}"
+    echo "  校准状态:      ${fp_cali_str}"
+    echo "  指纹状态:      ${fp_status:-UNKNOWN}"
+}
+
+# 9. 网络与连接状态
 get_network_info() {
     log_info "=== 网络与连接状态 ==="
     local wlan_ip=$(ip -4 addr show wlan0 2>/dev/null | awk '/inet / {print $2}' | cut -d'/' -f1)
@@ -623,6 +685,8 @@ show_all_info() {
     echo ""
     get_battery_info
     echo ""
+    get_fingerprint_info
+    echo ""
     get_network_info
     echo "============================================================"
 }
@@ -639,6 +703,7 @@ show_usage() {
     echo "  rom / storage          - 存储 (ROM/UFS/eMMC) 信息"
     echo "  display / screen       - 显示与屏幕信息"
     echo "  battery / bat / power  - 电池与电源状态"
+    echo "  fp / fingerprint       - 指纹 (厂商/校准/状态) 信息"
     echo "  net / network / wifi   - 网络与连接状态"
     echo "  -h / help              - 显示帮助信息"
 }
@@ -646,7 +711,7 @@ show_usage() {
 main() {
     local target="$1"
     case "$target" in
-        ""|all)
+        all)
             show_all_info
             ;;
         hw|hardware)
@@ -669,6 +734,9 @@ main() {
             ;;
         battery|bat|power)
             get_battery_info
+            ;;
+        fp|fingerprint)
+            get_fingerprint_info
             ;;
         net|network|wifi)
             get_network_info

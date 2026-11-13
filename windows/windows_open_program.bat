@@ -12,14 +12,15 @@ set "param1=%~2"
 echo action: %action% %param1%
 set "TOOLS_ROOT_PATH=D:\tools"
 
-if /i "%param1%"=="" start "" %TOOLS_ROOT_PATH%
 if /i "%param1%"=="" goto show_help
 if /i "%param1%"=="-h" goto show_help
 if /i "%param1%"=="help" goto show_help
 
+if /i "%param1%"=="dir" goto tools_dir
 if /i "%param1%"=="ltr" goto long_trace_record
 if /i "%param1%"=="ltra" goto long_trace_record_advance
 if /i "%param1%"=="ft6" goto flashtool
+if /i "%param1%"=="qfile" goto qfile
 if /i "%param1%"=="odin" goto odin
 
 :show_help
@@ -27,9 +28,11 @@ echo.
 echo Usage: win command program
 echo.
 echo Available parmas:
+echo   dir              - open tools dir
 echo   ltr              - mtk long trace record tool
 echo   ltra             - mtk long trace record tool with lmode
 echo   ft6              - mtk flash tool for V6
+echo   qfile            - qcom flash tool
 echo   odin             - samsung flash tool
 echo   -h               - Show help (alias: help).
 echo.
@@ -37,6 +40,10 @@ echo Examples:
 echo   win open ltr
 echo.
 exit /b
+
+:tools_dir
+    start "" %TOOLS_ROOT_PATH%
+    exit /b0
 
 :long_trace_record
     echo "不管是程序还是文件都不能包含任何中文和空格字符", convert mode解析的是trace开头.dat后缀的文件
@@ -52,6 +59,10 @@ exit /b
     set "PROGRAM_PATH=%TOOLS_ROOT_PATH%\SP_Flash_Tool_V6\SPFlashToolV6.exe"
     goto launch
 
+:qfile
+    set "PROGRAM_PATH=%TOOLS_ROOT_PATH%\QPST\bin\QFIL.exe"
+    goto launch
+
 :odin
     set "PROGRAM_PATH=%TOOLS_ROOT_PATH%\odin4v_windows_2.6\odin4v.exe"
     goto launch
@@ -62,7 +73,7 @@ exit /b
         exit /b 1
     )
     for %%P in ("!PROGRAM_PATH!") do start "" /D "%%~dpP" "!PROGRAM_PATH!"
-    exit /b
+    exit /b 0
 
 
 

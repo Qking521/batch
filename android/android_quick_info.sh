@@ -38,8 +38,10 @@ QCOM:DexOptimizer|dex2oat|Cpu load|Therm ADC|Therm Reading
 # 3. 系统异常与稳定性 (Java Exception、Native Crash、ANR 无响应、Tombstone)
 FATAL EXCEPTION|ANR in|CRASH:|backtrace:|Build fingerprint:|Tombstone
 
-# 4. 性能与掉帧卡顿 (主线程耗时、Choreographer 丢帧、慢 Handler 消息)
-Skipped [0-9]+ frames|Choreographer|Slow Looper|Slow delivery:|Slow dispatch:|am_anr
+# 4. 性能
+掉帧卡顿: Skipped [0-9]+ frames|Choreographer|Slow Looper|Slow delivery:|Slow dispatch:|am_anr
+开机时间: KERNEL LOG|Booting Linux|init first stage started|starting service|boot_progress|wm_boot_animation_done
+
 
 # 5. 其它未分类 (屏幕开关事件、关机重启属性、对齐唤醒、传感器常驻)
 screen_toggled|sys.powerctl|AlarmManager: Adjust deliver|sensorservice|Trustonic TEE

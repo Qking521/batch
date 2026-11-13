@@ -38,7 +38,6 @@ if /i "%cmd%"=="sr"        goto :screen_record
 if /i "%cmd%"=="kill"      goto :kill_process
 if /i "%cmd%"=="bugreport" goto :bugreport
 if /i "%cmd%"=="clear"     goto :clear_log
-if /i "%cmd%"=="dev"       goto :developer
 if /i "%cmd%"=="di"        goto :device_info
 if /i "%cmd%"=="device"    goto :device_info
 if /i "%cmd%"=="search"    goto :android_search
@@ -69,12 +68,11 @@ echo   sr                       - Record screen and pull to local
 echo   kill [process_name]      - Kill target process by name
 echo   bugreport [tag]          - Capture/Extract bugreport log
 echo   clear                    - Clear logcat and dmesg logs
-echo   dev [on/off]             - Toggle developer touches / pointer location
 echo   di / device [category]   - Show device info (all/hw/soc/sys/ram/rom/display/battery/net)
 echo   search [keyword]         - Search Settings and Properties
 echo   watch [interval]         - Watch Settings, getprop, audio volume ^& status
 echo   monkey [pkg/kill/num]    - Run or stop Monkey test
-echo   enable/disable [pkg]     - Enable or disable package
+echo   enable/disable [pkg]     - Enable or disable package / dev / selinux / google / moto
 echo   dump [service] [params]  - Dump system service to OUT dir
 echo   cat [topic]              - Show info on screen (top/wl)
 echo   rr [on/off]              - Set or query refresh rate
@@ -91,7 +89,6 @@ echo   ad cat top
 echo   ad bind
 echo   ad device
 echo   ad device hw
-echo   ad device soc
 echo   ad dev on
 echo   ad watch
 echo   ad watch 1
@@ -144,25 +141,6 @@ exit /b 0
     adb shell "ps -A | grep %param1%"
     exit /b 0
 
-:developer
-    if "%param1%"=="" (
-        echo Usage: ad dev [on/off]
-        exit /b 1
-    )
-    if /i "%param1%"=="on" (
-        adb shell settings put system show_touches 1
-        adb shell settings put system pointer_location 1
-        adb shell settings put secure clock_seconds 1
-        echo [OK] Developer touches / pointer location / seconds enabled.
-    )
-    if /i "%param1%"=="off" (
-        adb shell settings put system show_touches 0
-        adb shell settings put system pointer_location 0
-        adb shell settings put secure clock_seconds 0
-        echo [OK] Developer touches / pointer location / seconds disabled.
-    )
-    exit /b 0
-
 :device_info
     set "SH_SCRIPT=%SCRIPT_DIR%android_device_info.sh"
     if not exist "%SH_SCRIPT%" (
@@ -203,12 +181,24 @@ exit /b 0
 exit /b 0
 
 :package_toggle
-    set "SH_SCRIPT=%SCRIPT_DIR%android_package_toggle.sh"
+    set "SH_SCRIPT=%SCRIPT_DIR%android_toggle.sh"
     if not exist "%SH_SCRIPT%" (
         echo [ERROR] Script not found: %SH_SCRIPT%
         exit /b 1
     )
-    adb shell "sh -s %cmd% %param1%" < "%SH_SCRIPT%"
+    set "TOGGLE_ACTION=%cmd%"
+    set "TOGGLE_TARGET=%param1%"
+    if /i "%cmd%"=="dev" (
+        set "TOGGLE_TARGET=dev"
+        if /i "%param1%"=="on"  set "TOGGLE_ACTION=enable"
+        if /i "%param1%"=="off" set "TOGGLE_ACTION=disable"
+        if "%param1%"=="" (
+            echo Usage: ad dev [on/off]
+            echo         or: ad enable/disable dev
+            exit /b 1
+        )
+    )
+    adb shell "sh -s %TOGGLE_ACTION% %TOGGLE_TARGET%" < "%SH_SCRIPT%"
     exit /b %ERRORLEVEL%
 
 :refresh_rate
