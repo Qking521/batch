@@ -27,6 +27,7 @@ if /i "%cmd%"=="moto" goto moto_tools
 if /i "%cmd%"=="cell" goto cellular
 if /i "%cmd%"=="pm" goto playmusic
 if /i "%cmd%"=="powers" goto powers
+if /i "%cmd%"=="qs" goto QSensor
 
 echo [错误]: 未知工具指令: %cmd%
 goto :usage
@@ -48,6 +49,7 @@ echo   pm       - 安装并配置 playmusic 音乐播放工具.
 echo   moto     - 安装并配置 和moto项目相关的自动化测试工具.
 echo   cell     - 安装并配置 cellular 查看通讯网络信息工具.
 echo   powers   - 安装并配置 Powers 查看功耗，温度，性能，Sensor信息工具.
+echo   qs       - 安装并配置 QSensor工具.
 echo.
 echo 示例:
 echo   ad install ds
@@ -138,6 +140,10 @@ exit /b 0
     set "POWERS_BAT=%APKS_DIR%\powers.bat"
     adb install --bypass-low-target-sdk-block -r %APKS_DIR%\powers.apk
     call %POWERS_BAT%
+    exit /b 0
+
+:QSensor
+    adb install -r %APKS_DIR%\QSensorTest.apk
     exit /b 0
 
 :grant_permission
