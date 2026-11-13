@@ -43,7 +43,7 @@ if /i "%cmd%"=="eet-gen"   goto :eet_gen
 if /i "%cmd%"=="spm"       goto :spm
 if /i "%cmd%"=="trace"     goto :trace
 if /i "%cmd%"=="sql"       goto :sql
-if /i "%cmd%"=="set"       goto :power_set
+if /i "%cmd%"=="push"      goto :power_push
 if /i "%cmd%"=="pm2bh"     goto :pm2bh
 
 echo [ERROR] Unknown command: %cmd%
@@ -66,7 +66,7 @@ echo   eet-gen                      - Generate manual EET CPU frequency test scr
 echo   spm [data_file]              - Parse MediaTek SPM state data
 echo   trace [ui/uix/sh]     - Perfetto trace collection and analysis
 echo   sql [tag/statement] [zip]    - Query power info via SQL from bugreport
-echo   set [res]                    - Power settings and resource management
+echo   push [res/scp]               - Push media resources / flash scp image
 echo   pm2bh [csv_file]             - Convert PowerMonitor CSV to Battery Historian format
 echo   -h / help                    - Show help info
 echo.
@@ -74,7 +74,7 @@ echo Examples:
 echo   power standby
 echo   power info
 echo   power wallpaper black set
-echo   power set res
+echo   power push res
 echo   power pm2bh 2025-01-09-19-31-28.csv
 echo.
 exit /b 0
@@ -196,8 +196,8 @@ exit /b %ERRORLEVEL%
 call "%SCRIPT_DIR%power_sql.bat" %*
 exit /b %ERRORLEVEL%
 
-:power_set
-    call "%SCRIPT_DIR%power_set.bat" %*
+:power_push
+    call "%SCRIPT_DIR%power_push.bat" %*
     exit /b %ERRORLEVEL%
 
 :pm2bh
