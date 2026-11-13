@@ -7,6 +7,8 @@
 #
 # Commands:
 #   tz [dis|en|info|zone_type...] - Thermal Zone 查询、禁用/启用管理
+#   fake <zone_type> <temp_c>     - 对指定 Thermal Zone 写入模拟温度 (emul_temp)
+#   fake status <0-6|reset>       - 设置/重置 Thermal Service 过热等级 (override-status)
 #   cd                            - 冷却设备 (Cooling Devices) 信息
 #   hm                            - 硬件监控器 (hwmon) 节点信息
 # ============================================================
@@ -27,7 +29,6 @@ Usage:
   therm tz watch [sec]      - 实时监听 Thermal Zone 温度变化 (默认 5s 刷新, Ctrl+C 退出)
   therm tz dis|disable      - 禁用所有已开启的 Thermal Zone
   therm tz en|enable        - 恢复被禁用的 Thermal Zone
-  therm tz fake <type> <temp_c> - 对指定 zone 写入模拟温度 (emul_temp)
   therm tz <zone_type>      - 按 type 名称查询指定 zone 详情
   therm tz <z1> <z2> ...    - 查询多个指定 zone (如: therm tz front_temp back_temp)
 EOF
@@ -143,39 +144,6 @@ handle_tz() {
             done
             ;;
 
-        "fake")
-            local zone_type="$2"
-            local temp_c="$3"
-            if [ -z "$zone_type" ] || [ -z "$temp_c" ]; then
-                echo "[ERROR] 用法: therm tz fake <zone_type> <temp_c>"
-                echo "  例如: therm tz fake ap_ntc 30"
-                exit 1
-            fi
-            if [ "$(id -u)" -ne 0 ]; then
-                echo "[ERROR] 写入 emul_temp 需要 root 权限，请先运行 'adb root'" >&2
-                exit 1
-            fi
-            local zone_dir
-            zone_dir=$(find_zone_by_type "$zone_type")
-            if [ -z "$zone_dir" ]; then
-                echo "[ERROR] 未找到 Thermal Zone: '$zone_type'"
-                exit 1
-            fi
-            local emul_path="$zone_dir/emul_temp"
-            if [ ! -f "$emul_path" ]; then
-                echo "[ERROR] 该 Zone 不支持 emul_temp: $emul_path"
-                exit 1
-            fi
-            local emul_val=$(( temp_c * 1000 ))
-            echo "$emul_val" > "$emul_path" 2>/dev/null
-            if [ $? -eq 0 ]; then
-                echo "[OK] $zone_type ($zone_dir): emul_temp = ${temp_c}C (写入 ${emul_val})"
-            else
-                echo "[ERROR] 写入失败: $emul_path"
-                exit 1
-            fi
-            ;;
-
         "dis"|"disable")
 
             if [ "$(id -u)" -ne 0 ]; then
@@ -241,7 +209,108 @@ handle_tz() {
     esac
 }
 
-# 2. Cooling Devices 模块处理
+# ---- 显示 fake status 帮助信息 ----
+show_fake_status_usage() {
+    cat <<EOF
+Usage:
+  therm fake status <level>   - 设置 Thermal Service 过热等级
+  therm fake status reset     - 重置 Thermal Service 过热状态
+
+过热等级说明 (level 范围 0-6):
+  0 = NONE       正常
+  1 = LIGHT      轻微
+  2 = MODERATE   中等
+  3 = SEVERE     严重
+  4 = CRITICAL   危急
+  5 = EMERGENCY  紧急
+  6 = SHUTDOWN   关机
+EOF
+}
+
+# ---- 过热等级数值转名称 ----
+status_level_name() {
+    case "$1" in
+        0) echo "NONE" ;;
+        1) echo "LIGHT" ;;
+        2) echo "MODERATE" ;;
+        3) echo "SEVERE" ;;
+        4) echo "CRITICAL" ;;
+        5) echo "EMERGENCY" ;;
+        6) echo "SHUTDOWN" ;;
+        *) echo "UNKNOWN" ;;
+    esac
+}
+
+# 2. 模拟温度 (emul_temp) 模块处理
+handle_fake() {
+    shift 1 # 移除 'fake' 参数
+    local zone_type="$1"
+    local temp_c="$2"
+
+    # fake status: 设置/重置 Thermal Service 过热等级
+    if [ "$zone_type" = "status" ]; then
+        if [ -z "$temp_c" ]; then
+            echo "[ERROR] 缺少 status 参数"
+            echo ""
+            show_fake_status_usage
+            exit 1
+        fi
+
+        if [ "$temp_c" = "reset" ]; then
+            cmd thermalservice reset
+            echo "[OK] thermalservice reset"
+            return
+        fi
+
+        case "$temp_c" in
+            0|1|2|3|4|5|6)
+                cmd thermalservice override-status "$temp_c"
+                echo "[OK] thermalservice override-status = $temp_c ($(status_level_name "$temp_c"))"
+                ;;
+            *)
+                echo "[ERROR] 无效的过热等级: '$temp_c' (范围 0-6)"
+                echo ""
+                show_fake_status_usage
+                exit 1
+                ;;
+        esac
+        return
+    fi
+
+    if [ -z "$zone_type" ] || [ -z "$temp_c" ]; then
+        echo "[ERROR] 用法: therm fake <zone_type> <temp_c>"
+        echo "  例如: therm fake ap_ntc 30"
+        exit 1
+    fi
+    if [ "$(id -u)" -ne 0 ]; then
+        echo "[ERROR] 写入 emul_temp 需要 root 权限，请先运行 'adb root'" >&2
+        exit 1
+    fi
+
+    local zone_dir
+    zone_dir=$(find_zone_by_type "$zone_type")
+    if [ -z "$zone_dir" ]; then
+        echo "[ERROR] 未找到 Thermal Zone: '$zone_type'"
+        exit 1
+    fi
+
+    local emul_path="$zone_dir/emul_temp"
+    if [ ! -f "$emul_path" ]; then
+        echo "[ERROR] 该 Zone 不支持 emul_temp: $emul_path"
+        exit 1
+    fi
+
+    local emul_val=$(( temp_c * 1000 ))
+    echo "$emul_val" > "$emul_path" 2>/dev/null
+    if [ $? -eq 0 ]; then
+        echo "[OK] $zone_type ($zone_dir): emul_temp = ${temp_c}C (写入 ${emul_val})"
+    else
+        echo "[ERROR] 写入失败: $emul_path"
+        exit 1
+    fi
+}
+
+# 3. Cooling Devices 模块处理
 handle_cd() {
     echo "正在获取冷却设备信息 (Cooling Devices)..."
     printf '%-3s %-25s %-12s %-12s\n' 'ID' 'TYPE' 'CUR_STATE' 'MAX_STATE'
@@ -256,7 +325,7 @@ handle_cd() {
     done | sort -n
 }
 
-# 3. Hardware Monitor (hwmon) 模块处理
+# 4. Hardware Monitor (hwmon) 模块处理
 handle_hm() {
     BASE_DIR="/sys/class/hwmon"
     if [ ! -d "$BASE_DIR" ]; then
@@ -290,12 +359,13 @@ handle_hm() {
 
 # 主入口路由分发
 case "$CMD" in
-    "tz") handle_tz "$@" ;;
-    "cd") handle_cd "$@" ;;
-    "hm") handle_hm "$@" ;;
+    "tz")   handle_tz "$@" ;;
+    "fake") handle_fake "$@" ;;
+    "cd")   handle_cd "$@" ;;
+    "hm")   handle_hm "$@" ;;
     *)
         echo "[ERROR] 未知或缺省命令: '$CMD'"
-        echo "用法: thermal_infos.sh <tz|cd|hm> [dis|en|params]"
+        echo "用法: thermal_infos.sh <tz|fake|cd|hm> [dis|en|params]"
         exit 1
         ;;
 esac

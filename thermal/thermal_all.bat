@@ -36,7 +36,7 @@ if /i "%cmd%"=="watch"  goto :thermal_watch
 if /i "%cmd%"=="tz"     goto :thermal_infos
 if /i "%cmd%"=="cd"     goto :thermal_infos
 if /i "%cmd%"=="hm"     goto :thermal_infos
-if /i "%cmd%"=="fake"   goto :thermal_fake
+if /i "%cmd%"=="fake"   goto :thermal_infos
 if /i "%cmd%"=="wt"     goto :whats_temp
 if /i "%cmd%"=="config" goto :thermal_config
 
@@ -66,6 +66,7 @@ echo   therm tz dis
 echo   therm tz en
 echo   therm cd
 echo   therm hm
+echo   therm fake ap_ntc 30
 echo   therm wt
 echo.
 exit /b 0
@@ -95,12 +96,3 @@ exit /b %ERRORLEVEL%
 :whats_temp
 call "%SCRIPT_DIR%thermal_whats_temp.bat" %param1%
 exit /b %ERRORLEVEL%
-
-:thermal_fake
-set "SH_SCRIPT=%SCRIPT_DIR%thermal_infos.sh"
-if not exist "%SH_SCRIPT%" (
-    echo [ERROR] Shell script not found: %SH_SCRIPT%
-    exit /b 1
-)
-adb shell "sh -s tz fake %param1% %param2%" < "%SH_SCRIPT%"
-exit /b %ERRORLEVEL%

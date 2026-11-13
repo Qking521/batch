@@ -33,7 +33,7 @@ show_log_info() {
 
 # 2. 温升模块
 MTK:DexOptimizer|dex2oat|Cpu load|ThermalInfo:|thermal_core|thermal IRQ|throttlingStatus|mmi_thermal_ratio|Apply thermal policy:|libPowerHal:
-QCOM:DexOptimizer|dex2oat|Cpu load|Therm ADC|Therm Reading
+QCOM:DexOptimizer|dex2oat|Cpu load|Therm ADC|Therm Reading|ThermalEngine: ACTION
 
 # 3. 系统异常与稳定性 (Java Exception、Native Crash、ANR 无响应、Tombstone)
 FATAL EXCEPTION|ANR in|CRASH:|backtrace:|Build fingerprint:|Tombstone
