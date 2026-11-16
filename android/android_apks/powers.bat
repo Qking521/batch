@@ -24,12 +24,7 @@ call "%NDK_CLANG%" -O2 -o "%~dp0powersd" "%~dp0powersd.c" || exit /b 1
 
 echo.
 echo [3/6] Installing to /system...
-adb root
-adb remount -R
-adb wait-for-device
-adb root
-adb remount -R
-adb wait-for-device
+call :remount
 
 echo [4/6]Pushing powersd + powersd.rc...
 adb push "%~dp0powersd" /data/local/tmp/powersd || exit /b 1
@@ -44,5 +39,17 @@ adb wait-for-device
 adb root
 adb wait-for-device
 adb shell "getprop init.svc.powersd"
+
+:: remount 操作（静默执行，不显示中间结果）
+:remount
+(
+    adb root
+    adb remount -R
+    adb wait-for-device
+    adb root
+    adb remount -R
+    adb wait-for-device
+) >nul 2>&1
+    exit /b 0
 
 endlocal

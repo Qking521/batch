@@ -33,6 +33,22 @@ get_first_prop() {
     return 1
 }
 
+# 检测芯片平台 (参照 perf_cpu.sh detect_platform)
+detect_platform() {
+    local board soc hardware combined
+    board=$(getprop ro.product.board 2>/dev/null | tr '[:upper:]' '[:lower:]')
+    soc=$(getprop ro.board.platform 2>/dev/null | tr '[:upper:]' '[:lower:]')
+    hardware=$(getprop ro.hardware 2>/dev/null | tr '[:upper:]' '[:lower:]')
+    combined="$board $soc $hardware"
+
+    case "$combined" in
+        *mt[0-9]*|*mediatek*|*mtk*)            echo "MTK" ;;
+        *sm[0-9]*|*msm*|*qcom*|*snapdragon*)   echo "Qualcomm" ;;
+        *ums*|*sc[0-9]*|*spreadtrum*|*unisoc*) echo "UNISOC" ;;
+        *)                                     echo "Other" ;;
+    esac
+}
+
 # 1. 基础硬件与平台信息
 get_hardware_info() {
     log_info "=== 硬件与平台信息 ==="
@@ -47,7 +63,6 @@ get_hardware_info() {
     [ -z "$soc_name" ] && soc_name="$(getprop ro.board.platform 2>/dev/null)"
     [ -z "$soc_name" ] && soc_name="$(getprop ro.hardware 2>/dev/null)"
     echo "  SoC 型号:       ${soc_name:-UNKNOWN}"
-
     echo "  SKU:           $(get_prop_or_unk ro.boot.hardware.sku)"
     echo "  序列号 (SN):    $(get_prop_or_unk ro.serialno)"
 }
@@ -113,6 +128,11 @@ get_soc_info() {
     echo "  [CPU 信息]"
     echo "  SoC 芯片型号:   ${soc_full:-UNKNOWN}"
     [ -n "$soc_mfg" ] && echo "  SoC 芯片厂商:   ${soc_mfg}"
+    # 高通 (Qualcomm) 平台专属 SoC 标识：仅高通平台显示
+    if [ "$(detect_platform)" = "Qualcomm" ]; then
+        echo "  SoC 名称:  $(get_prop_or_unk ro.vendor.qti.soc_name)"
+        echo "  SoC ID:    $(get_prop_or_unk ro.vendor.qti.soc_id)"
+    fi
     echo "  CPU 架构 (ABI): ${abi}"
     echo "  核心数量:      ${cpu_cores} 核"
     echo "  CPU 调频模式:  ${governor}"

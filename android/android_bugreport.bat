@@ -31,12 +31,14 @@ if %errorlevel%==0 (
 
 :: === 5. 打开 bugreport*.txt 文件 ===
 for %%f in ("%UNZIPDIR%\bugreport*.txt") do (
+    start "" "%UNZIPDIR%"
     start "" "%%f"
 	echo starting bugreport...
     goto :done
 )
 echo UNZIPDIR=%UNZIPDIR%
 for %%f in ("%UNZIPDIR%\dumpstate*.txt") do (
+    start "" "%UNZIPDIR%"
     start "" "%%f"
 	echo starting bugreport...
     goto :done

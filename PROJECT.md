@@ -91,7 +91,7 @@ esac
 |------|------|------|
 | **纯 Shell 业务（主入口直连）** | `android_all.bat` + `android_device_info.sh`<br>`android_all.bat` + `android_refresh_rate.sh` | 纯 Android 设备端操作，无单独子 bat 中转 |
 | **双层包装（PC 本地交互）** | `android_screen_record.bat` + `android_screen_record.sh` | 涉及从设备拉取文件到 PC 本地 `MODULE_OUT_DIR` 并自动打开 |
-| **纯 Shell 轻量查询** | `thermal/thermal_infos.sh` | 轻量只读查询的 shell 范例 |
+| **纯 Shell 轻量查询** | `thermal/thermal_cat.sh` | 轻量只读查询的 shell 范例 |
 
 ### 跨平台解释器声明行（#! Shebang）兼容规范
 
