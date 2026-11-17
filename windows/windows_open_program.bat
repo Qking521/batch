@@ -22,19 +22,21 @@ if /i "%param1%"=="ltra" goto long_trace_record_advance
 if /i "%param1%"=="ft6" goto flashtool
 if /i "%param1%"=="qfile" goto qfile
 if /i "%param1%"=="odin" goto odin
+if /i "%param1%"=="agy" goto agy
 
 :show_help
 echo.
 echo Usage: win command program
 echo.
 echo Available parmas:
-echo   dir              - open tools dir
-echo   ltr              - mtk long trace record tool
-echo   ltra             - mtk long trace record tool with lmode
-echo   ft6              - mtk flash tool for V6
-echo   qfile            - qcom flash tool
-echo   odin             - samsung flash tool
-echo   -h               - Show help (alias: help).
+echo   dir                      - open tools dir
+echo   ltr                      - mtk long trace record tool
+echo   ltra                     - mtk long trace record tool with lmode
+echo   ft6                      - mtk flash tool for V6
+echo   qfile                    - qcom flash tool
+echo   odin                     - samsung flash tool
+echo   agy [default_dir]        -start agy cli, Add workdir if have
+echo   -h                       - Show help (alias: help).
 echo.
 echo Examples:
 echo   win open ltr
@@ -66,6 +68,20 @@ exit /b
 :odin
     set "PROGRAM_PATH=%TOOLS_ROOT_PATH%\odin4v_windows_2.6\odin4v.exe"
     goto launch
+
+:agy
+    set "default_dir=%USERPROFILE%\batScript"
+    if "%param1%"=="." (
+        set "default_dir=%cd%"
+    )
+    ::cd /d %default_dir% && agy
+    ::需要把wt.exe添加到环境变量
+    wt.exe -w 0 -p "Antigravity CLI" -d %default_dir%
+    ::如果执行windwos terminal没有配antigravity导致执行失败，可以使用默认的方式
+    if errorlevel 1 (
+        cd /d %default_dir% && agy
+    )
+    exit /b 0
 
 :launch
     if not exist "!PROGRAM_PATH!" (
