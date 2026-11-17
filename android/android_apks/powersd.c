@@ -39,6 +39,13 @@
 #define GPU_OUT_PATH "/data/local/tmp/powers_gpu.txt"
 #define GPU_TMP_PATH "/data/local/tmp/powers_gpu.tmp"
 #define GED_DIR      "/sys/kernel/ged/hal"
+/* thermal_zone nodes are denied to untrusted_app on some builds (DAC/SELinux).
+ * The su domain this daemon runs in can read them, so it mirrors the values
+ * the app used to read directly — same pattern as the GED dump above. */
+#define THERMAL_OUT_PATH "/data/local/tmp/powers_thermal.txt"
+#define THERMAL_TMP_PATH "/data/local/tmp/powers_thermal.tmp"
+#define THERMAL_DIR      "/sys/class/thermal"
+#define THERMAL_MAX_ZONES 64
 #define REFRESH_MS   3000
 
 static void refresh_once(void) {
@@ -107,10 +114,45 @@ static void refresh_gpu_once(void) {
     rename(GPU_TMP_PATH, GPU_OUT_PATH);
 }
 
+/* Copy the thermal_zone nodes the app needs (type + temp per zone) into a
+ * world-readable file. Format per zone:
+ *   [zoneN]\n type=<name>\n temp=<milliCelsius>\n
+ * temp stays in the raw milli-degree unit the app already divides by 1000. */
+static void refresh_thermal_once(void) {
+    FILE *out = fopen(THERMAL_TMP_PATH, "w");
+    if (!out) return;
+    for (int i = 0; i < THERMAL_MAX_ZONES; i++) {
+        char path[256];
+        char type[64];
+        long temp = -1;
+
+        snprintf(path, sizeof(path), THERMAL_DIR "/thermal_zone%d/type", i);
+        FILE *t = fopen(path, "r");
+        if (!t) continue;              /* zone absent (or unreadable) */
+        if (fscanf(t, "%63s", type) != 1) { fclose(t); continue; }
+        fclose(t);
+
+        snprintf(path, sizeof(path), THERMAL_DIR "/thermal_zone%d/temp", i);
+        FILE *p = fopen(path, "r");
+        if (p) {
+            if (fscanf(p, "%ld", &temp) != 1) temp = -1;
+            fclose(p);
+        }
+
+        fprintf(out, "[zone%d]\n", i);
+        fprintf(out, "type=%s\n", type);
+        fprintf(out, "temp=%ld\n", temp);
+    }
+    fclose(out);
+    chmod(THERMAL_TMP_PATH, 0644);
+    rename(THERMAL_TMP_PATH, THERMAL_OUT_PATH);
+}
+
 int main(void) {
     for (;;) {
         refresh_once();
         refresh_gpu_once();
+        refresh_thermal_once();
         usleep(REFRESH_MS * 1000);
     }
 }
