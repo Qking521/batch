@@ -2,8 +2,8 @@
 # ============================================================
 # Author: wangqiang
 # Date:   2026-08-05
-# Desc:   开启/禁用 Android 应用包（支持单应用包名或预设组 google/moto）；selinux 开关；开发者选项开关
-# Usage:  adb shell "sh -s <enable|disable> <pkg_name|google|moto|selinux|dev>" < android_toggle.sh
+# Desc:   开启/禁用 Android 应用包（支持单应用包名或预设组 google/moto）；selinux 开关；开发者选项开关；powersd 服务开关
+# Usage:  adb shell "sh -s <enable|disable> <pkg_name|google|moto|selinux|dev|powers>" < android_toggle.sh
 # ============================================================
 
 ACTION="$1"
@@ -25,7 +25,7 @@ die() {
 
 usage() {
     echo ""
-    echo "用法: ad [enable|disable] <package_name|google|moto|selinux|dev>"
+    echo "用法: ad [enable|disable] <package_name|google|moto|selinux|dev|powers>"
     echo ""
     echo "动作:"
     echo "  enable <target>   - 启用指定的action"
@@ -37,11 +37,13 @@ usage() {
     echo "  moto             - 预设的 Moto 相关应用包列表"
     echo "  selinux          - 切换 selinux 状态 (enable=on, disable=off)"
     echo "  dev              - 切换开发者选项 (enable=显示触摸/指针位置/秒, disable=关闭)"
+    echo "  powers           - 切换 powersd 服务 (enable=start, disable=stop)"
     echo ""
     echo "示例:"
     echo "  ad enable/disable google/moto/com.android.chrome"
     echo "  ad enable/disable selinux"
     echo "  ad enable/disable dev"
+    echo "  ad enable/disable powers"
     echo ""
 }
 
@@ -126,6 +128,18 @@ do_developer() {
     fi
 }
 
+# powersd 服务开关
+do_powers() {
+    if [ "$ACTION" = "enable" ]; then
+        start powersd
+        log "powersd 已启动 (start powersd)"
+    else
+        stop powersd
+        log "powersd 已停止 (stop powersd)"
+    fi
+    echo "init.svc.powersd = $(getprop init.svc.powersd)"
+}
+
 # 切换单个应用包
 toggle_single_package() {
     pkg="$1"
@@ -165,6 +179,7 @@ route() {
     case "$TARGET" in
         selinux) do_selinux; return ;;
         dev)     do_developer; return ;;
+        powers)  do_powers; return ;;
         google)  PKG_LIST="$GOOGLE_PACKAGES" ;;
         moto)    PKG_LIST="$MOTO_PACKAGES" ;;
         *)       PKG_LIST="$TARGET" ;;
