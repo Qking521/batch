@@ -108,6 +108,8 @@ adb shell dumpsys batterystats --enable full-wake-history
 adb shell dumpsys alarm --reset >nul
 adb shell dumpsys alarm log on >nul
 adb shell "dumpsys usagestats --reset" >nul
+adb shell "rm -f /data/anr/*" >nul
+adb shell "rm -rf /data/tombstones/*" >nul
 adb shell "rm -rf /data/system/dropbox/*" >nul
 echo [OK] Battery stats reset and logs cleared.
 exit /b 0

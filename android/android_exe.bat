@@ -15,10 +15,11 @@ if "%action%"==""        goto :usage
 if /i "%action%"=="-h"   goto :usage
 if /i "%action%"=="help" goto :usage
 
-if /i "%action%"=="clear" goto :clear_log
-if /i "%action%"=="st"    goto :sync_time
-if /i "%action%"=="bind"  goto :bind
-if /i "%action%"=="skip"  goto :skip_wizard
+if /i "%action%"=="clear"  goto :clear_log
+if /i "%action%"=="st"     goto :sync_time
+if /i "%action%"=="bind"   goto :bind
+if /i "%action%"=="skip"   goto :skip_wizard
+if /i "%action%"=="monkey" goto :monkey
 
 echo [ERROR] Unknown action: %action%
 goto :usage
@@ -32,6 +33,7 @@ echo   clear          - Clear logcat and dmesg logs
 echo   st [timezone]  - Sync pc time to device via adb
 echo   bind           - Bind connected device (set ANDROID_SERIAL ^& title)
 echo   skip           - Skip setup wizard
+echo   monkey [pkg]   - Run Monkey test (no arg=default, pkg=validate ^& run)
 echo.
 exit /b 0
 
@@ -103,4 +105,21 @@ exit /b 0
     adb shell settings put secure user_setup_complete 1
     echo [OK] Setup wizard skipped, device rebooting.
     adb reboot
+    exit /b 0
+
+:monkey
+    rem 无参数: 执行默认全局 monkey
+    if "%param1%"=="" (
+        adb shell monkey --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
+        exit /b 0
+    )
+    rem 校验包名有效性: 无效包名 pm path 无输出
+    set "PKG_PATH="
+    for /f "delims=" %%p in ('adb shell pm path %param1% 2^>nul') do set "PKG_PATH=%%p"
+    if not defined PKG_PATH (
+        echo [ERROR] Invalid package name: %param1%
+        exit /b 1
+    )
+
+    adb shell monkey -p %param1% --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
     exit /b 0

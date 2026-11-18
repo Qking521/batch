@@ -2,8 +2,8 @@
 # ============================================================
 # Author: wangqiang
 # Date:   2026-08-05
-# Desc:   开启/禁用 Android 应用包（支持单应用包名或预设组 google/moto）；selinux 开关；开发者选项开关；powersd 服务开关
-# Usage:  adb shell "sh -s <enable|disable> <pkg_name|google|moto|selinux|dev|powers>" < android_toggle.sh
+# Desc:   开启/禁用 Android 应用包（支持单应用包名或预设组 google/moto）；selinux 开关；开发者选项开关；powersd 服务开关；debugfs 挂载开关
+# Usage:  adb shell "sh -s <enable|disable> <pkg_name|google|moto|selinux|dev|powers|debugfs>" < android_toggle.sh
 # ============================================================
 
 ACTION="$1"
@@ -25,7 +25,7 @@ die() {
 
 usage() {
     echo ""
-    echo "用法: ad [enable|disable] <package_name|google|moto|selinux|dev|powers>"
+    echo "用法: ad [enable|disable] <package_name|google|moto|selinux|dev|powers|debugfs>"
     echo ""
     echo "动作:"
     echo "  enable <target>   - 启用指定的action"
@@ -38,12 +38,14 @@ usage() {
     echo "  selinux          - 切换 selinux 状态 (enable=on, disable=off)"
     echo "  dev              - 切换开发者选项 (enable=显示触摸/指针位置/秒, disable=关闭)"
     echo "  powers           - 切换 powersd 服务 (enable=start, disable=stop)"
+    echo "  debugfs          - 挂载/卸载 debugfs (enable=mount /sys/kernel/debug, disable=umount)"
     echo ""
     echo "示例:"
     echo "  ad enable/disable google/moto/com.android.chrome"
     echo "  ad enable/disable selinux"
     echo "  ad enable/disable dev"
     echo "  ad enable/disable powers"
+    echo "  ad enable/disable debugfs"
     echo ""
 }
 
@@ -140,6 +142,18 @@ do_powers() {
     echo "init.svc.powersd = $(getprop init.svc.powersd)"
 }
 
+# debugfs 挂载开关
+do_debugfs() {
+    if [ "$ACTION" = "enable" ]; then
+        mount -t debugfs debugfs /sys/kernel/debug 2>/dev/null
+        log "debugfs 已挂载 (/sys/kernel/debug)"
+    else
+        umount /sys/kernel/debug
+        log "debugfs 已卸载 (/sys/kernel/debug)"
+    fi
+    mount | grep debugfs
+}
+
 # 切换单个应用包
 toggle_single_package() {
     pkg="$1"
@@ -180,6 +194,7 @@ route() {
         selinux) do_selinux; return ;;
         dev)     do_developer; return ;;
         powers)  do_powers; return ;;
+        debugfs) do_debugfs; return ;;
         google)  PKG_LIST="$GOOGLE_PACKAGES" ;;
         moto)    PKG_LIST="$MOTO_PACKAGES" ;;
         *)       PKG_LIST="$TARGET" ;;

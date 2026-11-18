@@ -41,9 +41,8 @@ if /i "%cmd%"=="exe"       goto :exe_actions
 if /i "%cmd%"=="di"        goto :device_info
 if /i "%cmd%"=="device"    goto :device_info
 if /i "%cmd%"=="search"    goto :android_search
-if /i "%cmd%"=="monkey"    goto :monkey
-if /i "%cmd%"=="enable"    goto :package_toggle
-if /i "%cmd%"=="disable"   goto :package_toggle
+if /i "%cmd%"=="enable"    goto :android_toggle
+if /i "%cmd%"=="disable"   goto :android_toggle
 if /i "%cmd%"=="rr"        goto :refresh_rate
 if /i "%cmd%"=="install"   goto :install_apk
 if /i "%cmd%"=="shell"     goto :shells
@@ -61,18 +60,17 @@ echo.
 echo Available commands:
 echo   ss                       - Take screenshot and save/open
 echo   sr                       - Record screen and pull to local
-echo   kill [process_name]      - Kill target process by name
+echo   kill [pid/pkg/keyword]   - Kill process by PID / package / fuzzy keyword
 echo   bugreport [tag]          - Capture/Extract bugreport log
 echo   di / device [category]   - Show device info (all/hw/soc/sys/ram/rom/display/battery/net)
 echo   search [keyword]         - Search Settings and Properties
 echo   watch [interval]         - Watch Settings, getprop, audio volume ^& status
-echo   monkey [pkg/kill/num]    - Run or stop Monkey test
 echo   enable/disable [pkg]     - Enable or disable package / dev / selinux / google / moto
 echo   dump [service] [params]  - Dump system service to OUT dir
 echo   cat [topic]              - Show info on screen (top/wl)
 echo   rr [on/off]              - Set or query refresh rate
 echo   install [toolname]       - Install perf / thermal / power apk tools
-echo   exe ^<action^>           - Execute device action (clear/st/bind/skip)
+echo   exe ^<action^>           - Execute device action (clear/st/bind/skip/monkey)
 echo   adbd [category/keyword]  - ADB helper command dictionary
 echo   qs [category]            - Quick raw commands ^& log keywords (log/therm/perf/power/sys/all)
 echo   -h / help                - Show help info
@@ -125,14 +123,17 @@ exit /b 0
     exit /b %ERRORLEVEL%
 
 :kill_process
-    if "%param1%"=="" (
-        echo [ERROR] Please specify process name keyword.
+    set "SH_SCRIPT=%SCRIPT_DIR%android_kill.sh"
+    if not exist "%SH_SCRIPT%" (
+        echo [ERROR] Script not found: %SH_SCRIPT%
         exit /b 1
     )
-    adb shell "ps -A | grep %param1%"
-    adb shell "kill -9 $(ps -A | grep %param1% | grep -v grep | awk '{print $2}')"
-    adb shell "ps -A | grep %param1%"
-    exit /b 0
+    adb push "%SH_SCRIPT%" /data/local/tmp/android_kill.sh >nul 2>&1
+    adb shell "chmod +x /data/local/tmp/android_kill.sh" >nul 2>&1
+
+    rem -t 强制分配伪终端 (PTY)：多命中时手机端 read 交互选择才能生效
+    adb shell -t "sh /data/local/tmp/android_kill.sh %param1%"
+    exit /b %ERRORLEVEL%
 
 :device_info
     set "SH_SCRIPT=%SCRIPT_DIR%android_device_info.sh"
@@ -152,28 +153,7 @@ exit /b 0
     adb shell "sh -s %param1%" < "%SH_SCRIPT%"
     exit /b %ERRORLEVEL%
 
-:monkey
-    if "%param1%"=="" (
-        adb shell monkey --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
-        exit /b 0
-    )
-    if /i "%param1%"=="kill" (
-        for /f "delims=" %%p in ('adb shell pidof com.android.commands.monkey 2^>nul') do (
-            adb shell kill -9 %%p
-        )
-        echo [OK] Monkey stopped.
-        exit /b 0
-    )
-    set "pkg_prefix=%param1%"
-    if "%pkg_prefix:~0,3%"=="com" (
-        adb shell monkey -p %param1% --throttle 200 --ignore-crashes --ignore-timeouts --ignore-security-exceptions --monitor-native-crashes -v -v -v 1000000
-    ) else (
-        echo [ERROR] Invalid package name: %param1%
-        exit /b 1
-    )
-exit /b 0
-
-:package_toggle
+:android_toggle
     set "SH_SCRIPT=%SCRIPT_DIR%android_toggle.sh"
     if not exist "%SH_SCRIPT%" (
         echo [ERROR] Script not found: %SH_SCRIPT%
@@ -181,16 +161,6 @@ exit /b 0
     )
     set "TOGGLE_ACTION=%cmd%"
     set "TOGGLE_TARGET=%param1%"
-    if /i "%cmd%"=="dev" (
-        set "TOGGLE_TARGET=dev"
-        if /i "%param1%"=="on"  set "TOGGLE_ACTION=enable"
-        if /i "%param1%"=="off" set "TOGGLE_ACTION=disable"
-        if "%param1%"=="" (
-            echo Usage: ad dev [on/off]
-            echo         or: ad enable/disable dev
-            exit /b 1
-        )
-    )
     adb shell "sh -s %TOGGLE_ACTION% %TOGGLE_TARGET%" < "%SH_SCRIPT%"
     exit /b %ERRORLEVEL%
 
