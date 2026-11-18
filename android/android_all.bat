@@ -37,7 +37,7 @@ if /i "%cmd%"=="ss"        goto :screen_shot
 if /i "%cmd%"=="sr"        goto :screen_record
 if /i "%cmd%"=="kill"      goto :kill_process
 if /i "%cmd%"=="bugreport" goto :bugreport
-if /i "%cmd%"=="clear"     goto :clear_log
+if /i "%cmd%"=="exe"       goto :exe_actions
 if /i "%cmd%"=="di"        goto :device_info
 if /i "%cmd%"=="device"    goto :device_info
 if /i "%cmd%"=="search"    goto :android_search
@@ -45,14 +45,11 @@ if /i "%cmd%"=="monkey"    goto :monkey
 if /i "%cmd%"=="enable"    goto :package_toggle
 if /i "%cmd%"=="disable"   goto :package_toggle
 if /i "%cmd%"=="rr"        goto :refresh_rate
-if /i "%cmd%"=="skip"      goto :skip_wizard
 if /i "%cmd%"=="install"   goto :install_apk
 if /i "%cmd%"=="shell"     goto :shells
 if /i "%cmd%"=="adbd"      goto :adb_helper
 if /i "%cmd%"=="qs"        goto :quick_info
 if /i "%cmd%"=="watch"     goto :watch_changes
-if /i "%cmd%"=="bind"      goto :bind
-if /i "%cmd%"=="st"        goto :sync_time
 
 echo [ERROR] Unknown command: %cmd%
 goto :usage
@@ -62,12 +59,10 @@ echo.
 echo Usage: ad [command] [args...]
 echo.
 echo Available commands:
-echo   bind [serial]            - Bind device ro.serialno (set ANDROID_SERIAL ^& title)
 echo   ss                       - Take screenshot and save/open
 echo   sr                       - Record screen and pull to local
 echo   kill [process_name]      - Kill target process by name
 echo   bugreport [tag]          - Capture/Extract bugreport log
-echo   clear                    - Clear logcat and dmesg logs
 echo   di / device [category]   - Show device info (all/hw/soc/sys/ram/rom/display/battery/net)
 echo   search [keyword]         - Search Settings and Properties
 echo   watch [interval]         - Watch Settings, getprop, audio volume ^& status
@@ -76,17 +71,16 @@ echo   enable/disable [pkg]     - Enable or disable package / dev / selinux / go
 echo   dump [service] [params]  - Dump system service to OUT dir
 echo   cat [topic]              - Show info on screen (top/wl)
 echo   rr [on/off]              - Set or query refresh rate
-echo   skip                     - Skip setup wizard
 echo   install [toolname]       - Install perf / thermal / power apk tools
+echo   exe ^<action^>           - Execute device action (clear/st/bind/skip)
 echo   adbd [category/keyword]  - ADB helper command dictionary
 echo   qs [category]            - Quick raw commands ^& log keywords (log/therm/perf/power/sys/all)
-echo   st [timze zone]          - sync pc time to device via adb
 echo   -h / help                - Show help info
 echo.
 echo Examples:
 echo   ad dump sf
 echo   ad cat top
-echo   ad bind
+echo   ad exe bind
 echo   ad device
 echo   ad device hw
 echo   ad dev on
@@ -107,11 +101,10 @@ exit /b 0
     call "%SCRIPT_DIR%android_adb_helper.bat" %param1%
     exit /b %ERRORLEVEL%
 
-:clear_log
-    adb root
-    adb shell "logcat -b all -c; dmesg -C"
-    echo [OK] Logcat and dmesg cleared.
-    exit /b 0
+:exe_actions
+    rem endlocal 使 android_exe.bat 中 bind 动作能正确导出 ANDROID_SERIAL 到当前会话
+    endlocal & call "%SCRIPT_DIR%android_exe.bat" %param1% %param2%
+    exit /b %ERRORLEVEL%
 
 :screen_shot
     set "shot_file=screenshot_%FORMAT_TIME%.png"
@@ -210,13 +203,6 @@ exit /b 0
     adb shell "sh -s %cmd% %param1%" < "%SH_SCRIPT%"
     exit /b %ERRORLEVEL%
 
-:skip_wizard
-    adb shell settings put global device_provisioned 1
-    adb shell settings put secure user_setup_complete 1
-    echo [OK] Setup wizard skipped, device rebooting.
-    adb reboot
-    exit /b 0
-
 :install_apk
     call "%SCRIPT_DIR%android_install.bat" %param1%
     exit /b %ERRORLEVEL%
@@ -301,26 +287,4 @@ exit /b 0
 
     rem 兜底清理：杀掉遗留实例并删除临时文件（正常情况下由手机端 trap 完成）
     adb shell "if [ -f /data/local/tmp/.ad_watch.pid ]; then kill -9 $(cat /data/local/tmp/.ad_watch.pid 2>/dev/null) 2>/dev/null; fi; rm -f /data/local/tmp/.ad_watch.pid /data/local/tmp/.ad_watch_prev_* /data/local/tmp/.ad_watch_curr_*" >nul 2>&1
-    exit /b 0
-
-:bind
-    set "SERIAL="
-    if not "%param1%"=="" (
-        for /f "tokens=*" %%a in ('adb -s %param1% shell getprop ro.serialno 2^>nul') do set "SERIAL=%%a"
-        if "%SERIAL%"=="" set "SERIAL=%param1%"
-    ) else (
-        for /f "tokens=*" %%a in ('adb shell getprop ro.serialno 2^>nul') do set "SERIAL=%%a"
-    )
-    if "%SERIAL%"=="" (
-        echo [ERROR] Failed to get ro.serialno.
-        adb devices
-        exit /b 1
-    )
-    title %SERIAL%
-    echo [OK] ANDROID_SERIAL=%SERIAL%
-    endlocal & set "ANDROID_SERIAL=%SERIAL%"
-    exit /b 0
-
-:sync_time
-    call "%SCRIPT_DIR%android_sync_time.bat" %param1%
     exit /b 0

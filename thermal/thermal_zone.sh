@@ -184,11 +184,11 @@ do_watch() {
 ACTION="$1"
 
 case "$ACTION" in
+    "")              show_tz_usage ;;
     "watch")         do_watch "$2" ;;
     "dis"|"disable") do_disable ;;
     "en"|"enable")   do_enable ;;
     "cat"|"info")    echo "正在获取温度传感器信息..."; tz_info ;;
-    "")              show_tz_usage ;;
     "single")
         zone_dir=$(find_zone_by_type "$2")
         if [ -n "$zone_dir" ]; then

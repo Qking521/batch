@@ -47,6 +47,10 @@
 #define THERMAL_DIR      "/sys/class/thermal"
 #define THERMAL_MAX_ZONES 64
 #define REFRESH_MS   3000
+/* App-side pause switch. The app writes "1" to pause collection or "0" to
+ * resume; this lives in the app's private filesDir (app_data_file), which the
+ * su domain this daemon runs in is permitted to read. Absent file = running. */
+#define CONTROL_PATH "/data/data/com.king.power/files/powersd_control"
 
 static void refresh_once(void) {
     int fds[2];
@@ -148,11 +152,22 @@ static void refresh_thermal_once(void) {
     rename(THERMAL_TMP_PATH, THERMAL_OUT_PATH);
 }
 
+/* Return non-zero when the app pauses collection. */
+static int collection_paused(void) {
+    FILE *f = fopen(CONTROL_PATH, "r");
+    if (!f) return 0;
+    int c = fgetc(f);
+    fclose(f);
+    return c == '1';
+}
+
 int main(void) {
     for (;;) {
-        refresh_once();
-        refresh_gpu_once();
-        refresh_thermal_once();
+        if (!collection_paused()) {
+            refresh_once();
+            refresh_gpu_once();
+            refresh_thermal_once();
+        }
         usleep(REFRESH_MS * 1000);
     }
 }
