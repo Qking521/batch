@@ -115,14 +115,22 @@ exit /b 0
     call %SCRIPT_DIR%perf_simpleperf.bat %*
     exit /b
 
-:dhrystone
-    call %SCRIPT_DIR%perf_dhrystone.bat
+:Dhrystone
+    adb push "%SCRIPT_DIR%resources\dhrystone.elf" /data/dhrystone.elf >nul
     set "SH_SCRIPT=%SCRIPT_DIR%perf_dhrystone.sh"
     if not exist "%SH_SCRIPT%" (
         echo [ERROR] 找不到 shell 脚本: %SH_SCRIPT%
         exit /b 1
     )
     adb shell "sh -s %param1% %param2% %param3%" < "%SH_SCRIPT%"
+
+    :: stop 时自动 pull 结果文件到 OUT 目录
+    if /i "%param1%"=="stop" (
+        for /f "delims=" %%f in ('adb shell "ls /data/dhrystone_results*.txt 2>/dev/null"') do (
+            adb pull "%%f" "%MODULE_OUT_DIR%\" >nul 2>&1
+        )
+        if exist "%MODULE_OUT_DIR%\dhrystone_results.txt" echo [OK] 结果已保存: %MODULE_OUT_DIR%\dhrystone_results*.txt
+    )
     exit /b
 
 :sql

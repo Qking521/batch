@@ -2,20 +2,32 @@
 # ============================================================
 # Author: WangQiang
 # Date:   2026-08-26
-# Desc:   Dhrystone 压力测试控制工具
-# Usage:  adb shell "sh -s <action> [param1]" < perf_dhrystone.sh
-#
-# Actions:
-#   start [count]     - 启动 dhrystone（单进程或多进程）
-#   stop              - 停止所有 dhrystone 进程
-#   status            - 查看 dhrystone 运行状态
+# Desc:   Dhrystone 压力测试控制工具 (单进程/多进程启动、停止、状态查询)
+# Usage:  adb shell "sh -s <action> [count]" < perf_dhrystone.sh
 # ============================================================
 
 ACTION="$1"
-PARAM1="$2"
+COUNT="$2"
 
-DEVICE_DHRY_SH="/data/dhrystone.sh"
-DEVICE_DHRY_ELF="/data/dhrystone.elf"
+DHRY_ELF="/data/dhrystone.elf"
+ITERATIONS=300000000
+RESULT_PREFIX="/data/dhrystone_results"
+# 导出常量, 供 nohup 后台循环子进程继承
+export DHRY_ELF ITERATIONS RESULT_PREFIX
+
+log() {
+    echo "[INFO] $*"
+}
+
+err() {
+    echo "[ERROR] $*" >&2
+}
+
+die() {
+    err "$*"
+    usage
+    exit 1
+}
 
 usage() {
     echo ""
@@ -35,85 +47,104 @@ usage() {
     echo ""
 }
 
-cmd_start() {
-    count="$PARAM1"
-    
-    if [ ! -f "$DEVICE_DHRY_SH" ] || [ ! -f "$DEVICE_DHRY_ELF" ]; then
-        echo "[ERROR] 设备端缺少 Dhrystone 文件 ($DEVICE_DHRY_SH 或 $DEVICE_DHRY_ELF)"
-        return 1
+do_status() {
+    running=$(ps -ef 2>/dev/null | grep "dhrystone" | grep -v grep)
+    if [ -n "$running" ]; then
+        log "当前运行中的 dhrystone 进程:"
+        echo "$running"
+    else
+        log "当前没有运行中的 dhrystone 进程"
+    fi
+}
+
+# 后台启动单进程循环 (nohup 防 SIGHUP; 结果直接追加写入文件)
+bg_single() {
+    nohup sh -c '
+        while true; do
+            echo "$ITERATIONS" | "$DHRY_ELF" >> "${RESULT_PREFIX}.txt"
+        done
+    ' > /dev/null 2>&1 &
+}
+
+# 后台启动一个多进程循环 worker, 结果写入 <prefix>_<idx>.txt
+bg_multi() {
+    nohup sh -c '
+        while true; do
+            echo "$ITERATIONS" | "$DHRY_ELF" >> "${RESULT_PREFIX}_$1.txt"
+        done
+    ' worker "$1" > /dev/null 2>&1 &
+}
+
+do_start() {
+    if [ ! -f "$DHRY_ELF" ]; then
+        die "设备端缺少 Dhrystone 文件: $DHRY_ELF"
     fi
 
-    # 确保有执行权限
-    chmod 777 /data/dhrystone.elf /data/dhrystone.sh /data/dhrystone_multi.sh /data/_dhrystone_multi.sh 2>/dev/null
+    # 授权兜底 (PC 端 push 时不做 chmod)
+    chmod 777 "$DHRY_ELF" 2>/dev/null
 
-    running=$(ps -ef 2>/dev/null | grep -E "dhrystone\.sh|dhrystone\.elf|_dhrystone_multi\.sh" | grep -v grep)
+    running=$(ps -ef 2>/dev/null | grep "dhrystone" | grep -v grep)
     if [ -n "$running" ]; then
-        echo "[INFO] 检测到 dhrystone 已在运行中:"
-        echo "$running"
+        log "检测到 dhrystone 已在运行中"
+        do_status
         return 0
     fi
 
-    echo "[INFO] 正在启动 dhrystone..."
-    cd /data || exit 1
-
-    if [ -n "$count" ] && [ "$count" -gt 1 ] 2>/dev/null; then
-        if [ -f "/data/dhrystone_multi.sh" ]; then
-            echo "[INFO] 启动多进程模式: $count 个进程"
-            nohup ./dhrystone_multi.sh "$count" > /dev/null 2>&1 &
-        else
-            echo "[WARN] 未找到 /data/dhrystone_multi.sh，回退为单进程模式"
-            nohup ./dhrystone.sh > /dev/null 2>&1 &
-        fi
+    if [ -n "$COUNT" ] && [ "$COUNT" -gt 1 ] 2>/dev/null; then
+        log "正在启动 dhrystone... 多进程模式: $COUNT 个进程"
+        i=0
+        while [ "$i" -lt "$COUNT" ]; do
+            bg_multi "$i"
+            i=$((i + 1))
+        done
     else
-        nohup ./dhrystone.sh > /dev/null 2>&1 &
+        log "正在启动 dhrystone... 单进程模式"
+        bg_single
     fi
 
     sleep 1
-    echo "[INFO] 启动完成，当前进程状态:"
-    ps -ef 2>/dev/null | grep -E "dhrystone" | grep -v grep
+    log "启动完成"
+    do_status
 }
 
-cmd_stop() {
-    pids=$(ps -ef 2>/dev/null | grep -E "dhrystone" | grep -v grep | awk '{print $2}')
+do_stop() {
+    pids=$(ps -ef 2>/dev/null | grep "dhrystone" | grep -v grep | awk '{print $2}')
     if [ -z "$pids" ]; then
-        echo "[INFO] 未发现运行中的 dhrystone 进程"
-        return 0
-    fi
-
-    for pid in $pids; do
-        kill -9 "$pid" 2>/dev/null
-    done
-    echo "[INFO] dhrystone 进程清除完成"
-}
-
-cmd_status() {
-    running=$(ps -ef 2>/dev/null | grep -E "dhrystone" | grep -v grep)
-    if [ -n "$running" ]; then
-        echo "[INFO] 当前运行中的 dhrystone 进程:"
-        echo "$running"
+        log "未发现运行中的 dhrystone 进程"
     else
-        echo "[INFO] 当前没有运行中的 dhrystone 进程"
+        for pid in $pids; do
+            kill -9 "$pid" 2>/dev/null
+        done
+        log "dhrystone 进程清除完成"
     fi
+    log "结果文件: /data/dhrystone_results*.txt (停止后由 PC 端自动 pull)"
+    do_status
 }
 
-case "$ACTION" in
-    start)
-        cmd_start
-        ;;
-    stop)
-        cmd_stop
-        ;;
-    status)
-        cmd_status
-        ;;
-    help|-h|"")
-        usage
-        ;;
-    *)
-        echo "[ERROR] 未知命令: $ACTION"
-        usage
-        exit 1
-        ;;
-esac
+# 参数解析与校验
+parse_args() {
+    case "$ACTION" in
+        -h|--help|help|usage|"") usage; exit 0 ;;
+    esac
+}
 
+# 命令路由分发
+route() {
+    case "$ACTION" in
+        start)  do_start; return ;;
+        stop)   do_stop; return ;;
+        status) do_status; return ;;
+        *)      die "未知命令: $ACTION" ;;
+    esac
+}
+
+main() {
+    # 1. 参数解析与校验（含 usage/exit）
+    parse_args "$@"
+
+    # 2. 命令路由分发
+    route
+}
+
+main "$@"
 exit 0
